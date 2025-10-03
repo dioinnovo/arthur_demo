@@ -86,16 +86,16 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
                 width={32}
                 height={32}
                 className="object-contain"
-                style={{ width: 'auto', height: 'auto' }}
+                priority
               />
             ) : (
               <Image
-                src="/arthur-logo-blue.png"
+                src={theme === 'dark' ? "/arthur-logo-white.png" : "/arthur-logo-blue.png"}
                 alt="Arthur Health"
                 width={180}
                 height={50}
                 className="object-contain"
-                style={{ width: 'auto', height: 'auto' }}
+                priority
               />
             )}
           </Link>
