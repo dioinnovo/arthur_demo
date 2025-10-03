@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 210 100% 40%; /* Arthur Health Primary Blue #0066CC */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 199 100% 50%; /* Arthur Health Light Blue #00A3FF */
+    --secondary-foreground: 210 40% 98%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 100% 95%; /* Light blue for hover states */
+    --accent-foreground: 210 100% 20%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 210 100% 40%; /* Arthur Health Primary Blue #0066CC */
+    --radius: 0.65rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 100% 40%; /* Arthur Health Primary Blue #0066CC */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 199 100% 50%; /* Arthur Health Light Blue #00A3FF */
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 210 100% 20%; /* Dark blue for hover states in dark mode */
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 210 100% 40%; /* Arthur Health Primary Blue #0066CC */
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar that uses existing padding as gutter */
+  .overlay-scroll {
+    /* Firefox - thin scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+    scrollbar-gutter: stable;
+    /* Enable smooth scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Webkit - thin scrollbar positioned in padding area */
+  .overlay-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .overlay-scroll::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 3px;
+  }
+
+  .overlay-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+  }
+
+  .overlay-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  /* Swiper Carousel Custom Styles for Inspection Areas */
+  .inspection-carousel .swiper-slide-shadow-left,
+  .inspection-carousel .swiper-slide-shadow-right,
+  .inspection-carousel .swiper-slide-shadow-coverflow {
+    border-radius: 0.75rem !important; /* Match the rounded-xl of cards */
+    opacity: 0.4; /* Enhance shadow visibility */
+  }
+
+  /* Enhanced depth overlay for non-active slides */
+  .inspection-carousel .swiper-slide:not(.swiper-slide-active) > div > div {
+    position: relative;
+  }
+
+  .inspection-carousel .swiper-slide:not(.swiper-slide-active) > div > div::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.25) 50%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    border-radius: 0.75rem; /* Match the rounded-xl of cards */
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  /* Active slide elevation and emphasis */
+  .inspection-carousel .swiper-slide-active {
+    z-index: 10;
+  }
+
+  .inspection-carousel .swiper-slide-active > div > div {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* Smooth transitions for all slides */
+  .inspection-carousel .swiper-slide {
+    transition: all 0.3s ease;
+  }
+
+  /* Enhance depth perception with slight blur on far slides */
+  .inspection-carousel .swiper-slide-prev-prev,
+  .inspection-carousel .swiper-slide-next-next {
+    filter: blur(0.5px);
+    opacity: 0.8;
+  }
+
+  /* Sequential fade-in animations */
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fadeInSlide {
+    animation: fadeInSlide 0.6s ease-out;
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-out;
+  }
+  
+  /* Siri Orb Animation */
+  @keyframes siriOrbRotate {
+    0% {
+      --angle: 0deg;
+    }
+    100% {
+      --angle: 360deg;
+    }
+  }
+  
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+}
+
+/* Print-specific styles for formal PDF generation */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.75in;
+  }
+  
+  @page :first {
+    margin-top: 0.5in;
+  }
+  
+  /* Force page breaks */
+  .print\:page-break-before {
+    page-break-before: always;
+  }
+  
+  .print\:page-break-after {
+    page-break-after: always;
+  }
+  
+  /* Prevent breaks inside elements */
+  .print\:break-inside-avoid,
+  .print\:page-break-inside-avoid {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Remove colored backgrounds for formal look */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Formal typography */
+  body {
+    font-size: 11pt;
+    line-height: 1.5;
+    color: black !important;
+  }
+  
+  h1 {
+    font-size: 18pt;
+    margin-bottom: 12pt;
+  }
+  
+  h2 {
+    font-size: 14pt;
+    margin-bottom: 10pt;
+  }
+  
+  h3 {
+    font-size: 12pt;
+    margin-bottom: 8pt;
+  }
+  
+  /* Remove shadows and effects for clean print */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+  
+  /* Ensure links are black */
+  a {
+    color: black !important;
+    text-decoration: none !important;
+  }
+  
+  /* Table borders for print */
+  table {
+    border-collapse: collapse !important;
+  }
+  
+  th, td {
+    border: 1px solid #666 !important;
+    padding: 4pt !important;
+  }
+}
