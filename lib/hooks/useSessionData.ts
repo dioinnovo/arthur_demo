@@ -83,10 +83,125 @@ export function useSessionData(sessionId: string) {
         // Create demo areas with some completed, some in progress
         const demoAreas: AssessmentArea[] = DEFAULT_ASSESSMENT_AREAS.map((area, index) => {
           let status: 'completed' | 'in_progress' | 'not_started' | 'skipped' = 'not_started'
+          let media: MediaFile[] = []
+          let findings = ''
+          let clinicalObservations = ''
+          let recommendedActions = ''
+          let photoCount = 0
+          let notesCount = 0
+          let previewImage = ''
 
-          // First 3 areas completed
+          // First 3 areas completed with demo data
           if (index < 3) {
             status = 'completed'
+
+            // Different demo content for each completed area
+            if (area.id === 'vitals-measurements') {
+              findings = 'Patient vitals stable. BP: 128/82 mmHg, HR: 72 bpm, RR: 16/min, Temp: 98.6°F, O2 Sat: 98% on room air.'
+              clinicalObservations = 'Blood pressure slightly elevated compared to baseline (120/78). Patient reports good medication adherence. No orthostatic symptoms.'
+              recommendedActions = 'Continue current antihypertensive regimen. Schedule BP monitoring in 2 weeks. Patient to maintain daily BP log.'
+              photoCount = 2
+              notesCount = 1
+              previewImage = 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=400&fit=crop'
+              media = [
+                {
+                  id: 'photo-1',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop',
+                  title: 'Blood Pressure Reading',
+                  timestamp: '2024-03-15T10:35:00Z',
+                  category: 'Vital Signs'
+                },
+                {
+                  id: 'photo-2',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1615461066159-fea0960485d5?w=800&h=600&fit=crop',
+                  title: 'Pulse Oximeter Reading',
+                  timestamp: '2024-03-15T10:36:00Z',
+                  category: 'Vital Signs'
+                },
+                {
+                  id: 'audio-1',
+                  type: 'audio',
+                  url: '#',
+                  title: 'Clinical Notes - Vital Signs',
+                  timestamp: '2024-03-15T10:37:00Z',
+                  category: 'Voice Notes',
+                  transcript: 'Care coordinator notes: Patient reports feeling well today. Blood pressure 128 over 82, heart rate 72, respiratory rate 16. Oxygen saturation 98% on room air. Temperature 98.6. Patient denies chest pain, shortness of breath, or dizziness. Medication adherence confirmed via pill count.',
+                  duration: 28
+                }
+              ]
+            } else if (area.id === 'medication-review') {
+              findings = 'All medications reconciled. Patient taking Metformin 1000mg BID, Lisinopril 10mg daily, Atorvastatin 20mg nightly as prescribed.'
+              clinicalObservations = 'Good medication adherence. No reported side effects. Patient understands dosing schedule. Adequate supply until next refill date.'
+              recommendedActions = 'Continue current regimen. Refill due in 3 weeks. Consider A1C recheck in 6 weeks.'
+              photoCount = 3
+              notesCount = 1
+              previewImage = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=400&fit=crop'
+              media = [
+                {
+                  id: 'photo-3',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&h=600&fit=crop',
+                  title: 'Metformin 1000mg Bottle',
+                  timestamp: '2024-03-15T10:40:00Z',
+                  category: 'Medication'
+                },
+                {
+                  id: 'photo-4',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&h=600&fit=crop',
+                  title: 'Lisinopril 10mg Bottle',
+                  timestamp: '2024-03-15T10:41:00Z',
+                  category: 'Medication'
+                },
+                {
+                  id: 'photo-5',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1628771065518-0d82f1938462?w=800&h=600&fit=crop',
+                  title: 'Atorvastatin 20mg Bottle',
+                  timestamp: '2024-03-15T10:42:00Z',
+                  category: 'Medication'
+                },
+                {
+                  id: 'audio-2',
+                  type: 'audio',
+                  url: '#',
+                  title: 'Medication Reconciliation Notes',
+                  timestamp: '2024-03-15T10:43:00Z',
+                  category: 'Voice Notes',
+                  transcript: 'Medication reconciliation complete. Patient has Metformin 1000 milligrams twice daily, Lisinopril 10 milligrams once daily in the morning, and Atorvastatin 20 milligrams at bedtime. All medications verified with pill bottles. Patient demonstrates good understanding of medication schedule. No side effects reported. Next refill due March 30th.',
+                  duration: 35
+                }
+              ]
+            } else if (area.id === 'symptom-assessment') {
+              findings = 'Patient reports improved mobility and reduced knee pain since last visit. Pain level 2/10 on movement, down from 5/10.'
+              clinicalObservations = 'ROM in bilateral knees improved. Patient ambulating without assistive device. Mild crepitus on flexion. No signs of acute inflammation.'
+              recommendedActions = 'Continue physical therapy twice weekly. May increase walking distance gradually. Follow up in 4 weeks or sooner if pain worsens.'
+              photoCount = 1
+              notesCount = 1
+              previewImage = 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=400&h=400&fit=crop'
+              media = [
+                {
+                  id: 'photo-6',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&h=600&fit=crop',
+                  title: 'Knee Joint Assessment',
+                  timestamp: '2024-03-15T10:45:00Z',
+                  category: 'Clinical Overview'
+                },
+                {
+                  id: 'audio-3',
+                  type: 'audio',
+                  url: '#',
+                  title: 'Symptom Assessment Notes',
+                  timestamp: '2024-03-15T10:46:00Z',
+                  category: 'Voice Notes',
+                  transcript: 'Patient reports significant improvement in knee pain. Current pain level 2 out of 10 with movement, down from 5 out of 10 at last visit. Patient able to ambulate independently without walker or cane. Range of motion improved bilaterally. Mild crepitus noted on knee flexion but no acute swelling or warmth. Patient very pleased with progress from physical therapy.',
+                  duration: 32
+                }
+              ]
+            }
           }
           // 4th area in progress
           else if (index === 3) {
@@ -96,7 +211,13 @@ export function useSessionData(sessionId: string) {
           return {
             ...area,
             status,
-            media: []
+            findings,
+            clinicalObservations,
+            recommendedActions,
+            photoCount,
+            notesCount,
+            previewImage,
+            media
           }
         })
 

@@ -140,9 +140,9 @@ export default function ContinueInspectionPage() {
   const inspectionSummary = sessionData ? {
     sessionId,
     claimNumber: `CLM-${sessionId}`,
-    propertyAddress: sessionData.property.address,
-    clientName: sessionData.property.owner,
-    inspector: 'Inspector',
+    propertyAddress: sessionData.property?.address || sessionData.patientName || 'Unknown Patient',
+    clientName: sessionData.property?.owner || sessionData.patientName || 'Unknown',
+    inspector: 'Care Coordinator',
     startTime: sessionData.createdAt,
     elapsedTime: '1h 30m',
     weatherConditions: 'Clear, 75°F',
@@ -150,11 +150,11 @@ export default function ContinueInspectionPage() {
     criticalFindings: sessionData.areas.filter(a => a.priority === 'high').length,
     safetyHazardsIdentified: sessionData.areas
       .filter(a => a.priority === 'high')
-      .map(a => `${a.name}: ${a.findings || 'Requires inspection'}`),
+      .map(a => `${a.name}: ${a.findings || 'Requires assessment'}`),
     immediateActions: [
-      'Document all damage thoroughly',
-      'Take photos from multiple angles',
-      'Note safety hazards'
+      'Document all clinical observations thoroughly',
+      'Capture relevant clinical photos',
+      'Note any urgent care needs'
     ]
   } : null
 

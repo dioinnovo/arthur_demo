@@ -9,7 +9,6 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/ui/page-header'
-import { SCC_CASES } from '@/lib/data/scc-cases'
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({

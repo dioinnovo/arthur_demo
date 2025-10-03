@@ -11,7 +11,7 @@ import {
   ClipboardList, BookOpen, Heart, UserCheck, MessageCircle
 } from 'lucide-react'
 import Link from 'next/link'
-import { InspectionAreaCarousel } from '@/components/ui/inspection-area-carousel'
+import { CareAssessmentCarousel } from '@/components/ui/care-assessment-carousel'
 import { useSessionData } from '@/lib/hooks/useSessionData'
 
 // Custom Microphone SVG Component
@@ -547,8 +547,8 @@ export default function CareSessionAssessmentPage() {
       setNavigationMode('form')
       setExpandedAreaId(area.id)
     } else {
-      // Navigate to the specific area inspection page when a different card is clicked
-      router.push(`/dashboard/care-sessions/${sessionId}/area/${area.id}`)
+      // Navigate to the specific assessment page when a different card is clicked
+      router.push(`/dashboard/care-sessions/${sessionId}/assessment/${area.id}`)
       // The navigation will be handled by the useEffect when the URL changes
     }
   }
@@ -561,7 +561,7 @@ export default function CareSessionAssessmentPage() {
 
   return (
     <>
-      <InspectionAreaCarousel
+      <CareAssessmentCarousel
       areas={enhancedAreas}
       currentAreaIndex={currentIndex}
       onAreaComplete={handleComplete}
@@ -821,7 +821,7 @@ export default function CareSessionAssessmentPage() {
               </div>
             )}
           </div>
-      </InspectionAreaCarousel>
+      </CareAssessmentCarousel>
 
       {/* Voice Note Transcript Modal */}
       <AnimatePresence key="transcript-modal">

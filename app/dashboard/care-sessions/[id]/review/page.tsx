@@ -4,25 +4,26 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
 import {
-  ArrowLeft, FileText, Download, Send, Edit3, CheckCircle,
+  ArrowLeft, FileText, Download, Edit3, CheckCircle,
   AlertTriangle, Camera, Mic, Brain, TrendingUp, DollarSign,
-  Calendar, MapPin, User, Building2, Home, Eye, Star,
-  Lightbulb, History, Target, Sparkles, Zap, Check
+  Calendar, User, Heart, Activity, Star,
+  Lightbulb, Target, Sparkles, Check, Pill, Stethoscope,
+  UserCheck, Clock, AlertCircle, TrendingDown
 } from 'lucide-react'
 import Link from 'next/link'
 
-// Area Card Component
-function AreaCard({
+// Assessment Area Card Component
+function AssessmentAreaCard({
   area,
-  enrichmentComplete,
+  aiEnhanced,
   sessionData,
-  setInspectionData,
+  setCareSessionData,
   getStatusIcon
 }: {
   area: any
-  enrichmentComplete: boolean
+  aiEnhanced: boolean
   sessionData: any
-  setInspectionData: any
+  setCareSessionData: any
   getStatusIcon: (status: string) => JSX.Element
 }) {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -41,10 +42,10 @@ function AreaCard({
             <div className="flex items-center gap-3">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{area.name}</h3>
               {getStatusIcon(area.status)}
-              {enrichmentComplete && (
-                <span className="px-2 py-1 bg-scc-red/10 text-scc-red text-xs rounded-full flex items-center gap-1">
+              {aiEnhanced && (
+                <span className="px-2 py-1 bg-arthur-blue/10 text-arthur-blue text-xs rounded-full flex items-center gap-1">
                   <Sparkles size={12} />
-                  Enhanced
+                  AI Enhanced
                 </span>
               )}
             </div>
@@ -93,7 +94,7 @@ function AreaCard({
               }}
               className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors cursor-pointer ${
                 isEditing
-                  ? 'bg-scc-red text-white'
+                  ? 'bg-arthur-blue text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -109,7 +110,7 @@ function AreaCard({
                   const areaIndex = updatedData.areas.findIndex((a: any) => a.id === area.id)
                   if (areaIndex !== -1) {
                     updatedData.areas[areaIndex] = editedArea
-                    setInspectionData(updatedData)
+                    setCareSessionData(updatedData)
                   }
                   setIsEditing(false)
                 }}
@@ -123,7 +124,7 @@ function AreaCard({
 
           {/* Detailed Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Findings Section */}
+            {/* Clinical Observations Section */}
             <div className="space-y-4">
               <div>
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
@@ -132,7 +133,7 @@ function AreaCard({
                 </h4>
                 {isEditing ? (
                   <textarea
-                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-scc-red"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-arthur-blue"
                     rows={3}
                     value={editedArea.findings}
                     onChange={(e) => setEditedArea({ ...editedArea, findings: e.target.value })}
@@ -145,17 +146,17 @@ function AreaCard({
               <div>
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
                   <AlertTriangle size={16} className="text-gray-500 dark:text-gray-400" />
-                  Patient Assessment Notes
+                  Care Coordinator Notes
                 </h4>
                 {isEditing ? (
                   <textarea
-                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-scc-red"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-arthur-blue"
                     rows={3}
-                    value={editedArea.damageDescription}
-                    onChange={(e) => setEditedArea({ ...editedArea, damageDescription: e.target.value })}
+                    value={editedArea.coordinatorNotes}
+                    onChange={(e) => setEditedArea({ ...editedArea, coordinatorNotes: e.target.value })}
                   />
                 ) : (
-                  <p className="text-sm text-gray-700 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">{area.damageDescription}</p>
+                  <p className="text-sm text-gray-700 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">{area.coordinatorNotes}</p>
                 )}
               </div>
             </div>
@@ -165,7 +166,7 @@ function AreaCard({
               <div>
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
                   <Lightbulb size={16} className="text-gray-500 dark:text-gray-400" />
-                  Key Insights
+                  Key Clinical Insights
                 </h4>
                 <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
                   {isEditing ? (
@@ -173,7 +174,7 @@ function AreaCard({
                       {editedArea.keyInsights.map((insight: string, idx: number) => (
                         <input
                           key={idx}
-                          className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-scc-red"
+                          className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-arthur-blue"
                           value={insight}
                           onChange={(e) => {
                             const newInsights = [...editedArea.keyInsights]
@@ -187,7 +188,7 @@ function AreaCard({
                     <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
                       {area.keyInsights.map((insight: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <span className="text-scc-red mt-0.5">•</span>
+                          <span className="text-arthur-blue mt-0.5">•</span>
                           <span>{insight}</span>
                         </li>
                       ))}
@@ -199,7 +200,7 @@ function AreaCard({
               <div>
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
                   <Camera size={16} className="text-gray-500 dark:text-gray-400" />
-                  Media Documentation
+                  Documentation
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
@@ -217,18 +218,18 @@ function AreaCard({
             </div>
           </div>
 
-          {/* Report Preview Section */}
-          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <h4 className="font-semibold text-amber-900 mb-2 flex items-center gap-2">
+          {/* Care Plan Preview Section */}
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
               <FileText size={16} />
-              Final Report Preview
+              Care Plan Summary Preview
             </h4>
-            <p className="text-sm text-amber-800">
-              This information will be included in the final inspection report. Review carefully before approving.
+            <p className="text-sm text-blue-800">
+              This information will be included in the final care plan summary. Review carefully before approving.
             </p>
-            <div className="mt-3 p-3 bg-white dark:bg-gray-900 rounded border border-amber-300">
+            <div className="mt-3 p-3 bg-white dark:bg-gray-900 rounded border border-blue-300">
               <p className="text-xs font-mono text-gray-700 dark:text-gray-300">
-                <span className="font-semibold">Area:</span> {area.name} ({area.category})<br/>
+                <span className="font-semibold">Assessment:</span> {area.name} ({area.category})<br/>
                 <span className="font-semibold">Status:</span> {area.status}<br/>
                 <span className="font-semibold">Documentation:</span> {area.photoCount} photos, {area.audioCount} audio recordings<br/>
                 <span className="font-semibold">Findings:</span> {area.findings.substring(0, 100)}...
@@ -241,14 +242,15 @@ function AreaCard({
   )
 }
 
-interface InspectionSummary {
-  propertyDetails: {
-    address: string
-    type: 'residential' | 'commercial'
-    yearBuilt: string
-    ownerName: string
-    policyNumber: string
-    damageTypes: string[]
+interface CareSessionSummary {
+  patientDetails: {
+    name: string
+    mrn: string
+    dob: string
+    age: number
+    gender: string
+    primaryDiagnoses: string[]
+    carePathway: string
   }
   areas: Array<{
     id: string
@@ -258,74 +260,77 @@ interface InspectionSummary {
     photoCount: number
     audioCount: number
     findings: string
-    damageDescription: string
+    coordinatorNotes: string
     keyInsights: string[]
   }>
-  overallInsights: {
+  clinicalMetrics: {
     totalPhotos: number
     totalAudioNotes: number
-    completedAreas: number
-    skippedAreas: number
-    criticalIssues: number
-    opportunities: number
-    estimatedRepairCost: number
-    repairEstimate: number
-    similarReportsAverage: number
-    similarReportsRange: { min: number, max: number }
-    similarReportsCount: number
+    completedAssessments: number
+    skippedAssessments: number
+    criticalFindings: number
+    careGapsIdentified: number
+    qualityScore: number
   }
   aiRecommendations: Array<{
-    type: 'critical' | 'opportunity' | 'enhancement'
+    type: 'critical' | 'care_gap' | 'referral' | 'cost_optimization'
     title: string
     description: string
-    potentialValue?: number
+    potentialImpact?: string
     confidence: number
   }>
-  historicalFindings: Array<{
+  careGaps: Array<{
+    category: string
     title: string
     description: string
-    potentialRecovery: number
-    timeframe: string
+    priority: 'High' | 'Medium' | 'Low'
+    dueDate: string
+    actionable: string
   }>
+  referralRecommendations: Array<{
+    specialty: string
+    reason: string
+    urgency: 'Urgent' | 'Routine' | 'Follow-up'
+    timeframe: string
+    preAuthRequired: boolean
+  }>
+  costOptimization: Array<{
+    category: string
+    currentCost: number
+    optimizedCost: number
+    savings: number
+    recommendation: string
+  }>
+  riskStratification: {
+    readmissionRisk: number
+    decompensationRisk: number
+    medicationAdherence: number
+    socialRiskFactors: string[]
+  }
 }
 
-export default function InspectionReviewPage() {
+export default function CareSessionReviewPage() {
   const params = useParams()
   const router = useRouter()
   const sessionId = params.id as string
 
   const [isGeneratingReport, setIsGeneratingReport] = useState(false)
-  const [isEnriching, setIsEnriching] = useState(false)
-  const [enrichmentComplete, setEnrichmentComplete] = useState(false)
-  const [enrichmentProgress, setEnrichmentProgress] = useState(0)
-  const [selectedTab, setSelectedTab] = useState('overview')
+  const [isAIEnhancing, setIsAIEnhancing] = useState(false)
+  const [aiEnhancementComplete, setAIEnhancementComplete] = useState(false)
+  const [aiEnhancementProgress, setAIEnhancementProgress] = useState(0)
+  const [selectedTab, setSelectedTab] = useState('summary')
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
-  const [sessionData, setInspectionData] = useState<InspectionSummary | null>(null)
-  const [claimId, setClaimId] = useState<string | null>(null)
+  const [sessionData, setCareSessionData] = useState<CareSessionSummary | null>(null)
 
-  // Load inspection data from localStorage and set up auto-save
+  // Load care session data from localStorage and set up auto-save
   useEffect(() => {
     // Load saved data from localStorage
-    const savedData = localStorage.getItem(`inspection-${sessionId}-review`)
+    const savedData = localStorage.getItem(`care-session-${sessionId}-review`)
     if (savedData) {
-      setInspectionData(JSON.parse(savedData))
+      setCareSessionData(JSON.parse(savedData))
     } else {
       // Use default data if no saved data exists
-      setInspectionData(defaultInspectionSummary)
-    }
-
-    // Load claimId from inspection data
-    const sessionDataRaw = localStorage.getItem(`inspection-${sessionId}-data`)
-    if (sessionDataRaw) {
-      const parsedData = JSON.parse(sessionDataRaw)
-      if (parsedData.claimId) {
-        setClaimId(parsedData.claimId)
-      }
-    }
-
-    // Demo: Set default claimId for CS-002 for seamless demo workflow
-    if (sessionId === 'CS-002' && !claimId) {
-      setClaimId('CLM-2024-002')
+      setCareSessionData(defaultCareSessionSummary)
     }
   }, [sessionId])
 
@@ -334,287 +339,254 @@ export default function InspectionReviewPage() {
     if (sessionData) {
       const saveTimer = setTimeout(() => {
         setAutoSaveStatus('saving')
-        localStorage.setItem(`inspection-${sessionId}-review`, JSON.stringify(sessionData))
+        localStorage.setItem(`care-session-${sessionId}-review`, JSON.stringify(sessionData))
         setTimeout(() => {
           setAutoSaveStatus('saved')
           setTimeout(() => setAutoSaveStatus('idle'), 2000)
         }, 500)
-      }, 1000) // Save after 1 second of no changes
+      }, 1000)
 
       return () => clearTimeout(saveTimer)
     }
   }, [sessionData, sessionId])
 
-  // Default data - in production, this would be loaded from the inspection session
-  const defaultInspectionSummary: InspectionSummary = {
-    propertyDetails: {
-      address: '1234 Ocean Drive, Miami Beach, FL 33101',
-      type: 'residential',
-      yearBuilt: '2005',
-      ownerName: 'Johnson Properties LLC',
-      policyNumber: 'POL-123456789',
-      damageTypes: ['Hurricane', 'Water', 'Wind']
+  // Default demo data - Margaret Thompson, Type 2 Diabetes patient
+  const defaultCareSessionSummary: CareSessionSummary = {
+    patientDetails: {
+      name: 'Margaret Thompson',
+      mrn: 'MRN-847392',
+      dob: '1962-03-15',
+      age: 62,
+      gender: 'Female',
+      primaryDiagnoses: ['Type 2 Diabetes Mellitus', 'Hypertension', 'Hyperlipidemia'],
+      carePathway: 'Diabetes Management & Education'
     },
     areas: [
       {
-        id: 'exterior-roof',
-        name: 'Roof & Gutters',
-        category: 'Exterior',
+        id: 'vitals-measurements',
+        name: 'Vital Signs & Measurements',
+        category: 'Clinical Assessment',
         status: 'completed',
-        photoCount: 8,
+        photoCount: 4,
         audioCount: 2,
-        findings: 'Multiple missing shingles, damaged gutters, visible water intrusion points.',
-        damageDescription: 'Significant wind damage with 15+ missing/damaged shingles. Gutters detached on west side.',
-        keyInsights: ['Roof decking likely compromised', 'Interior water damage probable', 'Emergency tarping recommended']
+        findings: 'BP 142/88 mmHg, HR 78 bpm, Weight 182 lbs, BMI 29.4, O2 Sat 98%. Blood glucose fasting 148 mg/dL.',
+        coordinatorNotes: 'Blood pressure slightly elevated despite current medication regimen. Patient reports consistent medication adherence. May need dosage adjustment.',
+        keyInsights: ['BP trending upward over last 3 visits', 'BMI decreased by 0.8 from baseline', 'Fasting glucose improved from 165 mg/dL']
       },
       {
-        id: 'exterior-siding',
-        name: 'Siding & Walls',
-        category: 'Exterior',
+        id: 'medication-review',
+        name: 'Medication Review & Reconciliation',
+        category: 'Clinical Assessment',
         status: 'completed',
-        photoCount: 6,
+        photoCount: 3,
         audioCount: 1,
-        findings: 'Siding damage on north and west faces, window seal failures.',
-        damageDescription: 'Impact damage from debris, several sections need replacement.',
-        keyInsights: ['Moisture intrusion points identified', 'Insulation likely wet', 'Structural integrity intact']
+        findings: 'Currently taking Metformin 1000mg BID, Lisinopril 20mg QD, Atorvastatin 40mg QD. All medications reconciled with pharmacy records.',
+        coordinatorNotes: 'Patient demonstrates good understanding of medication regimen. Using pill organizer effectively. Noted cost concerns about Atorvastatin.',
+        keyInsights: ['100% medication adherence per pharmacy records', 'Patient eligible for generic cost savings program', 'Consider mail-order pharmacy for additional savings']
       },
       {
-        id: 'interior-living',
-        name: 'Living Room',
-        category: 'Interior',
+        id: 'symptom-assessment',
+        name: 'Symptom Assessment',
+        category: 'Clinical Assessment',
         status: 'completed',
-        photoCount: 12,
+        photoCount: 0,
         audioCount: 3,
-        findings: 'Water staining on ceiling, damaged flooring, mold growth visible.',
-        damageDescription: 'Ceiling has water stains covering 40% of surface. Hardwood flooring warped and buckled.',
-        keyInsights: ['Mold remediation required', 'Ceiling replacement needed', 'HVAC contamination possible']
+        findings: 'Reports occasional tingling in feet, more noticeable at night. Denies chest pain, SOB, vision changes. Energy levels improved.',
+        coordinatorNotes: 'Peripheral neuropathy symptoms warrant diabetic neuropathy screening. Patient unaware this requires specialist evaluation.',
+        keyInsights: ['Early diabetic neuropathy symptoms present', 'Podiatry referral indicated', 'Patient education needed on neuropathy management']
       },
       {
-        id: 'interior-kitchen',
-        name: 'Kitchen',
-        category: 'Interior',
+        id: 'care-plan-review',
+        name: 'Care Plan Review',
+        category: 'Care Planning',
         status: 'completed',
-        photoCount: 10,
+        photoCount: 2,
         audioCount: 2,
-        findings: 'Cabinet water damage, appliance impacts, electrical concerns.',
-        damageDescription: 'Lower cabinets saturated with water. Dishwasher and refrigerator damaged.',
-        keyInsights: ['Electrical inspection needed', 'Complete cabinet replacement', 'Appliance replacement required']
-      },
-      {
-        id: 'systems-hvac',
-        name: 'HVAC System',
-        category: 'Systems',
-        status: 'completed',
-        photoCount: 5,
-        audioCount: 1,
-        findings: 'Ductwork damaged, unit contaminated, air quality concerns.',
-        damageDescription: 'Main unit flooded, ductwork shows mold growth, system inoperable.',
-        keyInsights: ['Complete system replacement', 'Duct cleaning/replacement', 'Air quality testing needed']
+        findings: 'HbA1c goal <7.0%, current 8.2%. Diet modifications in progress, walking 30 min daily 5x/week. Home glucose monitoring 2x daily.',
+        coordinatorNotes: 'Patient making excellent lifestyle changes but A1C still above target. May benefit from continuous glucose monitor and diabetes education class.',
+        keyInsights: ['A1C improved from 9.1% baseline', 'Exercise routine well-established', 'CGM could provide better glycemic insights']
       }
     ],
-    overallInsights: {
-      totalPhotos: 41,
-      totalAudioNotes: 9,
-      completedAreas: 5,
-      skippedAreas: 0,
-      criticalIssues: 3,
-      opportunities: 2,
-      estimatedRepairCost: 285000,
-      repairEstimate: 15170,
-      similarReportsAverage: 278500,
-      similarReportsRange: { min: 245000, max: 315000 },
-      similarReportsCount: 27
+    clinicalMetrics: {
+      totalPhotos: 9,
+      totalAudioNotes: 8,
+      completedAssessments: 4,
+      skippedAssessments: 0,
+      criticalFindings: 1,
+      careGapsIdentified: 3,
+      qualityScore: 87
     },
     aiRecommendations: [
       {
         type: 'critical',
-        title: 'Immediate Mold Remediation Required',
-        description: 'Visible mold growth in multiple areas requires immediate professional remediation before further work.',
+        title: 'Diabetic Neuropathy Screening Overdue',
+        description: 'Patient exhibits peripheral neuropathy symptoms (tingling in feet) but has not had specialist evaluation in 18 months. Guidelines recommend annual screening.',
+        potentialImpact: 'Early intervention can prevent progression and improve quality of life',
         confidence: 95
       },
       {
-        type: 'opportunity',
-        title: 'Hidden Damage Investigation',
-        description: 'Based on visible damage patterns, additional hidden damage likely exists behind walls and in ceiling cavities.',
-        potentialValue: 45000,
-        confidence: 87
+        type: 'care_gap',
+        title: 'Missing Diabetic Retinal Screening',
+        description: 'Annual diabetic retinal exam not completed. Last ophthalmology visit was 16 months ago.',
+        potentialImpact: 'Detect diabetic retinopathy before vision loss occurs',
+        confidence: 100
       },
       {
-        type: 'enhancement',
-        title: 'Code Upgrade Opportunities',
-        description: 'Repairs provide opportunity to upgrade electrical and plumbing to current codes.',
-        potentialValue: 15000,
-        confidence: 78
+        type: 'referral',
+        title: 'Certified Diabetes Educator Referral Recommended',
+        description: 'Patient would benefit from structured diabetes self-management education to achieve HbA1c target.',
+        potentialImpact: 'Studies show 1-2% A1C reduction with DSME programs',
+        confidence: 88
+      },
+      {
+        type: 'cost_optimization',
+        title: 'Medication Cost Reduction Opportunity',
+        description: 'Patient eligible for manufacturer savings program and mail-order pharmacy discount. Combined savings of $140/month.',
+        potentialImpact: 'Annual savings: $1,680',
+        confidence: 92
       }
     ],
-    historicalFindings: [
+    careGaps: [
       {
-        title: '2021 Water Damage Claim Underpayment',
-        description: 'Previous water damage claim was settled for $8,500. Similar current damage suggests potential underpayment.',
-        potentialRecovery: 12000,
-        timeframe: 'Can be reopened within 3 years'
+        category: 'Preventive Care',
+        title: 'Annual Diabetic Eye Exam Overdue',
+        description: 'Last dilated eye exam was 16 months ago. ADA guidelines recommend annual screening for diabetic retinopathy.',
+        priority: 'High',
+        dueDate: 'Within 30 days',
+        actionable: 'Schedule ophthalmology appointment with Dr. Sarah Chen'
       },
       {
-        title: '2022 Hurricane Ian Supplemental Opportunity',
-        description: 'Original Hurricane Ian settlement missed HVAC contamination and hidden structural damage.',
-        potentialRecovery: 28000,
-        timeframe: 'Supplemental claim recommended'
+        category: 'Specialist Consultation',
+        title: 'Podiatry Evaluation for Neuropathy Symptoms',
+        description: 'Patient reports tingling in feet, consistent with early diabetic neuropathy. Requires comprehensive foot exam and monofilament testing.',
+        priority: 'High',
+        dueDate: 'Within 2 weeks',
+        actionable: 'Refer to Podiatry - Dr. Michael Rodriguez, Urgent'
+      },
+      {
+        category: 'Disease Management',
+        title: 'Diabetes Self-Management Education',
+        description: 'HbA1c 8.2% above target despite lifestyle modifications. DSME program can provide intensive education and support.',
+        priority: 'Medium',
+        dueDate: 'Within 60 days',
+        actionable: 'Enroll in Arthur Health DSME Program - Next session starts May 15th'
       }
-    ]
-  }
-
-  const handleGenerateReport = async () => {
-    setIsGeneratingReport(true)
-
-    // Generate structured report data
-    const reportData = {
-      reportId: `RPT-${sessionId}`,
-      generatedDate: new Date().toISOString(),
-      claimId: claimId || undefined, // Include claim linkage
-      property: inspectionSummary.propertyDetails,
-      inspection: {
-        id: sessionId,
-        completedAreas: inspectionSummary.overallInsights.completedAreas,
-        totalPhotos: inspectionSummary.overallInsights.totalPhotos,
-        totalAudioNotes: inspectionSummary.overallInsights.totalAudioNotes,
-        criticalIssues: inspectionSummary.overallInsights.criticalIssues
+    ],
+    referralRecommendations: [
+      {
+        specialty: 'Endocrinology',
+        reason: 'HbA1c 8.2% despite lifestyle modifications and current medication regimen. Consider insulin therapy or GLP-1 agonist.',
+        urgency: 'Routine',
+        timeframe: 'Within 8 weeks',
+        preAuthRequired: true
       },
-      areas: inspectionSummary.areas.map(area => ({
-        ...area,
-        enrichedFindings: enrichmentComplete ? `Enhanced: ${area.findings} Additional AI analysis reveals potential hidden damage and code compliance issues.` : area.findings
-      })),
-      financialSummary: {
-        estimatedValue: inspectionSummary.overallInsights.estimatedRepairCost,
-        repairEstimate: inspectionSummary.overallInsights.repairEstimate,
-        potentialSupplemental: 52000,
-        totalRecoveryOpportunity: inspectionSummary.overallInsights.estimatedRepairCost + 52000
+      {
+        specialty: 'Podiatry',
+        reason: 'Peripheral neuropathy symptoms, comprehensive diabetic foot exam needed including monofilament testing and vascular assessment.',
+        urgency: 'Urgent',
+        timeframe: 'Within 2 weeks',
+        preAuthRequired: false
       },
-      aiRecommendations: inspectionSummary.aiRecommendations,
-      historicalFindings: inspectionSummary.historicalFindings,
-      enrichmentStatus: enrichmentComplete
+      {
+        specialty: 'Ophthalmology',
+        reason: 'Overdue annual diabetic retinal screening. Last exam 16 months ago.',
+        urgency: 'Routine',
+        timeframe: 'Within 4 weeks',
+        preAuthRequired: false
+      }
+    ],
+    costOptimization: [
+      {
+        category: 'Medication Costs',
+        currentCost: 285,
+        optimizedCost: 145,
+        savings: 140,
+        recommendation: 'Switch to mail-order pharmacy (90-day supply) and enroll in manufacturer savings program for Atorvastatin'
+      },
+      {
+        category: 'Preventive Care',
+        currentCost: 0,
+        optimizedCost: 0,
+        savings: 1200,
+        recommendation: 'Complete preventive screenings now to avoid costly complications (estimated $1,200 annual savings in avoided ER visits/hospitalizations)'
+      },
+      {
+        category: 'Diabetes Management',
+        currentCost: 85,
+        optimizedCost: 45,
+        savings: 40,
+        recommendation: 'Patient eligible for discounted CGM through insurance. Reduces test strip costs and improves glycemic control.'
+      }
+    ],
+    riskStratification: {
+      readmissionRisk: 32,
+      decompensationRisk: 38,
+      medicationAdherence: 92,
+      socialRiskFactors: ['Transportation barriers to specialist appointments', 'High cost of copays affecting medication adherence']
     }
-
-    // Save report data to localStorage (in production, this would be saved to database)
-    localStorage.setItem(`inspection-report-${sessionId}`, JSON.stringify(reportData))
-
-    // Mock processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    setIsGeneratingReport(false)
-
-    // Navigate to report page
-    router.push(`/dashboard/care-sessions/${sessionId}/report`)
   }
 
-  const handleApproveReport = async () => {
+  const handleApproveAndGenerate = async () => {
     setIsGeneratingReport(true)
 
-    // Generate structured report data with approved status
-    const reportData = {
-      reportId: `RPT-${sessionId}`,
+    // Generate care plan summary data
+    const carePlanData = {
+      reportId: `CPR-${sessionId}`,
       generatedDate: new Date().toISOString(),
       status: 'approved',
-      claimId: claimId || undefined, // Include claim linkage
-      property: inspectionSummary.propertyDetails,
-      inspection: {
+      patient: careSessionSummary.patientDetails,
+      careSession: {
         id: sessionId,
-        completedAreas: inspectionSummary.overallInsights.completedAreas,
-        totalPhotos: inspectionSummary.overallInsights.totalPhotos,
-        totalAudioNotes: inspectionSummary.overallInsights.totalAudioNotes,
-        criticalIssues: inspectionSummary.overallInsights.criticalIssues
+        completedAssessments: careSessionSummary.clinicalMetrics.completedAssessments,
+        totalPhotos: careSessionSummary.clinicalMetrics.totalPhotos,
+        totalAudioNotes: careSessionSummary.clinicalMetrics.totalAudioNotes,
+        qualityScore: careSessionSummary.clinicalMetrics.qualityScore
       },
-      areas: inspectionSummary.areas.map(area => ({
-        ...area,
-        enrichedFindings: enrichmentComplete ? `Enhanced: ${area.findings} Additional AI analysis reveals potential hidden damage and code compliance issues.` : area.findings
-      })),
-      financialSummary: {
-        estimatedValue: inspectionSummary.overallInsights.estimatedRepairCost,
-        repairEstimate: inspectionSummary.overallInsights.repairEstimate,
-        potentialSupplemental: 52000,
-        totalRecoveryOpportunity: inspectionSummary.overallInsights.estimatedRepairCost + 52000
+      assessmentAreas: careSessionSummary.areas,
+      careGaps: careSessionSummary.careGaps,
+      referrals: careSessionSummary.referralRecommendations,
+      costOptimization: {
+        monthlySavings: careSessionSummary.costOptimization.reduce((sum, opt) => sum + opt.savings, 0),
+        annualSavings: careSessionSummary.costOptimization.reduce((sum, opt) => sum + opt.savings, 0) * 12,
+        recommendations: careSessionSummary.costOptimization
       },
-      aiRecommendations: inspectionSummary.aiRecommendations,
-      historicalFindings: inspectionSummary.historicalFindings,
-      enrichmentStatus: enrichmentComplete
+      riskScores: careSessionSummary.riskStratification,
+      aiEnhanced: aiEnhancementComplete
     }
-
-    // Update report status to approved
-    const existingReports = JSON.parse(sessionStorage.getItem('inspection_reports') || '[]')
-    const reportIndex = existingReports.findIndex((r: any) => r.sessionId === sessionId)
-    if (reportIndex !== -1) {
-      existingReports[reportIndex].status = 'approved'
-      existingReports[reportIndex].settlement.approved = inspectionSummary.overallInsights.estimatedRepairCost
-    }
-    sessionStorage.setItem('inspection_reports', JSON.stringify(existingReports))
 
     // Save report data to localStorage
-    localStorage.setItem(`inspection-report-${sessionId}`, JSON.stringify(reportData))
+    localStorage.setItem(`care-plan-${sessionId}`, JSON.stringify(carePlanData))
 
     // Mock processing delay
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsGeneratingReport(false)
 
-    // Navigate to approved report page
-    router.push(`/dashboard/care-sessions/${sessionId}/report`)
+    // Navigate to care sessions list
+    router.push(`/dashboard/care-sessions`)
   }
 
-  const handleDownloadReport = async () => {
-    // Generate PDF or structured JSON report
-    const reportData = {
-      reportId: `RPT-${sessionId}`,
-      generatedDate: new Date().toISOString(),
-      property: inspectionSummary.propertyDetails,
-      areas: inspectionSummary.areas,
-      financials: {
-        estimatedValue: inspectionSummary.overallInsights.estimatedRepairCost,
-        repairEstimate: inspectionSummary.overallInsights.repairEstimate
-      },
-      enriched: enrichmentComplete
-    }
-    
-    // Create and download JSON file
-    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `inspection-report-${sessionId}.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }
+  const handleAIEnhancement = async () => {
+    setIsAIEnhancing(true)
+    setAIEnhancementProgress(0)
 
-  const handleEnrichInspection = async () => {
-    setIsEnriching(true)
-    setEnrichmentProgress(0)
-    
-    // Simulate AI enrichment process with multiple steps
-    const enrichmentSteps = [
-      { label: 'Analyzing historical claims data', duration: 1500 },
-      { label: 'Cross-referencing building codes', duration: 1200 },
-      { label: 'Checking insurance policy updates', duration: 1000 },
-      { label: 'Reviewing government regulations', duration: 800 },
-      { label: 'Identifying missing damages', duration: 1500 },
-      { label: 'Enhancing area descriptions', duration: 1000 },
-      { label: 'Calculating supplemental opportunities', duration: 1000 },
-      { label: 'Finalizing AI recommendations', duration: 1000 }
+    // Simulate AI enhancement process with multiple steps
+    const enhancementSteps = [
+      { label: 'Analyzing patient clinical history', duration: 1200 },
+      { label: 'Cross-referencing HEDIS quality measures', duration: 1000 },
+      { label: 'Checking care gap closure opportunities', duration: 1200 },
+      { label: 'Reviewing evidence-based guidelines', duration: 900 },
+      { label: 'Identifying cost optimization opportunities', duration: 1100 },
+      { label: 'Calculating risk stratification scores', duration: 1000 },
+      { label: 'Generating specialist referral recommendations', duration: 1000 }
     ]
-    
-    for (let i = 0; i < enrichmentSteps.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, enrichmentSteps[i].duration))
-      setEnrichmentProgress(((i + 1) / enrichmentSteps.length) * 100)
+
+    for (let i = 0; i < enhancementSteps.length; i++) {
+      await new Promise(resolve => setTimeout(resolve, enhancementSteps[i].duration))
+      setAIEnhancementProgress(((i + 1) / enhancementSteps.length) * 100)
     }
-    
-    // Enhance the area findings with AI
-    if (sessionData) {
-      const enhancedData = { ...sessionData }
-      enhancedData.areas.forEach(area => {
-        area.findings = `${area.findings} [AI Enhanced: Additional structural concerns identified. Potential code violations detected. Historical claim patterns suggest higher recovery potential.]`
-      })
-      setInspectionData(enhancedData)
-    }
-    
-    setIsEnriching(false)
-    setEnrichmentComplete(true)
+
+    setIsAIEnhancing(false)
+    setAIEnhancementComplete(true)
   }
 
   const getStatusIcon = (status: string) => {
@@ -629,14 +601,14 @@ export default function InspectionReviewPage() {
   }
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: Eye },
-    { id: 'areas', label: 'Area Details', icon: Building2 },
-    { id: 'insights', label: 'AI Insights', icon: Brain },
-    { id: 'opportunities', label: 'Opportunities', icon: TrendingUp }
+    { id: 'summary', label: 'Clinical Summary', icon: Activity },
+    { id: 'care-gaps', label: 'Care Gaps', icon: AlertCircle },
+    { id: 'referrals', label: 'Referrals', icon: UserCheck },
+    { id: 'cost-optimization', label: 'Cost Optimization', icon: DollarSign }
   ]
 
   // Use sessionData if available, otherwise use default
-  const inspectionSummary = sessionData || defaultInspectionSummary
+  const careSessionSummary = sessionData || defaultCareSessionSummary
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -645,23 +617,23 @@ export default function InspectionReviewPage() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div className="flex flex-col gap-2">
             {/* Back Navigation */}
-            <Link 
+            <Link
               href={`/dashboard/care-sessions`}
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 cursor-pointer w-fit"
             >
               <ArrowLeft size={20} />
-              Back to Inspections
+              Back to Care Sessions
             </Link>
-            
+
             {/* Title Section */}
             <div>
               <div className="flex items-center gap-4 mb-4">
                 <div>
                   <h1 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
-                    Inspection Review
+                    Care Session Review
                   </h1>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {inspectionSummary.propertyDetails.address}
+                    {careSessionSummary.patientDetails.name} • MRN: {careSessionSummary.patientDetails.mrn}
                   </p>
                 </div>
                 {autoSaveStatus !== 'idle' && (
@@ -688,25 +660,25 @@ export default function InspectionReviewPage() {
                   className="flex items-center gap-2 text-gray-700 hover:text-gray-900 dark:text-gray-100 cursor-pointer"
                 >
                   <Edit3 size={18} />
-                  Edit Areas
+                  Edit Assessments
                 </Link>
 
-                {/* AI Enrichment Button */}
+                {/* AI Enhancement Button */}
                 <button
-                  onClick={handleEnrichInspection}
-                  disabled={isEnriching || enrichmentComplete}
+                  onClick={handleAIEnhancement}
+                  disabled={isAIEnhancing || aiEnhancementComplete}
                   className={`px-6 py-2 rounded-xl font-medium transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 ${
-                    enrichmentComplete 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-scc-red text-white hover:bg-scc-red-dark'
+                    aiEnhancementComplete
+                      ? 'bg-green-600 text-white'
+                      : 'bg-arthur-blue text-white hover:bg-arthur-blue-dark'
                   }`}
                 >
-                  {isEnriching ? (
+                  {isAIEnhancing ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                      Enriching...
+                      Analyzing...
                     </>
-                  ) : enrichmentComplete ? (
+                  ) : aiEnhancementComplete ? (
                     <>
                       <CheckCircle size={18} />
                       AI Enhanced
@@ -714,15 +686,14 @@ export default function InspectionReviewPage() {
                   ) : (
                     <>
                       <Sparkles size={18} />
-                      Enrich
+                      Enhance with AI
                     </>
                   )}
                 </button>
 
-
                 {/* Approve Button - Primary Action */}
                 <button
-                  onClick={handleApproveReport}
+                  onClick={handleApproveAndGenerate}
                   disabled={isGeneratingReport}
                   className="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none font-medium"
                 >
@@ -734,7 +705,7 @@ export default function InspectionReviewPage() {
                   ) : (
                     <>
                       <Check size={18} />
-                      Approve
+                      Approve & Generate Report
                     </>
                   )}
                 </button>
@@ -744,26 +715,26 @@ export default function InspectionReviewPage() {
         </div>
       </div>
 
-      {/* Summary Cards - Improved Design */}
+      {/* Summary Cards */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
-          {/* Total Photos Card */}
+          {/* Assessment Quality Score */}
           <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-bl-full opacity-50" />
+            <div className="absolute top-0 right-0 w-20 h-20 bg-purple-50 rounded-bl-full opacity-50" />
             <div className="relative">
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-1.5 bg-blue-100 rounded-lg">
-                  <Camera className="text-blue-600" size={16} />
+                <div className="p-1.5 bg-purple-100 rounded-lg">
+                  <Star className="text-purple-600" size={16} />
                 </div>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Total Photos</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Quality Score</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {inspectionSummary.overallInsights.totalPhotos}
+              <p className="text-3xl font-bold text-purple-600">
+                {careSessionSummary.clinicalMetrics.qualityScore}%
               </p>
             </div>
           </div>
 
-          {/* Areas Complete Card */}
+          {/* Assessments Complete */}
           <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-green-50 rounded-bl-full opacity-50" />
             <div className="relative">
@@ -771,50 +742,45 @@ export default function InspectionReviewPage() {
                 <div className="p-1.5 bg-green-100 rounded-lg">
                   <CheckCircle className="text-green-600" size={16} />
                 </div>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Areas Complete</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Completed</span>
               </div>
               <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                {inspectionSummary.overallInsights.completedAreas}
+                {careSessionSummary.clinicalMetrics.completedAssessments}
               </p>
             </div>
           </div>
 
-          {/* Critical Issues Card */}
+          {/* Care Gaps Identified */}
           <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-red-50 rounded-bl-full opacity-50" />
+            <div className="absolute top-0 right-0 w-20 h-20 bg-amber-50 rounded-bl-full opacity-50" />
             <div className="relative">
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-1.5 bg-red-100 rounded-lg">
-                  <AlertTriangle className="text-red-600" size={16} />
+                <div className="p-1.5 bg-amber-100 rounded-lg">
+                  <AlertCircle className="text-amber-600" size={16} />
                 </div>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Critical Issues</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Care Gaps</span>
               </div>
-              <p className="text-3xl font-bold text-red-600">
-                {inspectionSummary.overallInsights.criticalIssues}
+              <p className="text-3xl font-bold text-amber-600">
+                {careSessionSummary.clinicalMetrics.careGapsIdentified}
               </p>
             </div>
           </div>
 
-          {/* Est. Repair Cost Card - Compact */}
+          {/* Potential Cost Savings */}
           <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-50 rounded-bl-full opacity-50" />
             <div className="flex flex-col h-full">
-              {/* Header with icon */}
               <div className="flex items-center gap-2 mb-2">
                 <div className="p-1.5 bg-emerald-100 rounded-lg">
                   <DollarSign className="text-emerald-600" size={16} />
                 </div>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Est. Repair Cost</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Annual Savings</span>
               </div>
-
-              {/* Main Value */}
               <p className="text-2xl md:text-3xl font-bold text-emerald-600">
-                ${(sessionData?.overallInsights.estimatedRepairCost || 0).toLocaleString()}
+                ${(careSessionSummary.costOptimization.reduce((sum, opt) => sum + opt.savings, 0) * 12).toLocaleString()}
               </p>
-
-              {/* Based on reports - Single line */}
               <div className="text-xs text-gray-400 mt-2">
-                Based on historical similar events
+                Cost optimization opportunities
               </div>
             </div>
           </div>
@@ -831,7 +797,7 @@ export default function InspectionReviewPage() {
                   onClick={() => setSelectedTab(tab.id)}
                   className={`flex items-center gap-1 md:gap-2 py-2 px-1 border-b-2 font-medium text-xs md:text-sm transition-colors cursor-pointer relative whitespace-nowrap ${
                     selectedTab === tab.id
-                      ? 'border-scc-red text-scc-red'
+                      ? 'border-arthur-blue text-arthur-blue'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
@@ -850,321 +816,218 @@ export default function InspectionReviewPage() {
                 className="flex items-center justify-center gap-2 py-2 px-2 bg-gray-100 dark:bg-gray-800 text-gray-700 hover:text-gray-900 rounded-lg cursor-pointer text-sm"
               >
                 <Edit3 size={16} />
-                Edit Areas
+                Edit
               </Link>
-              
-              {/* AI Enrichment Button - Mobile */}
+
               <button
-                onClick={handleEnrichInspection}
-                disabled={isEnriching || enrichmentComplete}
+                onClick={handleAIEnhancement}
+                disabled={isAIEnhancing || aiEnhancementComplete}
                 className={`py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm ${
-                  enrichmentComplete 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-scc-red text-white hover:bg-scc-red-dark'
+                  aiEnhancementComplete
+                    ? 'bg-green-600 text-white'
+                    : 'bg-arthur-blue text-white hover:bg-arthur-blue-dark'
                 }`}
               >
-                {isEnriching ? (
-                  <>
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white" />
-                    <span className="hidden">Enriching</span>
-                  </>
-                ) : enrichmentComplete ? (
+                {isAIEnhancing ? (
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white" />
+                ) : aiEnhancementComplete ? (
                   <>
                     <CheckCircle size={16} />
-                    <span>Enhanced</span>
+                    Enhanced
                   </>
                 ) : (
                   <>
                     <Sparkles size={16} />
-                    <span>Enrich</span>
+                    Enhance
                   </>
                 )}
               </button>
             </div>
-            
-            <div className="grid grid-cols-1 gap-2">
-              {/* Approve Button - Mobile */}
-              <button
-                onClick={handleApproveReport}
-                disabled={isGeneratingReport}
-                className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm font-medium"
-              >
-                {isGeneratingReport ? (
-                  <>
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white" />
-                    <span>Approving</span>
-                  </>
-                ) : (
-                  <>
-                    <Check size={16} />
-                    <span>Approve</span>
-                  </>
-                )}
-              </button>
-            </div>
+
+            <button
+              onClick={handleApproveAndGenerate}
+              disabled={isGeneratingReport}
+              className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm font-medium"
+            >
+              {isGeneratingReport ? (
+                <>
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white" />
+                  Approving
+                </>
+              ) : (
+                <>
+                  <Check size={16} />
+                  Approve & Generate
+                </>
+              )}
+            </button>
           </div>
 
           {/* Tab Content */}
           <div className="p-3 md:p-6">
-            {selectedTab === 'overview' && (
+            {selectedTab === 'summary' && (
               <div className="space-y-4 md:space-y-6">
-                {/* Property Summary */}
+                {/* Patient Summary */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Property Details</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Patient Information</h3>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
-                        <MapPin className="text-gray-400" size={18} />
-                        <span className="text-gray-900 dark:text-gray-100">{inspectionSummary.propertyDetails.address}</span>
+                        <User className="text-gray-400" size={18} />
+                        <span className="text-gray-900 dark:text-gray-100">{careSessionSummary.patientDetails.name}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        {inspectionSummary.propertyDetails.type === 'residential' ? (
-                          <Home className="text-gray-400" size={18} />
-                        ) : (
-                          <Building2 className="text-gray-400" size={18} />
-                        )}
-                        <span className="text-gray-900 dark:text-gray-100 capitalize">
-                          {inspectionSummary.propertyDetails.type} • Built {inspectionSummary.propertyDetails.yearBuilt}
+                        <Calendar className="text-gray-400" size={18} />
+                        <span className="text-gray-900 dark:text-gray-100">
+                          {careSessionSummary.patientDetails.age} years • DOB: {careSessionSummary.patientDetails.dob}
                         </span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <User className="text-gray-400" size={18} />
-                        <span className="text-gray-900 dark:text-gray-100">{inspectionSummary.propertyDetails.ownerName}</span>
+                        <Heart className="text-gray-400" size={18} />
+                        <span className="text-gray-900 dark:text-gray-100">{careSessionSummary.patientDetails.carePathway}</span>
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Damage Types</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Primary Diagnoses</h3>
                     <div className="flex flex-wrap gap-2">
-                      {inspectionSummary.propertyDetails.damageTypes.map((type) => (
+                      {careSessionSummary.patientDetails.primaryDiagnoses.map((diagnosis) => (
                         <span
-                          key={type}
-                          className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-lg text-sm"
+                          key={diagnosis}
+                          className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-lg text-sm"
                         >
-                          {type}
+                          {diagnosis}
                         </span>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                {/* Repair Estimate Breakdown - Added as requested */}
-                <div className="bg-gradient-to-br from-amber-50 to-amber-100/50 border border-amber-200 rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Intelligent Cost Estimation</h3>
-                    <div className="flex items-center gap-1">
-                      <TrendingUp className="text-scc-red" size={14} />
-                      <span className="text-xs text-gray-600 dark:text-gray-400">Market-based pricing</span>
+                {/* Risk Stratification */}
+                <div className="bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200 rounded-xl p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                    <TrendingUp className="text-red-600" size={20} />
+                    Risk Stratification
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Readmission Risk</div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div className="bg-amber-500 h-2 rounded-full" style={{ width: `${careSessionSummary.riskStratification.readmissionRisk}%` }} />
+                        </div>
+                        <span className="text-lg font-bold text-amber-600">{careSessionSummary.riskStratification.readmissionRisk}%</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Decompensation Risk</div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div className="bg-red-500 h-2 rounded-full" style={{ width: `${careSessionSummary.riskStratification.decompensationRisk}%` }} />
+                        </div>
+                        <span className="text-lg font-bold text-red-600">{careSessionSummary.riskStratification.decompensationRisk}%</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Medication Adherence</div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div className="bg-green-500 h-2 rounded-full" style={{ width: `${careSessionSummary.riskStratification.medicationAdherence}%` }} />
+                        </div>
+                        <span className="text-lg font-bold text-green-600">{careSessionSummary.riskStratification.medicationAdherence}%</span>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Based on recent market prices for repair costs on similar cases in your area.
-                  </p>
-                  
-                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-4">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Repair Estimate Breakdown</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
-                        <div>
-                          <div className="font-medium text-gray-900 dark:text-gray-100">Roof Repair</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">RFG 240 • 25 SQ</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-600 dark:text-gray-400">$285/SQ</div>
-                          <div className="font-semibold text-gray-900 dark:text-gray-100">$7,125</div>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
-                        <div>
-                          <div className="font-medium text-gray-900 dark:text-gray-100">Gutter Replacement</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">GTR 110 • 120 LF</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-600 dark:text-gray-400">$12/LF</div>
-                          <div className="font-semibold text-gray-900 dark:text-gray-100">$1,440</div>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
-                        <div>
-                          <div className="font-medium text-gray-900 dark:text-gray-100">Interior Water Damage</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">WTR 320 • 200 SF</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-600 dark:text-gray-400">$8/SF</div>
-                          <div className="font-semibold text-gray-900 dark:text-gray-100">$1,600</div>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
-                        <div>
-                          <div className="font-medium text-gray-900 dark:text-gray-100">Painting & Finishing</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">PNT 450 • 300 SF</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-600 dark:text-gray-400">$4/SF</div>
-                          <div className="font-semibold text-gray-900 dark:text-gray-100">$1,200</div>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
-                        <div>
-                          <div className="font-medium text-gray-900 dark:text-gray-100">Debris Removal</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">DBR 100 • 1 Load</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-600 dark:text-gray-400">$450</div>
-                          <div className="font-semibold text-gray-900 dark:text-gray-100">$450</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                        <span className="font-medium text-gray-900 dark:text-gray-100">$11,815</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Overhead & Profit (20%)</span>
-                        <span className="font-medium text-gray-900 dark:text-gray-100">$2,363</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Tax (7%)</span>
-                        <span className="font-medium text-gray-900 dark:text-gray-100">$992</span>
-                      </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
-                        <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Total Estimate</span>
-                        <span className="text-2xl font-bold text-scc-red">${inspectionSummary.overallInsights.repairEstimate.toLocaleString()}</span>
-                      </div>
-                    </div>
+
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Social Risk Factors</h4>
+                    <ul className="space-y-1">
+                      {careSessionSummary.riskStratification.socialRiskFactors.map((factor, idx) => (
+                        <li key={idx} className="text-sm text-gray-700 dark:text-gray-300 flex items-start gap-2">
+                          <span className="text-red-600 mt-0.5">•</span>
+                          <span>{factor}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
 
-                {/* Area Status Grid */}
+                {/* Assessment Areas */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Area Completion Status</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {inspectionSummary.areas.map((area) => (
-                      <div key={area.id} className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-gray-900 dark:text-gray-100">{area.name}</h4>
-                          {getStatusIcon(area.status)}
-                        </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">{area.category}</div>
-                        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                          <span className="flex items-center gap-1">
-                            <Camera size={14} />
-                            {area.photoCount}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Mic size={14} />
-                            {area.audioCount}
-                          </span>
-                        </div>
-                      </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Assessment Areas</h3>
+                  <div className="space-y-4">
+                    {careSessionSummary.areas.map((area) => (
+                      <AssessmentAreaCard
+                        key={area.id}
+                        area={area}
+                        aiEnhanced={aiEnhancementComplete}
+                        sessionData={sessionData}
+                        setCareSessionData={setCareSessionData}
+                        getStatusIcon={getStatusIcon}
+                      />
                     ))}
                   </div>
                 </div>
               </div>
             )}
 
-            {selectedTab === 'areas' && (
+            {selectedTab === 'care-gaps' && (
               <div className="space-y-6">
-                {inspectionSummary.areas.map((area) => (
-                  <AreaCard
-                    key={area.id}
-                    area={area}
-                    enrichmentComplete={enrichmentComplete}
-                    sessionData={sessionData}
-                    setInspectionData={setInspectionData}
-                    getStatusIcon={getStatusIcon}
-                  />
-                ))}
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Identified Care Gaps</h3>
 
-                {/* AI Enrichment Results Section */}
-                {enrichmentComplete && (
-                  <div className="bg-gradient-to-br from-amber-50 to-amber-100/50 border border-amber-200 rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-                      <Brain className="text-scc-red" size={20} />
-                      AI Enrichment Summary
-                    </h4>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
-                        <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Historical Patterns</h5>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          3 similar cases found with average 28% higher settlements
-                        </p>
-                        <div className="mt-2 text-lg font-semibold text-green-600">
-                          +$45,000 potential
-                        </div>
-                      </div>
-                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
-                        <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Code Violations</h5>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          5 building code updates require compliance
-                        </p>
-                        <div className="mt-2 text-lg font-semibold text-scc-red">
-                          Must address
-                        </div>
-                      </div>
-                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
-                        <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Coverage Gaps</h5>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          2 unclaimed coverage types identified
-                        </p>
-                        <div className="mt-2 text-lg font-semibold text-blue-600">
-                          +$12,500 available
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {selectedTab === 'insights' && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI-Generated Insights & Recommendations</h3>
-                
-                {inspectionSummary.aiRecommendations.map((rec, idx) => (
+                {careSessionSummary.careGaps.map((gap, idx) => (
                   <motion.div
                     key={idx}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
                     className={`p-6 rounded-xl ${
-                      rec.type === 'critical' ? 'bg-red-50 border border-red-200' :
-                      rec.type === 'opportunity' ? 'bg-green-50 border border-green-200' :
+                      gap.priority === 'High' ? 'bg-red-50 border border-red-200' :
+                      gap.priority === 'Medium' ? 'bg-amber-50 border border-amber-200' :
                       'bg-blue-50 border border-blue-200'
                     }`}
                   >
                     <div className="flex items-start gap-4">
                       <div className={`p-2 rounded-lg ${
-                        rec.type === 'critical' ? 'bg-red-100' :
-                        rec.type === 'opportunity' ? 'bg-green-100' :
+                        gap.priority === 'High' ? 'bg-red-100' :
+                        gap.priority === 'Medium' ? 'bg-amber-100' :
                         'bg-blue-100'
                       }`}>
-                        {rec.type === 'critical' ? (
-                          <AlertTriangle className="text-red-600" size={20} />
-                        ) : rec.type === 'opportunity' ? (
-                          <TrendingUp className="text-green-600" size={20} />
-                        ) : (
-                          <Lightbulb className="text-blue-600" size={20} />
-                        )}
+                        <AlertCircle className={`${
+                          gap.priority === 'High' ? 'text-red-600' :
+                          gap.priority === 'Medium' ? 'text-amber-600' :
+                          'text-blue-600'
+                        }`} size={20} />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">{rec.title}</h4>
-                          <div className="flex items-center gap-2">
-                            {rec.potentialValue && (
-                              <span className="text-green-600 font-semibold">
-                                +${rec.potentialValue.toLocaleString()}
-                              </span>
-                            )}
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {rec.confidence}% confidence
-                            </span>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-100">{gap.title}</h4>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{gap.category}</p>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            gap.priority === 'High' ? 'bg-red-600 text-white' :
+                            gap.priority === 'Medium' ? 'bg-amber-600 text-white' :
+                            'bg-blue-600 text-white'
+                          }`}>
+                            {gap.priority} Priority
+                          </span>
+                        </div>
+                        <p className="text-gray-700 dark:text-gray-300 mb-3">{gap.description}</p>
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                            <Clock size={14} />
+                            <span>Due: {gap.dueDate}</span>
                           </div>
                         </div>
-                        <p className="text-gray-700 dark:text-gray-300">{rec.description}</p>
+                        <div className="mt-3 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Recommended Action:</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{gap.actionable}</div>
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -1172,47 +1035,104 @@ export default function InspectionReviewPage() {
               </div>
             )}
 
-            {selectedTab === 'opportunities' && (
+            {selectedTab === 'referrals' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Historical Recovery Opportunities</h3>
-                
-                {inspectionSummary.historicalFindings.map((finding, idx) => (
-                  <div key={idx} className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Specialist Referral Recommendations</h3>
+
+                {careSessionSummary.referralRecommendations.map((referral, idx) => (
+                  <div key={idx} className="bg-purple-50 border border-purple-200 rounded-xl p-6">
                     <div className="flex items-start gap-4">
-                      <div className="p-2 bg-amber-100 rounded-lg">
-                        <History className="text-amber-600" size={20} />
+                      <div className="p-2 bg-purple-100 rounded-lg">
+                        <UserCheck className="text-purple-600" size={20} />
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">{finding.title}</h4>
-                          <span className="text-green-600 font-bold text-lg">
-                            +${finding.potentialRecovery.toLocaleString()}
-                          </span>
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">{referral.specialty}</h4>
+                          <div className="flex items-center gap-2">
+                            {referral.preAuthRequired && (
+                              <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full">
+                                Pre-Auth Required
+                              </span>
+                            )}
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              referral.urgency === 'Urgent' ? 'bg-red-600 text-white' :
+                              referral.urgency === 'Routine' ? 'bg-blue-600 text-white' :
+                              'bg-gray-600 text-white'
+                            }`}>
+                              {referral.urgency}
+                            </span>
+                          </div>
                         </div>
-                        <p className="text-gray-700 dark:text-gray-300 mb-2">{finding.description}</p>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Calendar size={14} className="text-gray-400" />
-                          <span className="text-gray-600 dark:text-gray-400">{finding.timeframe}</span>
+                        <p className="text-gray-700 dark:text-gray-300 mb-3">{referral.reason}</p>
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <Clock size={14} />
+                          <span>Schedule: {referral.timeframe}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {selectedTab === 'cost-optimization' && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Cost Optimization Opportunities</h3>
+
+                {careSessionSummary.costOptimization.map((opt, idx) => (
+                  <div key={idx} className="bg-green-50 border border-green-200 rounded-xl p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-2 bg-green-100 rounded-lg">
+                        <DollarSign className="text-green-600" size={20} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">{opt.category}</h4>
+                          <div className="text-right">
+                            <div className="text-sm text-gray-600 dark:text-gray-400 line-through">
+                              ${opt.currentCost}/month
+                            </div>
+                            <div className="text-lg font-bold text-green-600">
+                              ${opt.optimizedCost}/month
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-gray-700 dark:text-gray-300 mb-3">{opt.recommendation}</p>
+                        <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">Monthly Savings</div>
+                              <div className="text-xl font-bold text-green-600">${opt.savings}</div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-xs text-gray-500 dark:text-gray-400">Annual Savings</div>
+                              <div className="text-xl font-bold text-green-600">${opt.savings * 12}</div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 ))}
 
-                <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+                <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-200 rounded-xl p-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <Target className="text-green-600" size={24} />
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Total Recovery Opportunity</h4>
+                    <Target className="text-emerald-600" size={24} />
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Total Cost Optimization</h4>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-gray-700 dark:text-gray-300">
-                      Combined current claim and historical recovery potential
-                    </p>
-                    <span className="text-green-600 font-bold text-2xl">
-                      ${(inspectionSummary.overallInsights.estimatedRepairCost + 
-                        inspectionSummary.historicalFindings.reduce((sum, f) => sum + f.potentialRecovery, 0)
-                      ).toLocaleString()}
-                    </span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Monthly Savings</div>
+                      <div className="text-2xl font-bold text-emerald-600">
+                        ${careSessionSummary.costOptimization.reduce((sum, opt) => sum + opt.savings, 0)}
+                      </div>
+                    </div>
+                    <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Annual Savings</div>
+                      <div className="text-2xl font-bold text-emerald-600">
+                        ${careSessionSummary.costOptimization.reduce((sum, opt) => sum + opt.savings, 0) * 12}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1221,39 +1141,40 @@ export default function InspectionReviewPage() {
         </div>
       </div>
 
-      {/* AI Enrichment Modal */}
-      {isEnriching && (
+      {/* AI Enhancement Modal */}
+      {isAIEnhancing && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 max-w-md w-full mx-4">
             <div className="text-center">
               <div className="mb-6">
-                <Brain className="mx-auto text-scc-red animate-pulse" size={48} />
+                <Brain className="mx-auto text-arthur-blue animate-pulse" size={48} />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">AI Enhancement in Progress</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Analyzing your inspection with historical data, building codes, and insurance policies to ensure nothing is missed.
+                Analyzing care session data with clinical guidelines, quality measures, and cost optimization algorithms.
               </p>
-              
+
               {/* Progress Bar */}
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
-                <div 
-                  className="bg-scc-red h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${enrichmentProgress}%` }}
+                <div
+                  className="bg-arthur-blue h-3 rounded-full transition-all duration-500"
+                  style={{ width: `${aiEnhancementProgress}%` }}
                 />
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round(enrichmentProgress)}% complete
+                {Math.round(aiEnhancementProgress)}% complete
               </p>
-              
+
               {/* Current Step */}
-              <div className="mt-4 p-3 bg-scc-red/10 rounded-lg">
-                <p className="text-sm text-scc-red font-medium">
-                  {enrichmentProgress < 17 ? 'Analyzing historical claims data' :
-                   enrichmentProgress < 33 ? 'Cross-referencing building codes' :
-                   enrichmentProgress < 50 ? 'Checking insurance policy updates' :
-                   enrichmentProgress < 67 ? 'Reviewing government regulations' :
-                   enrichmentProgress < 83 ? 'Identifying missing damages' :
-                   'Enhancing documentation'}
+              <div className="mt-4 p-3 bg-arthur-blue/10 rounded-lg">
+                <p className="text-sm text-arthur-blue font-medium">
+                  {aiEnhancementProgress < 15 ? 'Analyzing patient clinical history' :
+                   aiEnhancementProgress < 30 ? 'Cross-referencing HEDIS quality measures' :
+                   aiEnhancementProgress < 45 ? 'Checking care gap closure opportunities' :
+                   aiEnhancementProgress < 60 ? 'Reviewing evidence-based guidelines' :
+                   aiEnhancementProgress < 75 ? 'Identifying cost optimization opportunities' :
+                   aiEnhancementProgress < 90 ? 'Calculating risk stratification scores' :
+                   'Generating specialist referral recommendations'}
                 </p>
               </div>
             </div>
@@ -1261,15 +1182,15 @@ export default function InspectionReviewPage() {
         </div>
       )}
 
-      {/* Enrichment Success Banner */}
-      {enrichmentComplete && (
+      {/* Enhancement Success Banner */}
+      {aiEnhancementComplete && (
         <div className="fixed bottom-6 right-6 bg-green-600 text-white p-4 rounded-xl shadow-lg z-40 max-w-sm">
           <div className="flex items-center gap-3">
             <CheckCircle size={24} />
             <div>
-              <h4 className="font-semibold">Inspection Enriched!</h4>
+              <h4 className="font-semibold">Care Session Enhanced!</h4>
               <p className="text-sm text-green-100">
-                Found 3 additional findings and enhanced documentation with historical data.
+                Identified {careSessionSummary.clinicalMetrics.careGapsIdentified} care gaps and ${careSessionSummary.costOptimization.reduce((sum, opt) => sum + opt.savings, 0) * 12} in annual savings.
               </p>
             </div>
           </div>

@@ -49,6 +49,12 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
       description: 'Analytics & Insights'
     },
     {
+      title: 'Arthur',
+      icon: Brain,
+      href: '/dashboard/assistant',
+      description: 'Clinical Assistant'
+    },
+    {
       title: 'Claims',
       icon: FileText,
       href: '/dashboard/claims',
@@ -59,12 +65,6 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
       icon: CalendarDays,
       href: '/dashboard/care-sessions',
       description: 'Patient Visit Workflow'
-    },
-    {
-      title: 'Arthur',
-      icon: Brain,
-      href: '/dashboard/assistant',
-      description: 'Clinical Assistant'
     }
   ]
 

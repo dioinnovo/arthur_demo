@@ -2,8 +2,8 @@
 
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, FileText, TrendingUp, Download, CheckCircle, Camera, DollarSign, Clock, ArrowRight, Brain, Zap, Shield, Eye, FileCheck, AlertCircle, Users, Home, Building2, FileImage, X, AlertTriangle, Banknote, UserCheck } from 'lucide-react'
-import { SCC_CASES, SCC_STATISTICS, formatCurrency } from '@/lib/data/scc-cases'
+import { Upload, FileText, TrendingUp, Download, CheckCircle, Camera, DollarSign, Clock, ArrowRight, Brain, Zap, Shield, Eye, FileCheck, AlertCircle, Users, Home, Building2, FileImage, X, AlertTriangle, Banknote, UserCheck, Heart } from 'lucide-react'
+import { ARTHUR_CASES, ARTHUR_STATISTICS, formatCurrency } from '@/lib/data/arthur-cases'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -13,7 +13,7 @@ export default function DemoPage() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const [confidenceScore, setConfidenceScore] = useState<number>(0)
   const [uploadedFiles, setUploadedFiles] = useState<Array<{id: number, name: string, type: string, status: string}>>([])  
-  const [selectedClaim, setSelectedClaim] = useState<string>('commercial')
+  const [selectedClaim, setSelectedClaim] = useState<string>('complex-diabetes')
   const [analysisPhase, setAnalysisPhase] = useState<number>(0) // 0: none, 1: classification, 2: damage assessment, 3: settlement
   const [showClaimForm, setShowClaimForm] = useState(false)
   const [submittedClaim, setSubmittedClaim] = useState<any>(null)
@@ -27,60 +27,60 @@ export default function DemoPage() {
   })
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Get real SCC cases for demo
-  const sccCinnamonShore = SCC_CASES.find(c => c.id === 'cinnamon-shore')!
-  const sccShrimpBoat = SCC_CASES.find(c => c.id === 'shrimp-boat')!
+  // Get real Arthur Health cases for demo
+  const arthurDiabetes = ARTHUR_CASES.find(c => c.id === 'complex-diabetes')!
+  const arthurCHF = ARTHUR_CASES.find(c => c.id === 'chf-management')!
 
   const claimTypes = {
-    'cinnamon-shore': {
-      icon: Building2,
-      title: `${sccCinnamonShore.clientName} - ${sccCinnamonShore.propertyType}`,
-      claimNumber: 'CP-2017-HAR001',
-      date: new Date(sccCinnamonShore.damage.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+    'complex-diabetes': {
+      icon: Users,
+      title: `${arthurDiabetes.patientProfile} - ${arthurDiabetes.careType}`,
+      claimNumber: 'CC-2024-DM001',
+      date: new Date(arthurDiabetes.condition.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
       damages: [
-        { type: `${sccCinnamonShore.damage.event} Damage`, severity: 'Major', confidence: 94 },
-        { type: 'Resort Facilities Damage', severity: 'Replace', confidence: 97 },
-        { type: 'Structural Water Damage', severity: 'Major', confidence: 91 },
-        { type: 'Amenity Destruction', severity: 'Replace', confidence: 88 },
-        { type: 'Infrastructure Damage', severity: 'Replace', confidence: 85 },
+        { type: `Uncontrolled Blood Sugar`, severity: 'High', confidence: 94 },
+        { type: 'Medication Non-Adherence', severity: 'Critical', confidence: 97 },
+        { type: 'Multiple ER Visits', severity: 'High', confidence: 91 },
+        { type: 'Specialist Care Gaps', severity: 'Moderate', confidence: 88 },
+        { type: 'Poor Health Literacy', severity: 'High', confidence: 85 },
       ],
-      estimate: formatCurrency(sccCinnamonShore.settlement.initialOffer),
-      finalSettlement: formatCurrency(sccCinnamonShore.settlement.finalSettlement),
-      sccResult: `${Math.round((sccCinnamonShore.settlement.finalSettlement! / sccCinnamonShore.settlement.initialOffer!) - 1)}x increase`,
-      location: `${sccCinnamonShore.location.city}, ${sccCinnamonShore.location.state}`,
+      estimate: formatCurrency(arthurDiabetes.outcomes.baselineCost),
+      finalSettlement: formatCurrency(arthurDiabetes.outcomes.optimizedCost),
+      sccResult: `${arthurDiabetes.outcomes.savingsPercentage}% cost reduction`,
+      location: `${arthurDiabetes.location.city}, ${arthurDiabetes.location.state}`,
       images: [
-        { id: 1, name: 'cinnamon_shore_damage_01.jpg', status: 'pending' },
-        { id: 2, name: 'resort_flood_damage_02.jpg', status: 'pending' },
-        { id: 3, name: 'amenity_destruction_03.jpg', status: 'pending' },
-        { id: 4, name: 'infrastructure_damage_04.jpg', status: 'pending' },
+        { id: 1, name: 'patient_assessment_01.jpg', status: 'pending' },
+        { id: 2, name: 'medication_review_02.jpg', status: 'pending' },
+        { id: 3, name: 'care_plan_03.jpg', status: 'pending' },
+        { id: 4, name: 'followup_visit_04.jpg', status: 'pending' },
       ]
     },
-    'shrimp-boat': {
-      icon: Building2,
-      title: `${sccShrimpBoat.clientName} - ${sccShrimpBoat.propertyType}`,
-      claimNumber: 'CP-2018-MIC001',
-      date: new Date(sccShrimpBoat.damage.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+    'chf-management': {
+      icon: Heart,
+      title: `${arthurCHF.patientProfile} - ${arthurCHF.careType}`,
+      claimNumber: 'CC-2024-CHF001',
+      date: new Date(arthurCHF.condition.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
       damages: [
-        { type: `${sccShrimpBoat.damage.event} ${sccShrimpBoat.damage.category} Damage`, severity: 'Total Loss', confidence: 95 },
-        { type: 'Structural Collapse', severity: 'Replace', confidence: 98 },
-        { type: 'Equipment Destruction', severity: 'Replace', confidence: 92 },
-        { type: 'Business Interruption', severity: 'Major', confidence: 89 },
-        { type: 'Contents Loss', severity: 'Total', confidence: 94 },
+        { type: `Frequent Hospital Readmissions`, severity: 'Critical', confidence: 95 },
+        { type: 'Medication Optimization Needed', severity: 'High', confidence: 98 },
+        { type: 'Remote Monitoring Gap', severity: 'High', confidence: 92 },
+        { type: 'Care Team Coordination', severity: 'Moderate', confidence: 89 },
+        { type: 'Patient Education Needed', severity: 'High', confidence: 94 },
       ],
-      estimate: formatCurrency(sccShrimpBoat.settlement.initialOffer),
-      finalSettlement: formatCurrency(sccShrimpBoat.settlement.finalSettlement),
-      sccResult: `${Math.round((sccShrimpBoat.settlement.finalSettlement! / sccShrimpBoat.settlement.initialOffer!) - 1)}x increase`,
-      location: `${sccShrimpBoat.location.city}, ${sccShrimpBoat.location.state}`,
+      estimate: formatCurrency(arthurCHF.outcomes.baselineCost),
+      finalSettlement: formatCurrency(arthurCHF.outcomes.optimizedCost),
+      sccResult: `${arthurCHF.outcomes.savingsPercentage}% cost reduction`,
+      location: `${arthurCHF.location.city}, ${arthurCHF.location.state}`,
       images: [
-        { id: 1, name: 'shrimp_boat_destruction_01.jpg', status: 'pending' },
-        { id: 2, name: 'restaurant_collapse_02.jpg', status: 'pending' },
-        { id: 3, name: 'equipment_damage_03.jpg', status: 'pending' },
-        { id: 4, name: 'site_total_loss_04.jpg', status: 'pending' },
+        { id: 1, name: 'remote_monitoring_01.jpg', status: 'pending' },
+        { id: 2, name: 'care_team_meeting_02.jpg', status: 'pending' },
+        { id: 3, name: 'medication_adjustment_03.jpg', status: 'pending' },
+        { id: 4, name: 'wellness_check_04.jpg', status: 'pending' },
       ]
     }
   }
 
-  const currentClaim = claimTypes[selectedClaim as keyof typeof claimTypes] || claimTypes['cinnamon-shore']
+  const currentClaim = claimTypes[selectedClaim as keyof typeof claimTypes] || claimTypes['complex-diabetes']
 
   const processImages = async () => {
     setIsProcessing(true)
@@ -167,19 +167,19 @@ export default function DemoPage() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
-              <Image 
-                src="/images/scc_logo.png" 
-                alt="SCC" 
-                width={150} 
+              <Image
+                src="/arthur-logo-blue.png"
+                alt="Arthur Health"
+                width={150}
                 height={40}
                 className="h-10 w-auto object-contain"
               />
-              <span className="text-xl font-bold text-scc-gray-dark">Your AI Claims Assistant</span>
+              <span className="text-xl font-bold text-arthur-gray-dark">Your AI Care Coordination Assistant</span>
             </Link>
             <div className="flex items-center gap-4">
               <Link 
                 href="/"
-                className="text-gray-700 dark:text-gray-300 hover:text-scc-red transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-arthur-blue transition"
               >
                 Back to Overview
               </Link>
@@ -192,12 +192,12 @@ export default function DemoPage() {
         <div className="container mx-auto max-w-7xl">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-scc-gray-dark mb-4">
-              Your AI Claims Assistant in Action
+            <h1 className="text-4xl font-bold text-arthur-gray-dark mb-4">
+              Arthur AI Care Coordination in Action
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-              Experience how AI will enhance your claims operations with instant classification, 
-              automated estimates, and intelligent fraud detection
+              Experience how Arthur AI enhances care coordination with intelligent patient assessment,
+              cost optimization, and care pathway recommendations
             </p>
           </div>
 
@@ -209,7 +209,7 @@ export default function DemoPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
                   activeTab === tab.id
-                    ? 'bg-scc-red text-white'
+                    ? 'bg-arthur-blue text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-100'
                 }`}
               >
@@ -232,7 +232,7 @@ export default function DemoPage() {
               {activeTab === 'claims-intelligence' && (
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
                   <div className="max-w-5xl mx-auto">
-                    <h2 className="text-2xl font-bold text-scc-gray-dark mb-4">
+                    <h2 className="text-2xl font-bold text-arthur-gray-dark mb-4">
                       Comprehensive Claims Intelligence
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400 mb-8">
@@ -243,26 +243,26 @@ export default function DemoPage() {
                     {/* Property Type Selector - At the top for better workflow */}
                     <div className="mb-6 flex gap-4">
                       <button
-                        onClick={() => setSelectedClaim('cinnamon-shore')}
+                        onClick={() => setSelectedClaim('complex-diabetes')}
                         className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition ${
-                          selectedClaim === 'cinnamon-shore'
-                            ? 'bg-scc-red text-white'
+                          selectedClaim === 'complex-diabetes'
+                            ? 'bg-arthur-blue text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
-                        <Building2 size={20} />
-                        Cinnamon Shore Resort
+                        <Users size={20} />
+                        Diabetes Management
                       </button>
                       <button
-                        onClick={() => setSelectedClaim('shrimp-boat')}
+                        onClick={() => setSelectedClaim('chf-management')}
                         className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition ${
-                          selectedClaim === 'shrimp-boat'
-                            ? 'bg-scc-red text-white'
+                          selectedClaim === 'chf-management'
+                            ? 'bg-arthur-blue text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
-                        <Building2 size={20} />
-                        Shrimp Boat Restaurant
+                        <Heart size={20} />
+                        CHF Care Coordination
                       </button>
                     </div>
 
@@ -279,7 +279,7 @@ export default function DemoPage() {
                           </div>
                           <div className="text-right">
                             <p className="text-sm text-gray-600 dark:text-gray-400">Preliminary Estimate</p>
-                            <p className="text-xl font-bold text-scc-red">{currentClaim.estimate}</p>
+                            <p className="text-xl font-bold text-arthur-blue">{currentClaim.estimate}</p>
                           </div>
                         </div>
                       </div>
@@ -302,7 +302,7 @@ export default function DemoPage() {
                           />
                           <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 hover:border-scc-red transition flex flex-col items-center gap-3"
+                            className="w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 hover:border-arthur-blue transition flex flex-col items-center gap-3"
                           >
                             <Camera className="text-gray-400" size={48} />
                             <div className="text-center">
@@ -345,7 +345,7 @@ export default function DemoPage() {
                         <button
                           onClick={processImages}
                           disabled={isProcessing}
-                          className="w-full mt-6 bg-scc-red text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                          className="w-full mt-6 bg-arthur-blue text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition disabled:opacity-50 flex items-center justify-center gap-2"
                         >
                           {isProcessing ? (
                             <>
@@ -363,7 +363,7 @@ export default function DemoPage() {
 
                       {/* Right: Progressive AI Analysis Results */}
                       <div>
-                        <h3 className="text-xl font-bold text-scc-gray-dark mb-4">
+                        <h3 className="text-xl font-bold text-arthur-gray-dark mb-4">
                           AI Analysis Results
                         </h3>
 
@@ -392,7 +392,7 @@ export default function DemoPage() {
                                   </div>
                                   <div className="flex justify-between items-center">
                                     <span className="text-gray-700 dark:text-gray-300">Severity:</span>
-                                    <span className="font-bold text-scc-red-dark">MODERATE</span>
+                                    <span className="font-bold text-arthur-blue-dark">MODERATE</span>
                                   </div>
                                   <div className="flex justify-between items-center">
                                     <span className="text-gray-700 dark:text-gray-300">Confidence:</span>
@@ -423,7 +423,7 @@ export default function DemoPage() {
                                         <p className="font-medium text-gray-800 dark:text-gray-200">{damage.type}</p>
                                         <p className={`text-sm ${
                                           damage.severity === 'Major' ? 'text-red-600' :
-                                          damage.severity === 'Moderate' ? 'text-scc-red' :
+                                          damage.severity === 'Moderate' ? 'text-arthur-blue' :
                                           damage.severity === 'Minor' ? 'text-yellow-600' :
                                           damage.severity === 'Replace' ? 'text-purple-600' :
                                           'text-blue-600'
@@ -514,9 +514,9 @@ export default function DemoPage() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <button
                             onClick={() => setActiveTab('estimation')}
-                            className="flex items-center justify-center gap-3 p-4 bg-white dark:bg-gray-900 border-2 border-gray-200 rounded-lg hover:border-scc-red transition"
+                            className="flex items-center justify-center gap-3 p-4 bg-white dark:bg-gray-900 border-2 border-gray-200 rounded-lg hover:border-arthur-blue transition"
                           >
-                            <DollarSign className="text-scc-red" size={24} />
+                            <DollarSign className="text-arthur-blue" size={24} />
                             <div className="text-left">
                               <p className="font-medium text-gray-900 dark:text-gray-100">Generate Detailed Estimate</p>
                               <p className="text-xs text-gray-500 dark:text-gray-400">Create line-item breakdown</p>
@@ -524,7 +524,7 @@ export default function DemoPage() {
                           </button>
                           <button
                             onClick={() => setActiveTab('coverage-analysis')}
-                            className="flex items-center justify-center gap-3 p-4 bg-white dark:bg-gray-900 border-2 border-gray-200 rounded-lg hover:border-scc-red transition"
+                            className="flex items-center justify-center gap-3 p-4 bg-white dark:bg-gray-900 border-2 border-gray-200 rounded-lg hover:border-arthur-blue transition"
                           >
                             <Shield className="text-green-600" size={24} />
                             <div className="text-left">
@@ -542,29 +542,29 @@ export default function DemoPage() {
               {/* Old AI Assessment Tab - Now consolidated into Claims Intelligence */}
               {false && (
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
-                  {/* Claim Type Selector */}
+                  {/* Patient Case Selector */}
                   <div className="mb-6 flex gap-4">
                     <button
-                      onClick={() => setSelectedClaim('cinnamon-shore')}
+                      onClick={() => setSelectedClaim('complex-diabetes')}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
-                        selectedClaim === 'cinnamon-shore'
-                          ? 'bg-scc-red text-white'
+                        selectedClaim === 'complex-diabetes'
+                          ? 'bg-arthur-blue text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      <Building2 size={20} />
-                      Cinnamon Shore Resort
+                      <Users size={20} />
+                      Diabetes Management
                     </button>
                     <button
-                      onClick={() => setSelectedClaim('shrimp-boat')}
+                      onClick={() => setSelectedClaim('chf-management')}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
-                        selectedClaim === 'shrimp-boat'
-                          ? 'bg-scc-red text-white'
+                        selectedClaim === 'chf-management'
+                          ? 'bg-arthur-blue text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      <Building2 size={20} />
-                      Shrimp Boat Restaurant
+                      <Heart size={20} />
+                      CHF Care Coordination
                     </button>
                   </div>
 
@@ -580,7 +580,7 @@ export default function DemoPage() {
                       </div>
                       <div className="text-right">
                         <p className="text-sm text-gray-600 dark:text-gray-400">Preliminary Estimate</p>
-                        <p className="text-xl font-bold text-scc-red">{currentClaim.estimate}</p>
+                        <p className="text-xl font-bold text-arthur-blue">{currentClaim.estimate}</p>
                       </div>
                     </div>
                   </div>
@@ -588,7 +588,7 @@ export default function DemoPage() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Left: Image Upload and Processing */}
                     <div>
-                      <h2 className="text-2xl font-bold text-scc-gray-dark mb-4">
+                      <h2 className="text-2xl font-bold text-arthur-gray-dark mb-4">
                         Visual Damage Detection
                       </h2>
                       <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -607,7 +607,7 @@ export default function DemoPage() {
                         />
                         <button
                           onClick={() => fileInputRef.current?.click()}
-                          className="w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 hover:border-scc-red transition flex flex-col items-center gap-2"
+                          className="w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 hover:border-arthur-blue transition flex flex-col items-center gap-2"
                         >
                           <Upload className="text-gray-400" size={32} />
                           <span className="text-gray-600 dark:text-gray-400 font-medium">Upload Claim Photos</span>
@@ -648,7 +648,7 @@ export default function DemoPage() {
                             <div
                               key={image.id}
                               className={`relative bg-gray-100 rounded-lg p-4 border-2 transition ${
-                                selectedImage === image.id ? 'border-scc-red' : 'border-gray-200'
+                                selectedImage === image.id ? 'border-arthur-blue' : 'border-gray-200'
                               }`}
                             >
                               <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded mb-2 flex items-center justify-center">
@@ -668,7 +668,7 @@ export default function DemoPage() {
                       <button
                         onClick={processImages}
                         disabled={isProcessing}
-                        className="w-full bg-scc-red text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="w-full bg-arthur-blue text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition disabled:opacity-50 flex items-center justify-center gap-2"
                       >
                         {isProcessing ? (
                           <>
@@ -686,7 +686,7 @@ export default function DemoPage() {
 
                     {/* Right: Results */}
                     <div>
-                      <h3 className="text-xl font-bold text-scc-gray-dark mb-4">
+                      <h3 className="text-xl font-bold text-arthur-gray-dark mb-4">
                         AI Analysis Results
                       </h3>
 
@@ -725,7 +725,7 @@ export default function DemoPage() {
                                     <p className="font-medium text-gray-800 dark:text-gray-200">{damage.type}</p>
                                     <p className={`text-sm ${
                                       damage.severity === 'Major' ? 'text-red-600' :
-                                      damage.severity === 'Moderate' ? 'text-scc-red' :
+                                      damage.severity === 'Moderate' ? 'text-arthur-blue' :
                                       damage.severity === 'Minor' ? 'text-yellow-600' :
                                       damage.severity === 'Replace' ? 'text-purple-600' :
                                       'text-blue-600'
@@ -783,7 +783,7 @@ export default function DemoPage() {
               {activeTab === 'coverage-analysis' && (
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
                   <div className="max-w-4xl mx-auto">
-                    <h2 className="text-2xl font-bold text-scc-gray-dark mb-4">
+                    <h2 className="text-2xl font-bold text-arthur-gray-dark mb-4">
                       Automated Policy Coverage Matching
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400 mb-8">
@@ -867,7 +867,7 @@ export default function DemoPage() {
               {/* Cost Estimation Tab */}
               {activeTab === 'estimation' && (
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold text-scc-gray-dark mb-4">
+                  <h2 className="text-2xl font-bold text-arthur-gray-dark mb-4">
                     Intelligent Cost Estimation
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400 mb-8">
@@ -923,7 +923,7 @@ export default function DemoPage() {
                             </div>
                             <div className="flex justify-between text-xl font-bold pt-2 border-t">
                               <span>Total Estimate</span>
-                              <span className="text-scc-red">$15,170</span>
+                              <span className="text-arthur-blue">$15,170</span>
                             </div>
                           </div>
                         </div>
@@ -970,32 +970,32 @@ export default function DemoPage() {
                     </div>
                   </div>
 
-                  {/* SCC Settlement Results */}
-                  <div className="mt-8 bg-gradient-to-r from-scc-red to-red-600 text-white rounded-xl p-6">
+                  {/* Arthur Health Cost Savings Results */}
+                  <div className="mt-8 bg-gradient-to-r from-arthur-blue to-blue-600 text-white rounded-xl p-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="text-center">
-                        <h4 className="text-lg font-semibold mb-2">Initial Insurance Offer</h4>
+                        <h4 className="text-lg font-semibold mb-2">Baseline Monthly Cost</h4>
                         <p className="text-3xl font-bold">{currentClaim.estimate}</p>
-                        <p className="text-sm opacity-90">Insurance company estimate</p>
+                        <p className="text-sm opacity-90">Before care coordination</p>
                       </div>
                       <div className="text-center border-l border-r border-white/20 md:border-l-0 md:border-r-0">
-                        <h4 className="text-lg font-semibold mb-2">SCC Settlement</h4>
+                        <h4 className="text-lg font-semibold mb-2">Optimized Cost</h4>
                         <p className="text-3xl font-bold">{currentClaim.finalSettlement}</p>
                         <p className="text-sm opacity-90">{currentClaim.location}</p>
                       </div>
                       <div className="text-center">
-                        <h4 className="text-lg font-semibold mb-2">SCC Result</h4>
+                        <h4 className="text-lg font-semibold mb-2">Arthur AI Result</h4>
                         <p className="text-3xl font-bold">{currentClaim.sccResult}</p>
-                        <p className="text-sm opacity-90">Settlement increase achieved</p>
+                        <p className="text-sm opacity-90">Cost savings achieved</p>
                       </div>
                     </div>
 
                     <div className="mt-6 text-center">
                       <p className="text-lg font-medium">
-                        Based on actual SCC client victory: <span className="font-bold">{currentClaim.title.split(' - ')[0]}</span>
+                        Based on real Arthur Health care coordination success: <span className="font-bold">{currentClaim.title.split(' - ')[0]}</span>
                       </p>
                       <p className="text-sm opacity-90 mt-2">
-                        Part of SCC's $2+ billion recovered for clients nationwide
+                        Part of Arthur Health's $125M+ in healthcare cost savings delivered
                       </p>
                     </div>
                   </div>
@@ -1005,7 +1005,7 @@ export default function DemoPage() {
               {/* Removed Workflow Tab - now integrated into other tabs */}
               {false && (
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold text-scc-gray-dark mb-4">
+                  <h2 className="text-2xl font-bold text-arthur-gray-dark mb-4">
                     Automated Claims Workflow
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400 mb-8">
@@ -1026,7 +1026,7 @@ export default function DemoPage() {
                       <div key={index} className="relative flex items-start gap-6 mb-8">
                         <div className={`w-16 h-16 rounded-full flex items-center justify-center z-10 ${
                           item.status === 'completed' ? 'bg-green-500' :
-                          item.status === 'active' ? 'bg-scc-red' :
+                          item.status === 'active' ? 'bg-arthur-blue' :
                           'bg-gray-300'
                         }`}>
                           {item.status === 'completed' ? (
@@ -1044,7 +1044,7 @@ export default function DemoPage() {
                             <h3 className="font-semibold text-gray-800 dark:text-gray-200">{item.title}</h3>
                             <span className={`text-sm ${
                               item.status === 'completed' ? 'text-green-600' :
-                              item.status === 'active' ? 'text-scc-red' :
+                              item.status === 'active' ? 'text-arthur-blue' :
                               'text-gray-500'
                             }`}>
                               {item.time}
@@ -1064,8 +1064,8 @@ export default function DemoPage() {
                       { metric: '99.9%', label: 'Accuracy Rate', icon: CheckCircle },
                     ].map((benefit, index) => (
                       <div key={index} className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 text-center">
-                        <benefit.icon className="mx-auto mb-3 text-scc-red" size={32} />
-                        <div className="text-3xl font-bold text-scc-gray-dark mb-2">{benefit.metric}</div>
+                        <benefit.icon className="mx-auto mb-3 text-arthur-blue" size={32} />
+                        <div className="text-3xl font-bold text-arthur-gray-dark mb-2">{benefit.metric}</div>
                         <p className="text-gray-600 dark:text-gray-400">{benefit.label}</p>
                       </div>
                     ))}

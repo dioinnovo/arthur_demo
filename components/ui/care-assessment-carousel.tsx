@@ -85,6 +85,12 @@ export function CareAssessmentCarousel({
   const [showBottomNav, setShowBottomNav] = useState(true)
   const swiperRef = React.useRef<any>(null)
 
+  // Helper function to get area with icon info
+  const getAreaWithIcon = (area: CareAssessment) => {
+    const iconInfo = getCareAssessmentIcon(area.id)
+    return { ...area, iconInfo }
+  }
+
   useEffect(() => {
     setIsExpanded(!!expandedAreaId)
   }, [expandedAreaId])
