@@ -1681,9 +1681,9 @@ export default function CareSessionReportPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Environmental Factors */}
               <div className="bg-green-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Environmental Conditions</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Social Determinants of Health</h3>
                 <div className="space-y-3 text-sm">
-                  {Object.entries(reportData.aiInsights.environmentalFactors).map(([key, value]) => (
+                  {Object.entries(reportData.aiInsights.socialDeterminants).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
                       <span className="text-gray-600 dark:text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
                       <span className="font-medium text-green-700">{value}</span>
