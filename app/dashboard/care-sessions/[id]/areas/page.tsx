@@ -52,7 +52,7 @@ export default function CareSessionAreasPage() {
       if (area.status === 'not_started') {
         markAreaInProgress(area.id)
       }
-      router.push(`/dashboard/care-sessions/${sessionId}/area/${area.id}`)
+      router.push(`/dashboard/care-sessions/${sessionId}/assessment/${area.id}`)
     }
   }
 
@@ -67,7 +67,7 @@ export default function CareSessionAreasPage() {
     if (nextIndex < sessionData.areas.length) {
       setCurrentIndex(nextIndex)
       const nextArea = sessionData.areas[nextIndex]
-      router.push(`/dashboard/care-sessions/${sessionId}/area/${nextArea.id}`)
+      router.push(`/dashboard/care-sessions/${sessionId}/assessment/${nextArea.id}`)
     } else {
       // All areas done, go to review
       router.push(`/dashboard/care-sessions/${sessionId}/review`)
@@ -85,7 +85,7 @@ export default function CareSessionAreasPage() {
     if (nextIndex < sessionData.areas.length) {
       setCurrentIndex(nextIndex)
       const nextArea = sessionData.areas[nextIndex]
-      router.push(`/dashboard/care-sessions/${sessionId}/area/${nextArea.id}`)
+      router.push(`/dashboard/care-sessions/${sessionId}/assessment/${nextArea.id}`)
     } else {
       // All areas done, go to review
       router.push(`/dashboard/care-sessions/${sessionId}/review`)
