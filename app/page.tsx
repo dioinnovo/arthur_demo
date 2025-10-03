@@ -9,7 +9,7 @@ export default function Home() {
   useEffect(() => {
     // Use replace instead of push to prevent back button issues
     // and add immediate navigation
-    router.replace('/dashboard/inspection')
+    router.replace('/dashboard/assistant')
   }, [])
 
   // Show a simple loading message while redirecting
@@ -17,7 +17,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-scc-red mx-auto mb-4"></div>
-        <p className="text-gray-600 dark:text-gray-400">Redirecting to Schedule...</p>
+        <p className="text-gray-600 dark:text-gray-400">Loading Arthur AI Assistant...</p>
       </div>
     </div>
   )
