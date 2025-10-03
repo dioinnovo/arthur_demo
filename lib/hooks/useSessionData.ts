@@ -79,7 +79,7 @@ export function useSessionData(sessionId: string) {
 
     try {
       // Special handling for demo session CS-001 (Margaret Thompson)
-      if (sessionId === 'CS-001' || sessionId === 'CS-002') {
+      if (sessionId === 'CS-001') {
         // Create demo areas with some completed, some in progress
         const demoAreas: AssessmentArea[] = DEFAULT_ASSESSMENT_AREAS.map((area, index) => {
           let status: 'completed' | 'in_progress' | 'not_started' | 'skipped' = 'not_started'

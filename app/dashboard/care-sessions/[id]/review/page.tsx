@@ -354,7 +354,7 @@ export default function CareSessionReviewPage() {
   const defaultCareSessionSummary: CareSessionSummary = {
     patientDetails: {
       name: 'Margaret Thompson',
-      mrn: 'MRN-847392',
+      mrn: 'MRN-784512',
       dob: '1962-03-15',
       age: 62,
       gender: 'Female',
@@ -561,8 +561,8 @@ export default function CareSessionReviewPage() {
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsGeneratingReport(false)
 
-    // Navigate to care sessions list
-    router.push(`/dashboard/care-sessions`)
+    // Navigate to report page
+    router.push(`/dashboard/care-sessions/${sessionId}/report`)
   }
 
   const handleAIEnhancement = async () => {
@@ -705,7 +705,7 @@ export default function CareSessionReviewPage() {
                   ) : (
                     <>
                       <Check size={18} />
-                      Approve & Generate Report
+                      Approve
                     </>
                   )}
                 </button>
@@ -857,7 +857,7 @@ export default function CareSessionReviewPage() {
               ) : (
                 <>
                   <Check size={16} />
-                  Approve & Generate
+                  Approve
                 </>
               )}
             </button>
