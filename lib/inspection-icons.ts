@@ -1,19 +1,19 @@
-import { 
-  Home, 
-  Building2, 
-  Droplets, 
-  Wind, 
-  Zap, 
-  Eye, 
+import {
+  Home,
+  Building2,
+  Droplets,
+  Wind,
+  Zap,
+  Eye,
   AlertTriangle,
-  Camera, 
-  FileText, 
-  CheckCircle, 
-  SkipForward, 
+  Camera,
+  FileText,
+  CheckCircle,
+  SkipForward,
   ArrowRight,
-  ChevronDown, 
-  ChevronUp, 
-  X, 
+  ChevronDown,
+  ChevronUp,
+  X,
   Check,
   Building,
   PaintBucket,
@@ -33,7 +33,16 @@ import {
   Archive,
   Wrench,
   Shield,
-  LucideIcon
+  LucideIcon,
+  // Healthcare icons
+  Activity,
+  Pill,
+  Stethoscope,
+  ClipboardList,
+  BookOpen,
+  Heart,
+  UserCheck,
+  MessageCircle
 } from 'lucide-react'
 
 export interface InspectionAreaIcon {
@@ -253,25 +262,101 @@ export const COMMERCIAL_AREA_ICONS: InspectionAreaIcon[] = [
     color: 'text-purple-600',
     bgColor: 'bg-purple-100'
   },
-  { 
-    id: 'systems-commercial-hvac', 
-    name: 'Commercial HVAC', 
-    category: 'Systems', 
+  {
+    id: 'systems-commercial-hvac',
+    name: 'Commercial HVAC',
+    category: 'Systems',
     icon: Wind,
     color: 'text-purple-600',
     bgColor: 'bg-purple-100'
   },
 ]
 
+// Healthcare Assessment Areas (8 areas)
+export const HEALTHCARE_AREA_ICONS: InspectionAreaIcon[] = [
+  // Clinical Assessment (3 areas)
+  {
+    id: 'vitals-measurements',
+    name: 'Vital Signs & Measurements',
+    category: 'Clinical Assessment',
+    icon: Activity,
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-100'
+  },
+  {
+    id: 'medication-review',
+    name: 'Medication Review & Reconciliation',
+    category: 'Clinical Assessment',
+    icon: Pill,
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-100'
+  },
+  {
+    id: 'symptom-assessment',
+    name: 'Symptom Assessment',
+    category: 'Clinical Assessment',
+    icon: Stethoscope,
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-100'
+  },
+
+  // Care Planning (3 areas)
+  {
+    id: 'care-plan-review',
+    name: 'Care Plan Review',
+    category: 'Care Planning',
+    icon: ClipboardList,
+    color: 'text-green-600',
+    bgColor: 'bg-green-100'
+  },
+  {
+    id: 'patient-education',
+    name: 'Patient Education & Engagement',
+    category: 'Care Planning',
+    icon: BookOpen,
+    color: 'text-green-600',
+    bgColor: 'bg-green-100'
+  },
+  {
+    id: 'sdoh-assessment',
+    name: 'Social Determinants of Health',
+    category: 'Care Planning',
+    icon: Heart,
+    color: 'text-green-600',
+    bgColor: 'bg-green-100'
+  },
+
+  // Coordination (2 areas)
+  {
+    id: 'followup-coordination',
+    name: 'Follow-up Coordination',
+    category: 'Coordination',
+    icon: UserCheck,
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-100'
+  },
+  {
+    id: 'care-team-communication',
+    name: 'Care Team Communication',
+    category: 'Coordination',
+    icon: MessageCircle,
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-100'
+  },
+]
+
 // Helper function to get icon by area ID
-export function getAreaIcon(areaId: string, propertyType: 'residential' | 'commercial'): InspectionAreaIcon | undefined {
-  const icons = propertyType === 'residential' ? RESIDENTIAL_AREA_ICONS : COMMERCIAL_AREA_ICONS
+export function getAreaIcon(areaId: string, propertyType: 'residential' | 'commercial' | 'healthcare'): InspectionAreaIcon | undefined {
+  const icons = propertyType === 'residential' ? RESIDENTIAL_AREA_ICONS :
+                propertyType === 'commercial' ? COMMERCIAL_AREA_ICONS :
+                HEALTHCARE_AREA_ICONS
   return icons.find(icon => icon.id === areaId)
 }
 
 // Helper function to get category color
 export function getCategoryColor(category: string): { color: string; bgColor: string; borderColor: string } {
   switch (category) {
+    // Property inspection categories
     case 'Exterior':
       return {
         color: 'text-blue-600',
@@ -285,6 +370,25 @@ export function getCategoryColor(category: string): { color: string; bgColor: st
         borderColor: 'border-green-300'
       }
     case 'Systems':
+      return {
+        color: 'text-purple-600',
+        bgColor: 'bg-purple-100',
+        borderColor: 'border-purple-300'
+      }
+    // Healthcare categories
+    case 'Clinical Assessment':
+      return {
+        color: 'text-blue-600',
+        bgColor: 'bg-blue-100',
+        borderColor: 'border-blue-300'
+      }
+    case 'Care Planning':
+      return {
+        color: 'text-green-600',
+        bgColor: 'bg-green-100',
+        borderColor: 'border-green-300'
+      }
+    case 'Coordination':
       return {
         color: 'text-purple-600',
         bgColor: 'bg-purple-100',

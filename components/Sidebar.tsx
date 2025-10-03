@@ -18,7 +18,6 @@ import {
   Brain,
   Camera,
   History,
-  HandshakeIcon,
   FileCheck,
   Presentation,
   Sun,
@@ -50,28 +49,22 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
       description: 'Analytics & Insights'
     },
     {
-      title: 'Care Coordination',
-      icon: Users,
+      title: 'Claims',
+      icon: FileText,
       href: '/dashboard/claims',
-      description: 'Patient Management'
+      description: 'Settlement Optimization'
     },
     {
-      title: 'Clinical Pathways',
+      title: 'Care Sessions',
       icon: CalendarDays,
-      href: '/dashboard/inspection',
-      description: 'Care Protocols'
+      href: '/dashboard/care-sessions',
+      description: 'Patient Visit Workflow'
     },
     {
       title: 'Arthur',
       icon: Brain,
       href: '/dashboard/assistant',
       description: 'Clinical Assistant'
-    },
-    {
-      title: 'Integrations',
-      icon: HandshakeIcon,
-      href: '/dashboard/integrations',
-      description: 'System Connectivity'
     }
   ]
 
@@ -179,9 +172,9 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
         {/* Company Info */}
         {!isCollapsed ? (
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            <p className="font-semibold mb-1">NO RECOVERY, NO FEE</p>
-            <p>Maximizing settlements with AI</p>
-            <p className="mt-2">© 2025 Scotty Adjusting</p>
+            <p className="font-semibold mb-1">Connecting Providers & Transforming Care</p>
+            <p>Empowering High-Value Coordinated Healthcare</p>
+            <p className="mt-2">© 2025 Arthur Health</p>
           </div>
         ) : (
           <div className="text-center text-xs text-gray-500 dark:text-gray-400">

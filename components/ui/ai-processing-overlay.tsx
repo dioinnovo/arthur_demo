@@ -19,8 +19,8 @@ interface ProcessingStage {
 const processingStages: ProcessingStage[] = [
   {
     id: 'analyzing',
-    title: 'Analyzing Property Damage',
-    subtitle: 'Identifying visible and hidden damage patterns',
+    title: 'Analyzing Clinical Data',
+    subtitle: 'Processing vital signs, medications, and observations',
     icon: Search,
     duration: 3500
   },
@@ -33,38 +33,38 @@ const processingStages: ProcessingStage[] = [
   },
   {
     id: 'comparing',
-    title: 'Comparing Similar Claims',
-    subtitle: 'Analyzing 10,000+ similar cases for insights',
+    title: 'Comparing Patient Outcomes',
+    subtitle: 'Analyzing 10,000+ similar care sessions for insights',
     icon: Database,
     duration: 3500
   },
   {
     id: 'generating',
-    title: 'Generating Comprehensive Report',
-    subtitle: 'Creating detailed assessment with recommendations',
+    title: 'Generating Care Summary',
+    subtitle: 'Creating comprehensive assessment with recommendations',
     icon: FileText,
     duration: 3500
   },
   {
     id: 'optimizing',
-    title: 'Optimizing Settlement Strategy',
-    subtitle: 'Applying AI insights for maximum recovery',
+    title: 'Optimizing Care Plan',
+    subtitle: 'Applying AI insights for improved patient outcomes',
     icon: TrendingUp,
     duration: 2500
   }
 ]
 
 const aiFeatures = [
-  'Detecting moisture patterns behind walls',
-  'Identifying code upgrade opportunities',
-  'Calculating hidden damage probability',
-  'Analyzing structural integrity risks',
-  'Estimating repair timeline accuracy',
-  'Comparing regional contractor rates',
-  'Evaluating material availability',
-  'Predicting claim approval likelihood',
-  'Optimizing documentation strategy',
-  'Identifying coverage maximization points'
+  'Analyzing vital sign trends and patterns',
+  'Identifying medication interaction risks',
+  'Calculating readmission probability',
+  'Detecting care coordination gaps',
+  'Evaluating treatment plan effectiveness',
+  'Comparing regional quality metrics',
+  'Assessing social determinant barriers',
+  'Predicting care plan success likelihood',
+  'Optimizing provider referral strategy',
+  'Identifying quality improvement opportunities'
 ]
 
 interface AIProcessingOverlayProps {
@@ -263,7 +263,7 @@ export function AIProcessingOverlay({ isVisible, onComplete }: AIProcessingOverl
             {/* Additional Info */}
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                SCC Intelligence is processing your inspection data
+                Arthur Health Intelligence is processing your care session
               </p>
             </div>
           </motion.div>

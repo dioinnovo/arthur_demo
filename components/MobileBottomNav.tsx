@@ -5,15 +5,14 @@ import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   LayoutDashboard,
-  Users,
+  FileText,
   Brain,
-  Activity,
-  FileText
+  CalendarDays
 } from 'lucide-react'
 
 export default function MobileBottomNav() {
   const pathname = usePathname()
-  
+
   const menuItems = [
     {
       title: 'Dashboard',
@@ -21,9 +20,9 @@ export default function MobileBottomNav() {
       href: '/dashboard',
     },
     {
-      title: 'Patients',
-      icon: Users,
-      href: '/dashboard/patients',
+      title: 'Claims',
+      icon: FileText,
+      href: '/dashboard/claims',
     },
     {
       title: 'Arthur',
@@ -31,14 +30,9 @@ export default function MobileBottomNav() {
       href: '/dashboard/assistant',
     },
     {
-      title: 'Analytics',
-      icon: Activity,
-      href: '/dashboard/analytics',
-    },
-    {
-      title: 'Policies',
-      icon: FileText,
-      href: '/dashboard/policies',
+      title: 'Sessions',
+      icon: CalendarDays,
+      href: '/dashboard/care-sessions',
     }
   ]
 

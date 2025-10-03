@@ -33,6 +33,26 @@ export default function PatientCareCoordinationPage() {
     lastUpdated: '2024-03-18',
     episodeCost: 45000,
     projectedSavings: 12000,
+    estimatedValue: 57000,
+    currentOffer: 45000,
+
+    // Property/Location (for display compatibility)
+    property: {
+      imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop',
+      address: '4827 Oakwood Drive, Miami, FL 33101',
+      type: 'Residential',
+      squareFeet: 2400,
+      yearBuilt: 1998
+    },
+
+    // Client/Patient basic info
+    client: {
+      name: 'James Mitchell',
+      contact: 'Phone',
+      phone: '(305) 555-0123',
+      email: 'jmitchell@email.com',
+      relationshipScore: 85
+    },
 
     // Patient Information
     demographics: {
@@ -73,7 +93,11 @@ export default function PatientCareCoordinationPage() {
       groupNumber: 'GRP-789',
       effectiveDate: '2023-01-01',
       caseManager: 'Susan White',
-      caseManagerPhone: '(305) 555-9876'
+      caseManagerPhone: '(305) 555-9876',
+      coverageLimit: 250000,
+      deductible: 2500,
+      copay: 35,
+      coinsurance: 20
     },
 
     // Care Plan
@@ -84,6 +108,27 @@ export default function PatientCareCoordinationPage() {
       goals: ['A1c < 7%', 'BP < 130/80', 'Weight loss 10%'],
       interventions: ['Weekly monitoring', 'Nutrition counseling', 'Medication optimization'],
       nextReview: '2024-04-20'
+    },
+
+    // Incident/Damage (legacy field for compatibility)
+    damage: {
+      date: '2024-03-10',
+      type: 'Emergency Department Visit',
+      severity: 'Moderate',
+      description: 'Hyperglycemic episode requiring emergency care',
+      initialEstimate: 3500,
+      revisedEstimate: 3500,
+      adjustedEstimate: 3200,
+      coverage: 85
+    },
+
+    // Assessment/Inspection (legacy field for compatibility)
+    inspection: {
+      scheduled: '2024-03-20',
+      status: 'Completed',
+      inspector: 'Maria Rodriguez, RN',
+      completionDate: '2024-03-20',
+      findings: 'Patient education completed, medication reconciliation performed'
     },
 
     // Care History
@@ -97,11 +142,11 @@ export default function PatientCareCoordinationPage() {
     documents: [
       { name: 'Care_Plan_2024.pdf', date: '2024-03-15', size: '2.4 MB', type: 'care-plan' },
       { name: 'Insurance_Policy.pdf', date: '2024-03-15', size: '1.8 MB', type: 'policy' },
-      { name: 'Property_Photos.zip', date: '2024-03-16', size: '45.2 MB', type: 'photos' },
-      { name: 'Contractor_Estimates.pdf', date: '2024-03-17', size: '3.1 MB', type: 'estimate' },
-      { name: 'Inspection_Photos_Exterior.jpg', date: '2024-03-18', size: '8.2 MB', type: 'photos' },
-      { name: 'Inspection_Photos_Interior.jpg', date: '2024-03-18', size: '12.5 MB', type: 'photos' },
-      { name: 'Structural_Damage_Report.pdf', date: '2024-03-19', size: '5.7 MB', type: 'report' }
+      { name: 'Lab_Results_HbA1c.pdf', date: '2024-03-16', size: '245 KB', type: 'labs' },
+      { name: 'Treatment_Plan_Diabetes.pdf', date: '2024-03-17', size: '1.1 MB', type: 'treatment' },
+      { name: 'Medication_List.pdf', date: '2024-03-18', size: '185 KB', type: 'medication' },
+      { name: 'Specialist_Referral_Endocrine.pdf', date: '2024-03-18', size: '425 KB', type: 'referral' },
+      { name: 'Clinical_Assessment_Report.pdf', date: '2024-03-19', size: '1.7 MB', type: 'report' }
     ],
 
     // Timeline Events
@@ -111,10 +156,10 @@ export default function PatientCareCoordinationPage() {
         date: '2024-03-10',
         time: '09:30 AM',
         type: 'incident',
-        title: 'Hurricane Damage Occurred',
-        description: 'Category 3 hurricane made landfall causing significant damage to property',
+        title: 'Emergency Department Visit',
+        description: 'Patient presented to ED with hyperglycemic episode - Blood glucose 425 mg/dL',
         user: 'System',
-        icon: CloudRain,
+        icon: AlertTriangle,
         color: 'red'
       },
       {
@@ -122,8 +167,8 @@ export default function PatientCareCoordinationPage() {
         date: '2024-03-11',
         time: '10:15 AM',
         type: 'claim',
-        title: 'Initial Claim Filed',
-        description: 'Client submitted initial claim to insurance carrier State Farm',
+        title: 'Care Coordination Initiated',
+        description: 'Patient enrolled in diabetes management program with care coordinator',
         user: 'Michael Johnson',
         icon: FileText,
         color: 'blue'
@@ -232,8 +277,8 @@ export default function PatientCareCoordinationPage() {
             <ArrowLeft className="w-5 h-5" />
             <span className="text-sm">Back to Claims</span>
           </Button>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(claim.status)}`}>
-            {claim.status}
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(patient.status)}`}>
+            {patient.status}
           </span>
         </div>
 
@@ -241,7 +286,7 @@ export default function PatientCareCoordinationPage() {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
           <div className="flex-1">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
-              Claim #{claim.id}
+              Patient Case #{patient.id}
             </h1>
           </div>
         </div>
@@ -249,8 +294,8 @@ export default function PatientCareCoordinationPage() {
         {/* Property Image with Address Overlay */}
         <div className="relative h-48 sm:h-64 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
           <img 
-            src={claim.property.imageUrl} 
-            alt={claim.property.address}
+            src={patient.property.imageUrl} 
+            alt={patient.property.address}
             className="w-full h-full object-cover"
           />
           
@@ -260,14 +305,14 @@ export default function PatientCareCoordinationPage() {
           {/* Property Address */}
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <h3 className="font-bold text-white text-lg sm:text-xl leading-tight drop-shadow-lg">
-              {claim.property.address}
+              {patient.property.address}
             </h3>
           </div>
           
           {/* Property Type Badge */}
           <div className="absolute top-3 left-3">
             <span className="inline-block px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-gray-900/90 text-gray-800 shadow-lg">
-              {claim.property.type}
+              {patient.property.type}
             </span>
           </div>
         </div>
@@ -302,19 +347,19 @@ export default function PatientCareCoordinationPage() {
           <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
             <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Estimated Value</p>
             <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
-              ${claim.estimatedValue.toLocaleString()}
+              ${patient.estimatedValue.toLocaleString()}
             </p>
           </div>
           <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
             <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Current Offer</p>
             <p className="text-lg sm:text-2xl font-bold text-scc-red">
-              ${claim.currentOffer.toLocaleString()}
+              ${patient.currentOffer.toLocaleString()}
             </p>
           </div>
           <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
             <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Potential Recovery</p>
             <p className="text-lg sm:text-2xl font-bold text-green-600">
-              +${(claim.estimatedValue - claim.currentOffer).toLocaleString()}
+              +${(patient.estimatedValue - patient.currentOffer).toLocaleString()}
             </p>
           </div>
           <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
@@ -411,25 +456,25 @@ export default function PatientCareCoordinationPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Company</span>
-                      <span className="font-medium">{claim.client.name}</span>
+                      <span className="font-medium">{patient.client.name}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Contact</span>
-                      <span className="font-medium">{claim.client.contact}</span>
+                      <span className="font-medium">{patient.client.contact}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Phone</span>
-                      <span className="font-medium">{claim.client.phone}</span>
+                      <span className="font-medium">{patient.client.phone}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Email</span>
-                      <span className="font-medium text-sm">{claim.client.email}</span>
+                      <span className="font-medium text-sm">{patient.client.email}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Relationship Score</span>
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-amber-400 fill-current" />
-                        <span className="font-medium">{claim.client.relationshipScore}</span>
+                        <span className="font-medium">{patient.client.relationshipScore}</span>
                       </div>
                     </div>
                   </div>
@@ -438,7 +483,7 @@ export default function PatientCareCoordinationPage() {
                 {/* Property Details */}
                 <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border">
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    {claim.property.type === 'Commercial' ? (
+                    {patient.property.type === 'Commercial' ? (
                       <Building2 className="w-5 h-5" />
                     ) : (
                       <Home className="w-5 h-5" />
@@ -448,23 +493,23 @@ export default function PatientCareCoordinationPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Type</span>
-                      <span className="font-medium">{claim.property.type}</span>
+                      <span className="font-medium">{patient.property.type}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Address</span>
-                      <span className="font-medium text-sm text-right max-w-[200px]">{claim.property.address}</span>
+                      <span className="font-medium text-sm text-right max-w-[200px]">{patient.property.address}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Square Feet</span>
-                      <span className="font-medium">{claim.property.squareFeet.toLocaleString()}</span>
+                      <span className="font-medium">{patient.property.squareFeet.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Year Built</span>
-                      <span className="font-medium">{claim.property.yearBuilt}</span>
+                      <span className="font-medium">{patient.property.yearBuilt}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500 dark:text-gray-400">Construction</span>
-                      <span className="font-medium">{claim.property.construction}</span>
+                      <span className="font-medium">{patient.property.construction}</span>
                     </div>
                   </div>
                 </div>
@@ -479,67 +524,67 @@ export default function PatientCareCoordinationPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Carrier</p>
-                    <p className="font-medium">{claim.insurance.carrier}</p>
+                    <p className="font-medium">{patient.insurance.carrier}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Policy Number</p>
-                    <p className="font-medium">{claim.insurance.policyNumber}</p>
+                    <p className="font-medium">{patient.insurance.policyNumber}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Coverage Limit</p>
-                    <p className="font-medium">${claim.insurance.coverageLimit.toLocaleString()}</p>
+                    <p className="font-medium">${patient.insurance.coverageLimit.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Deductible</p>
-                    <p className="font-medium">${claim.insurance.deductible.toLocaleString()}</p>
+                    <p className="font-medium">${patient.insurance.deductible.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Adjuster</p>
-                    <p className="font-medium">{claim.insurance.adjuster}</p>
+                    <p className="font-medium">{patient.insurance.adjuster}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Adjuster Phone</p>
-                    <p className="font-medium">{claim.insurance.adjusterPhone}</p>
+                    <p className="font-medium">{patient.insurance.adjusterPhone}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Date of Loss</p>
                     <p className="font-medium flex items-center gap-1">
                       <Calendar className="w-4 h-4 text-gray-400" />
-                      {claim.damage.date}
+                      {patient.damage.date}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Damage Type</p>
-                    <p className="font-medium">{claim.damage.type}</p>
+                    <p className="font-medium">{patient.damage.type}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Severity</p>
                     <div className="flex items-center gap-2">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        claim.damage.severity === 'Major' ? 'bg-red-100 text-red-800' :
-                        claim.damage.severity === 'Moderate' ? 'bg-yellow-100 text-yellow-800' :
+                        patient.damage.severity === 'Major' ? 'bg-red-100 text-red-800' :
+                        patient.damage.severity === 'Moderate' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-green-100 text-green-800'
                       }`}>
-                        {claim.damage.severity}
+                        {patient.damage.severity}
                       </span>
                     </div>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Initial Estimate</p>
                     <p className="font-medium text-green-600">
-                      ${claim.damage.initialEstimate.toLocaleString()}
+                      ${patient.damage.initialEstimate.toLocaleString()}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Adjusted Estimate</p>
                     <p className="font-bold text-green-600">
-                      ${claim.damage.adjustedEstimate.toLocaleString()}
+                      ${patient.damage.adjustedEstimate.toLocaleString()}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Potential Increase</p>
                     <p className="font-medium text-scc-red">
-                      +${(claim.damage.adjustedEstimate - claim.damage.initialEstimate).toLocaleString()}
+                      +${(patient.damage.adjustedEstimate - patient.damage.initialEstimate).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -547,10 +592,10 @@ export default function PatientCareCoordinationPage() {
                 {/* Dates at the bottom */}
                 <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    <span>Created: {claim.createdDate}</span>
+                    <span>Created: {patient.createdDate}</span>
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    <span>Updated: {claim.lastUpdated}</span>
+                    <span>Updated: {patient.lastUpdated}</span>
                   </div>
                 </div>
               </div>
@@ -1056,7 +1101,7 @@ export default function PatientCareCoordinationPage() {
               {/* Timeline Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{claim.timeline.length}</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{patient.timeline.length}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Total Events</p>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 text-center">
@@ -1078,7 +1123,7 @@ export default function PatientCareCoordinationPage() {
                 <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
 
                 <div className="space-y-4">
-                  {claim.timeline.map((event, index) => {
+                  {patient.timeline.map((event, index) => {
                     const Icon = event.icon || Calendar
                     const getEventColor = () => {
                       switch(event.color) {
@@ -1456,15 +1501,15 @@ export default function PatientCareCoordinationPage() {
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Status:</span>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        claim.inspection.status === 'Scheduled'
+                        patient.inspection.status === 'Scheduled'
                           ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                          : claim.inspection.status === 'In Progress'
+                          : patient.inspection.status === 'In Progress'
                           ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                          : claim.inspection.status === 'Completed'
+                          : patient.inspection.status === 'Completed'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                           : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
                       }`}>
-                        {claim.inspection.status}
+                        {patient.inspection.status}
                       </span>
                     </div>
 
@@ -1483,18 +1528,18 @@ export default function PatientCareCoordinationPage() {
                       <div className="flex items-center gap-2 text-sm">
                         <User className="text-gray-500" size={16} />
                         <span className="text-gray-600 dark:text-gray-400">Inspector:</span>
-                        <span className="font-medium text-gray-900 dark:text-gray-100">{claim.inspection.inspector}</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">{patient.inspection.inspector}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <FileText className="text-gray-500" size={16} />
                         <span className="text-gray-600 dark:text-gray-400">Type:</span>
-                        <span className="font-medium text-gray-900 dark:text-gray-100">{claim.inspection.type}</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">{patient.inspection.type}</span>
                       </div>
                     </div>
 
                     {/* Action Buttons */}
                     <div className="pt-2 space-y-2">
-                      {claim.inspection.status === 'Scheduled' && (
+                      {patient.inspection.status === 'Scheduled' && (
                         <Link
                           href={`/dashboard/inspection/INS-002/start`}
                           className="w-full px-4 py-2 bg-scc-red text-white rounded-lg hover:bg-red-600 transition flex items-center justify-center gap-2 text-sm font-medium"
@@ -1503,7 +1548,7 @@ export default function PatientCareCoordinationPage() {
                           Start Inspection
                         </Link>
                       )}
-                      {claim.inspection.status === 'In Progress' && (
+                      {patient.inspection.status === 'In Progress' && (
                         <>
                           <div className="mb-2">
                             <div className="flex items-center justify-between text-sm mb-1">
@@ -1523,7 +1568,7 @@ export default function PatientCareCoordinationPage() {
                           </Link>
                         </>
                       )}
-                      {claim.inspection.status === 'Completed' && (
+                      {patient.inspection.status === 'Completed' && (
                         <Link
                           href={`/dashboard/inspection/INS-002/report`}
                           className="w-full px-4 py-2 bg-scc-red text-white rounded-lg hover:bg-red-600 transition flex items-center justify-center gap-2 text-sm font-medium"
@@ -1532,9 +1577,9 @@ export default function PatientCareCoordinationPage() {
                           View Report
                         </Link>
                       )}
-                      {!claim.inspection.status || claim.inspection.status === 'Not Scheduled' && (
+                      {!patient.inspection.status || patient.inspection.status === 'Not Scheduled' && (
                         <Link
-                          href={`/dashboard/inspection/new?claimId=${claim.id}`}
+                          href={`/dashboard/inspection/new?claimId=${patient.id}`}
                           className="w-full px-4 py-2 bg-scc-red text-white rounded-lg hover:bg-red-600 transition flex items-center justify-center gap-2 text-sm font-medium"
                         >
                           <Calendar size={16} />
