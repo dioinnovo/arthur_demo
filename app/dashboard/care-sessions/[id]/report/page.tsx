@@ -26,17 +26,17 @@ interface ReportData {
       insuranceId: string
     }
     sessionInfo: {
-      assessmentDate: string
+      sessionDate: string
       conditions: string[]
       initialRiskScore: number
     }
   }
   executiveSummary: {
-    totalCareGapValue: number
-    criticalCareGaps: number
+    totalValueOpportunity: number
+    criticalFindings: number
     clinicalRecommendations: string[]
-    carePlanTimeline: string
-    assessmentConfidence: number
+    timelineEstimate: string
+    confidenceScore: number
   }
   assessmentAreas: Array<{
     area: string
@@ -238,22 +238,22 @@ export default function CareSessionReportPage() {
         insuranceId: 'MCR-9876543210'
       },
       sessionInfo: {
-        assessmentDate: new Date().toISOString(),
+        sessionDate: new Date().toISOString(),
         conditions: ['Type 2 Diabetes Mellitus', 'Hypertension', 'Hyperlipidemia'],
         initialRiskScore: 68
       }
     },
     executiveSummary: {
-      totalCareGapValue: 127500,
-      criticalCareGaps: 4,
+      totalValueOpportunity: 127500,
+      criticalFindings: 4,
       clinicalRecommendations: [
         'Immediate A1C control - target below 7.0%',
         'Blood pressure medication adjustment required',
         'Initiate statin therapy for cholesterol management',
         'Schedule comprehensive diabetic foot examination'
       ],
-      carePlanTimeline: '90-day care plan with monthly follow-ups',
-      assessmentConfidence: 92
+      timelineEstimate: '90-day care plan with monthly follow-ups',
+      confidenceScore: 92
     },
     assessmentAreas: [
       {
@@ -516,13 +516,19 @@ export default function CareSessionReportPage() {
         executiveSummary: reportData.executiveSummary,
         assessmentAreas: reportData.assessmentAreas.map(area => ({
           ...area,
+          photoCount: area.dataPointsCollected || 0,
           clinicalDescription: area.clinicalDescription,
-          estimatedValue: area.estimatedCost,
+          estimatedValue: area.estimatedCareValue || 0,
           findings: area.clinicalDescription,
           assessmentNotes: area.clinicalDescription,
           documents: [] // Would include assessment documents in production
         })),
-        aiInsights: reportData.aiInsights,
+        aiInsights: {
+          ...reportData.aiInsights,
+          historicalRecovery: reportData.aiInsights.historicalOutcomes || 0,
+          marketComparison: reportData.aiInsights.populationComparison || 'N/A',
+          riskAssessment: []
+        },
         financialSummary: {
           subtotal: reportData.financialSummary.currentCareValue,
           unreportedConditions: reportData.aiInsights.unreportedConditionsEstimate,
@@ -1093,7 +1099,7 @@ export default function CareSessionReportPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Assessment Date:</span>
-                    <span className="font-medium">{new Date(reportData.metadata.sessionInfo.assessmentDate).toLocaleDateString()}</span>
+                    <span className="font-medium">{new Date(reportData.metadata.sessionInfo.sessionDate).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Primary Conditions:</span>
@@ -1208,25 +1214,25 @@ export default function CareSessionReportPage() {
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
                 <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Total Care Gap Value</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 dark:text-gray-100 print:text-center">
-                  ${reportData.executiveSummary.totalCareGapValue.toLocaleString()}
+                  ${reportData.executiveSummary.totalValueOpportunity.toLocaleString()}
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
                 <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Critical Care Gaps</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-red-600 print:text-gray-900 dark:text-gray-100 print:text-center">
-                  {reportData.executiveSummary.criticalCareGaps}
+                  {reportData.executiveSummary.criticalFindings}
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
                 <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Assessment Confidence</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-green-600 print:text-gray-900 dark:text-gray-100 print:text-center">
-                  {reportData.executiveSummary.assessmentConfidence}%
+                  {reportData.executiveSummary.confidenceScore}%
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
                 <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Care Plan Timeline</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 dark:text-gray-100 print:text-center">
-                  {reportData.executiveSummary.carePlanTimeline.split(' ')[0]}
+                  {reportData.executiveSummary.timelineEstimate.split(' ')[0]}
                 </div>
               </div>
             </div>
@@ -1242,7 +1248,7 @@ export default function CareSessionReportPage() {
                     IMMEDIATE
                   </div>
                   <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-red-600 print:text-gray-900 dark:text-gray-100 print:text-base">
-                    ${(reportData.executiveSummary.totalCareGapValue * 0.25).toLocaleString()}
+                    ${(reportData.executiveSummary.totalValueOpportunity * 0.25).toLocaleString()}
                   </div>
                   <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     0-30 days
@@ -1253,7 +1259,7 @@ export default function CareSessionReportPage() {
                     SHORT-TERM
                   </div>
                   <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-blue-600 print:text-gray-900 dark:text-gray-100 print:text-base">
-                    ${(reportData.executiveSummary.totalCareGapValue * 0.45).toLocaleString()}
+                    ${(reportData.executiveSummary.totalValueOpportunity * 0.45).toLocaleString()}
                   </div>
                   <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     1-3 months
@@ -1264,7 +1270,7 @@ export default function CareSessionReportPage() {
                     LONG-TERM
                   </div>
                   <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 print:text-base">
-                    ${(reportData.executiveSummary.totalCareGapValue * 0.30).toLocaleString()}
+                    ${(reportData.executiveSummary.totalValueOpportunity * 0.30).toLocaleString()}
                   </div>
                   <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     3+ months
@@ -1277,7 +1283,7 @@ export default function CareSessionReportPage() {
                     TOTAL ESTIMATED CARE VALUE
                   </span>
                   <span className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 print:text-base">
-                    ${reportData.executiveSummary.totalCareGapValue.toLocaleString()}
+                    ${reportData.executiveSummary.totalValueOpportunity.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -1288,7 +1294,7 @@ export default function CareSessionReportPage() {
               <div className="flex items-center gap-2 mb-4">
                 <AlertTriangle className="text-red-600" size={24} />
                 <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                  <span className="text-red-600">{reportData.executiveSummary.criticalCareGaps}</span> Critical Care Gaps Identified
+                  <span className="text-red-600">{reportData.executiveSummary.criticalFindings}</span> Critical Care Gaps Identified
                 </h3>
               </div>
 

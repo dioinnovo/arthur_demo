@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useSessionData, InspectionArea, MediaFile } from '@/lib/hooks/useSessionData'
+import { useSessionData, AssessmentArea, MediaFile } from '@/lib/hooks/useSessionData'
 
 // Helper function for consistent date formatting
 const formatDate = (dateString: string) => {
@@ -36,7 +36,7 @@ export default function ContinueInspectionPage() {
   // Use the centralized inspection data hook
   const { sessionData, loading, error, getProgress } = useSessionData(sessionId)
 
-  const [selectedArea, setSelectedArea] = useState<InspectionArea | null>(null)
+  const [selectedArea, setSelectedArea] = useState<AssessmentArea | null>(null)
   const [selectedMedia, setSelectedMedia] = useState<MediaFile | null>(null)
   const [showMediaModal, setShowMediaModal] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'areas' | 'media' | 'insights'>('overview')
@@ -107,7 +107,7 @@ export default function ContinueInspectionPage() {
     }
     acc[area.category].push(area)
     return acc
-  }, {} as Record<string, InspectionArea[]>) : {}
+  }, {} as Record<string, AssessmentArea[]>) : {}
   
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -139,9 +139,9 @@ export default function ContinueInspectionPage() {
   // Create inspection summary from dynamic data
   const inspectionSummary = sessionData ? {
     sessionId,
-    claimNumber: `CLM-${sessionId}`,
-    propertyAddress: sessionData.property?.address || sessionData.patientName || 'Unknown Patient',
-    clientName: sessionData.property?.owner || sessionData.patientName || 'Unknown',
+    claimNumber: `CS-${sessionId}`,
+    propertyAddress: sessionData.patient?.name || 'Unknown Patient',
+    clientName: sessionData.patient?.name || 'Unknown',
     inspector: 'Care Coordinator',
     startTime: sessionData.createdAt,
     elapsedTime: '1h 30m',
@@ -862,11 +862,11 @@ export default function ContinueInspectionPage() {
                   </div>
                 )}
 
-                {/* Damage Description */}
-                {selectedArea.damageDescription && (
+                {/* Clinical Observations */}
+                {selectedArea.clinicalObservations && (
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Damage Description</h3>
-                    <p className="text-gray-700 dark:text-gray-300">{selectedArea.damageDescription}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Clinical Observations</h3>
+                    <p className="text-gray-700 dark:text-gray-300">{selectedArea.clinicalObservations}</p>
                   </div>
                 )}
 

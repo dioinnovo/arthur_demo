@@ -94,7 +94,6 @@ export default function CareSessionAssessmentPage() {
   const router = useRouter()
   const sessionId = params.id as string
   const areaId = params.assessmentId as string  // Fixed: should match [assessmentId] folder name
-  const propertyType = 'residential' as const // Default for care sessions
 
   // Use the centralized inspection data hook
   const { sessionData, updateArea, markAreaCompleted, markAreaSkipped } = useSessionData(sessionId)
@@ -198,7 +197,7 @@ export default function CareSessionAssessmentPage() {
         }
       }
     }
-  }, [areaId, propertyType, areasStatus, currentArea.id, sessionId, sessionData])
+  }, [areaId, areasStatus, currentArea.id, sessionId, sessionData])
 
   // Separate effect to handle demo data loading when sessionData becomes available
   React.useEffect(() => {
@@ -569,7 +568,6 @@ export default function CareSessionAssessmentPage() {
       onAreaSelect={handleAreaSelect}
       onNavigateBack={handleNavigateBack}
       expandedAreaId={navigationMode === 'form' ? expandedAreaId : null}
-      propertyType={propertyType}
       className=""
       sessionId={sessionId}
     >
