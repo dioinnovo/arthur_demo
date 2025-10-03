@@ -745,7 +745,7 @@ export default function CareSessionReportPage() {
                       </span>
                       <span className="flex items-center gap-1">
                         <FileText size={16} />
-                        {area.recommendations.length} recommendations
+                        {area.recommendations?.length || 0} recommendations
                       </span>
                     </div>
                   </div>
