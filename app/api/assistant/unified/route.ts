@@ -62,16 +62,18 @@ export async function POST(request: NextRequest) {
       }
 
       try {
-        // Call knowledge graph API - use correct port
-        const kgUrl = `http://localhost:3002/api/assistant/knowledge-graph`;
+        // Call knowledge graph API - LightRAG server on port 9621
+        const kgUrl = `http://localhost:9621/query`;
         console.log('Calling knowledge graph at:', kgUrl);
         const kgResponse = await fetch(kgUrl, {
           method: 'POST',
           headers: {
+            'X-API-Key': 'hospital-rag-secure-key-2024',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             query: lastMessage,
+            mode: 'hybrid',
             workspace: 'hospital_treatment_kb',
             patientContext: patientContext
           })
@@ -85,6 +87,9 @@ export async function POST(request: NextRequest) {
             metrics: kgData.metrics,
             isKnowledgeGraph: true
           });
+        } else {
+          const errorText = await kgResponse.text();
+          console.error('Knowledge graph returned error:', kgResponse.status, errorText);
         }
       } catch (kgError) {
         console.error('Knowledge graph query failed, falling back:', kgError);

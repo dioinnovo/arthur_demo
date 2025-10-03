@@ -152,8 +152,8 @@ export default function MobileChatInterface() {
 
   // Model options with provider indicators
   const modelOptions = [
-    { value: 'quick', label: 'Arthur Quick', description: 'Fast responses - Basic analysis' },
-    { value: 'arthur-pro', label: 'Arthur Pro', description: 'Advanced AI - Healthcare policy expert' }
+    { value: 'quick', label: 'Arthur Quick', description: 'Care coordination & referral management' },
+    { value: 'arthur-pro', label: 'Arthur Pro', description: 'Advanced analytics - Knowledge graph insights' }
   ]
 
   // Complex analytical questions for Arthur Pro (knowledge graph powered)
@@ -356,11 +356,10 @@ export default function MobileChatInterface() {
                             data.response.includes('Comprehensive Healthcare Policy Analysis') ||
                             data.response.includes('# Comprehensive Healthcare Policy Analysis')
 
-      // Add a "thinking" delay for comprehensive policy reviews
-      if (isPolicyReview) {
-        // Show thinking state for 1.5 seconds
-        await new Promise(resolve => setTimeout(resolve, 1500))
-      }
+      // Add a "thinking" delay for all responses to make it feel more authentic
+      // Longer delay for comprehensive reviews, shorter for quick answers
+      const thinkingDelay = isPolicyReview ? 1800 : 800
+      await new Promise(resolve => setTimeout(resolve, thinkingDelay))
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -633,7 +632,7 @@ export default function MobileChatInterface() {
                 /* Arthur Quick: Original simple questions */
                 <div className="max-w-md">
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                    {selectedPatient ? `Quick questions for ${selectedPatient.split(' ')[0]}:` : 'General policy questions:'}
+                    {selectedPatient ? `Care coordination & policy tools for ${selectedPatient.split(' ')[0]}:` : 'Care coordination & referral management:'}
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
                     {(() => {
@@ -643,47 +642,37 @@ export default function MobileChatInterface() {
                       if (patient) {
                         const questions = []
 
-                        // Always include comprehensive review
-                        questions.push("Perform comprehensive policy review")
+                        // Care Coordination & Referral Management (Core Arthur Health business)
+                        questions.push("Find fastest available specialist for this patient")
+                        questions.push("Optimize care pathway for current conditions")
+                        questions.push("Check referral status and wait times")
 
-                        // Condition-specific questions
+                        // Condition-specific care coordination
                         if (patient.currentConditions.some(c => c.toLowerCase().includes('diabetes'))) {
-                          questions.push("CGM and insulin pump coverage")
-                          questions.push("Diabetic supply benefits and limits")
-                          questions.push("Endocrinologist network options")
-                          questions.push("A1C testing frequency coverage")
+                          questions.push("Endocrinologist with shortest wait time")
+                          questions.push("Coordinate diabetes care team")
+                          questions.push("Policy coverage for CGM devices")
                         }
                         if (patient.currentConditions.some(c => c.toLowerCase().includes('heart') || c.toLowerCase().includes('chf'))) {
-                          questions.push("Cardiac rehabilitation program coverage")
-                          questions.push("Remote cardiac monitoring devices")
-                          questions.push("Heart failure medication formulary")
-                          questions.push("Cardiology specialist network")
+                          questions.push("Cardiology referral - fastest appointment")
+                          questions.push("Cardiac rehab facility availability")
+                          questions.push("Policy coverage for remote monitoring")
                         }
                         if (patient.currentConditions.some(c => c.toLowerCase().includes('pregnancy'))) {
-                          questions.push("Prenatal and maternity benefits")
-                          questions.push("NICU coverage and limits")
-                          questions.push("Lactation consultant coverage")
-                          questions.push("Postpartum care benefits")
+                          questions.push("High-risk OB referral options")
+                          questions.push("Coordinate prenatal care pathway")
+                          questions.push("Policy maternity benefits summary")
                         }
                         if (patient.currentConditions.some(c => c.toLowerCase().includes('kidney'))) {
-                          questions.push("Dialysis coverage and facilities")
-                          questions.push("Transplant coverage and network")
-                          questions.push("Nephrology specialist access")
-                        }
-                        if (patient.currentConditions.some(c => c.toLowerCase().includes('hypertension'))) {
-                          questions.push("Blood pressure monitor coverage")
-                          questions.push("Hypertension medication tiers")
+                          questions.push("Nephrology specialist availability")
+                          questions.push("Dialysis center options near patient")
+                          questions.push("Policy dialysis coverage review")
                         }
 
-                        // Always add important generic questions
-                        questions.push("Prior authorization requirements")
-                        questions.push("Specialist referral process")
-                        questions.push("Annual out-of-pocket maximum")
-                        questions.push("Prescription drug formulary")
-                        questions.push("Preventive care benefits")
-                        questions.push("Emergency care coverage")
-                        questions.push("Telemedicine options")
-                        questions.push("Mental health benefits")
+                        // Policy review for resource planning (essential for coordinators)
+                        questions.push("Review policy coverage for needed services")
+                        questions.push("Prior authorization requirements check")
+                        questions.push("Comprehensive policy review")
 
                         return questions.slice(0, 10).map((question, idx) => (
                           <button
@@ -696,20 +685,16 @@ export default function MobileChatInterface() {
                         ))
                       }
 
-                      // Default questions when no patient selected - comprehensive healthcare queries
+                      // Default questions when no patient selected - care coordination focus
                       return [
-                        "Perform comprehensive policy review",
-                        "Check prior authorization requirements",
-                        "Find in-network providers",
-                        "Analyze coverage gaps",
-                        "Review treatment cost options",
-                        "Latest clinical guidelines coverage",
-                        "Drug formulary and tier status",
-                        "Preventive care benefits",
-                        "Specialist referral requirements",
-                        "Out-of-pocket cost calculator",
-                        "Emergency vs urgent care coverage",
-                        "Telemedicine benefits"
+                        "Find specialist with shortest wait time",
+                        "Optimize referral pathway for patient",
+                        "Check provider network availability",
+                        "Coordinate multi-specialty care team",
+                        "Review policy coverage for services",
+                        "Prior authorization requirements",
+                        "Comprehensive policy review",
+                        "Fastest route to specialist care"
                       ].slice(0, 8).map((suggestion, idx) => (
                         <button
                           key={idx}

@@ -97,20 +97,24 @@ export function generateHealthcarePolicyPDF(data: PatientPolicyData | string): v
 
   yPosition = 45
 
-  // Executive Summary Box
+  // Executive Summary Box - Calculate height dynamically
+  const summaryStartY = yPosition
+  const summaryBoxHeight = 40 // Increased height to accommodate all content
+
   pdf.setFillColor(240, 248, 255) // Very light blue
-  pdf.rect(margin, yPosition, contentWidth, 35, 'F')
+  pdf.rect(margin, yPosition, contentWidth, summaryBoxHeight, 'F')
   pdf.setDrawColor(0, 102, 204)
   pdf.setLineWidth(0.5)
-  pdf.rect(margin, yPosition, contentWidth, 35, 'S')
+  pdf.rect(margin, yPosition, contentWidth, summaryBoxHeight, 'S')
 
   yPosition = addText('EXECUTIVE SUMMARY', margin + 5, yPosition + 7, { fontSize: 11, fontStyle: 'bold', color: primaryColor })
-  yPosition = addText(`Patient: ${patientData.patientName} (MRN: ${patientData.mrn})`, margin + 5, yPosition + 3, { fontSize: 10 })
-  yPosition = addText(`Insurance: ${patientData.carrier} - ${patientData.planType}`, margin + 5, yPosition + 4, { fontSize: 10 })
-  yPosition = addText(`Deductible Status: $${patientData.deductibles.individual.remaining} remaining of $${patientData.deductibles.individual.inNetwork}`, margin + 5, yPosition + 4, { fontSize: 10 })
-  yPosition = addText(`Out-of-Pocket Max: $${patientData.coverageLimits.outOfPocketMax.individual}`, margin + 5, yPosition + 4, { fontSize: 10 })
+  yPosition = addText(`Patient: ${patientData.patientName} (MRN: ${patientData.mrn})`, margin + 5, yPosition + 3, { fontSize: 9 })
+  yPosition = addText(`Insurance: ${patientData.carrier} - ${patientData.planType}`, margin + 5, yPosition + 3, { fontSize: 9 })
+  yPosition = addText(`Deductible Status: $${patientData.deductibles.individual.remaining} remaining of $${patientData.deductibles.individual.inNetwork}`, margin + 5, yPosition + 3, { fontSize: 9 })
+  yPosition = addText(`Out-of-Pocket Max: $${patientData.coverageLimits.outOfPocketMax.individual}`, margin + 5, yPosition + 3, { fontSize: 9 })
 
-  yPosition += 10
+  // Move to after the box
+  yPosition = summaryStartY + summaryBoxHeight + 5
 
   // Patient Information Section
   checkPageBreak(40)
@@ -424,12 +428,26 @@ function generateMarkdownPDF(markdownContent: string): void {
     })
   }
 
+  // Helper function to clean special characters and emojis
+  const cleanText = (text: string): string => {
+    return text
+      .replace(/[⚠️✅❌✓]/g, '') // Remove emojis
+      .replace(/'/g, "'") // Replace curly quotes with straight quotes
+      .replace(/"/g, '"') // Replace curly double quotes
+      .replace(/"/g, '"')
+      .replace(/–/g, '-') // Replace en-dash
+      .replace(/—/g, '-') // Replace em-dash
+      .trim()
+  }
+
   // Track current section for special formatting
   let inCoverageGaps = false
   let inOptimization = false
 
   // Process each line
   lines.forEach(line => {
+    // Clean the line first
+    line = cleanText(line)
     // Check for special sections
     if (line.includes('Coverage Gaps') || line.includes('COVERAGE GAPS')) {
       inCoverageGaps = true
@@ -524,22 +542,22 @@ function generateMarkdownPDF(markdownContent: string): void {
     // Table rows
     else if (line.startsWith('|')) {
       const cells = line.split('|').filter(cell => cell.trim())
-      checkPageBreak(8)
-      pdf.setFontSize(9)
+      checkPageBreak(10)
+      pdf.setFontSize(8)
       pdf.setFont('helvetica', 'normal')
       pdf.setTextColor(0, 0, 0)
 
-      let xPos = margin
-      const cellWidth = contentWidth / cells.length
+      let xPos = margin + 2
+      const cellWidth = (contentWidth - 4) / cells.length
 
-      cells.forEach(cell => {
+      cells.forEach((cell, index) => {
         const trimmedCell = cell.trim()
         // Wrap text if too long
-        const splitText = pdf.splitTextToSize(trimmedCell, cellWidth - 2)
+        const splitText = pdf.splitTextToSize(trimmedCell, cellWidth - 4)
         pdf.text(splitText[0], xPos, yPosition)
         xPos += cellWidth
       })
-      yPosition += 6
+      yPosition += 5
     }
     // Horizontal rule
     else if (line.startsWith('---')) {

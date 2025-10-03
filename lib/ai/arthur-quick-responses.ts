@@ -12,6 +12,208 @@ interface ResponseTemplate {
 
 // Varied response templates for different question types
 const responseTemplates: ResponseTemplate[] = [
+  // Care Coordination - Fastest Specialist (Core Arthur Health feature)
+  {
+    pattern: /find.*fastest|shortest wait|fastest.*specialist|quickest.*appointment/i,
+    responses: [
+      (patientName) => {
+        const patient = patientName ? getPatientData(patientName) : null
+        const specialty = patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ? 'Endocrinology' :
+                         patient?.currentConditions.some(c => c.toLowerCase().includes('heart')) ? 'Cardiology' :
+                         patient?.currentConditions.some(c => c.toLowerCase().includes('pregnancy')) ? 'High-Risk OB/GYN' : 'Specialist'
+
+        return `## Care Coordination: Fastest Specialist Access
+
+**Analyzing provider network for ${patientName || 'patient'}...**
+
+**${specialty} - Shortest Wait Times:**
+
+**Dr. Sarah Chen, MD** - Metro Health Center
+   Next Available: Tomorrow, 2:30 PM
+   Distance: 2.3 miles from patient
+   Accepts ${patient?.carrier || 'insurance'}
+   In-network copay: $${patient?.copays?.specialist || 60}
+   Patient rating: 4.9/5 (342 reviews)
+
+**Dr. Michael Torres, MD** - Valley Medical Group
+   Next Available: Friday, 9:00 AM
+   Distance: 4.1 miles from patient
+   Accepts ${patient?.carrier || 'insurance'}
+   Evening appointments available
+   Patient rating: 4.8/5 (289 reviews)
+
+**Care Pathway Optimization:**
+1. Book appointment with Dr. Chen for fastest access
+2. Request medical records transfer (automated)
+3. Prior authorization submitted: ${patient?.priorAuthRequired?.length || 0} services
+4. Follow-up coordination scheduled
+
+**Alternative Options:**
+Telehealth consultation available today
+Virtual visit copay: $${patient?.copays?.telehealth || 25}
+
+Would you like me to initiate the referral process?`
+      }
+    ]
+  },
+
+  // Care Pathway Optimization
+  {
+    pattern: /optimize.*pathway|care pathway|coordinate.*care|multi-specialty/i,
+    responses: [
+      (patientName) => {
+        const patient = patientName ? getPatientData(patientName) : null
+
+        return `## Optimized Care Pathway for ${patientName || 'Patient'}
+
+**Current Conditions:** ${patient?.currentConditions.join(', ') || 'Multiple chronic conditions'}
+
+**Recommended Care Team Coordination:**
+
+**Primary Care Physician** (Care Coordinator)
+   Dr. Jennifer Williams - Family Medicine
+   Next check-in: 2 weeks
+   Role: Overall care coordination & referrals
+
+${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
+`**Endocrinologist** (Diabetes Management)
+   Dr. Robert Kim - Diabetes Center
+   Frequency: Quarterly visits
+   Next appointment: 3 weeks
+   Services: A1C monitoring, insulin adjustment
+
+**Certified Diabetes Educator**
+   Sarah Martinez, RN, CDE
+   Monthly sessions available
+   Focus: Self-management & nutrition` : ''}
+
+${patient?.currentConditions.some(c => c.toLowerCase().includes('heart')) ?
+`**Cardiologist** (Heart Condition)
+   Dr. Amanda Foster - CHF Specialist
+   Frequency: Every 6 months
+   Next appointment: Available this week
+   Services: Echo, stress test, medication management
+
+**Cardiac Rehabilitation**
+   Valley Cardiac Rehab Center
+   36 sessions approved by insurance
+   Start date: Next Monday` : ''}
+
+**Care Coordination Actions:**
+1. Schedule all specialists within 30-day window
+2. Synchronize appointment dates for patient convenience
+3. Automated medical record sharing across team
+4. Monthly care team case conference
+5. Patient navigation support assigned
+
+**Insurance Coverage Verified:**
+All recommended services covered under current plan
+Total estimated copays: $${(patient?.copays?.specialist || 60) * 2 + (patient?.copays?.primaryCare || 30)}
+
+**Care Gaps Identified:**
+None - Patient on optimal care pathway
+
+Next step: Would you like me to book these coordinated appointments?`
+      }
+    ]
+  },
+
+  // Referral Status Check
+  {
+    pattern: /referral status|check referral|referral.*wait/i,
+    responses: [
+      (patientName) => {
+        const patient = patientName ? getPatientData(patientName) : null
+
+        return `## Referral Status Dashboard - ${patientName || 'Patient'}
+
+**Active Referrals:**
+
+**Endocrinology Referral**
+   Status: Approved
+   Referral date: ${new Date(Date.now() - 5*24*60*60*1000).toLocaleDateString()}
+   Valid until: ${new Date(Date.now() + 85*24*60*60*1000).toLocaleDateString()}
+   Visits remaining: 3
+   Action needed: Book appointment within 90 days
+
+**Cardiology Referral**
+   Status: Appointment Scheduled
+   Scheduled for: ${new Date(Date.now() + 12*24*60*60*1000).toLocaleDateString()} at 10:30 AM
+   Provider: Dr. Michael Roberts - Heart & Vascular
+   Location: Regional Medical Center
+   Wait time: 12 days (below network average of 18 days)
+
+**Physical Therapy**
+   Status: In Progress
+   Sessions used: 15 of 20 approved
+   Remaining sessions: 5
+   Authorization expires: ${new Date(Date.now() + 45*24*60*60*1000).toLocaleDateString()}
+   Action needed: Request extension if needed
+
+**Pending Prior Authorizations:**
+MRI - Lumbar spine: Submitted ${new Date(Date.now() - 2*24*60*60*1000).toLocaleDateString()}
+   Expected approval: 1-3 business days
+   Status: Under review
+
+**Care Coordination Notes:**
+All referrals within optimal timeframes
+No bottlenecks detected
+Patient navigation support available
+
+Would you like help scheduling any pending appointments?`
+      }
+    ]
+  },
+
+  // Provider Network Availability
+  {
+    pattern: /network availability|provider.*available|facility.*capacity/i,
+    responses: [
+      (patientName) => {
+        const patient = patientName ? getPatientData(patientName) : null
+
+        return `## Provider Network Availability Analysis
+
+**Real-time Network Capacity for ${patient?.carrier || 'Insurance Plan'}:**
+
+**Primary Care Physicians:**
+12 providers with appointments within 48 hours
+Average wait time: 1.2 days
+Network utilization: 73% (Good availability)
+
+**Specialists - ${patient?.currentConditions[0] || 'General'} Care:**
+8 providers accepting new patients
+Shortest wait: 2 days (Dr. Sarah Chen)
+Longest wait: 21 days (Dr. Robert Park)
+Recommended: Book within 1 week for best selection
+
+**Hospital Facilities:**
+Regional Medical Center
+   Bed availability: 87% capacity
+   ER wait time: 22 minutes (current)
+   Admissions: Accepting
+
+Valley General Hospital
+   Bed availability: 65% capacity
+   Elective surgery: 2-week scheduling
+   Preferred facility for ${patient?.carrier || 'your plan'}
+
+**Urgent Care Centers:**
+5 locations within 5 miles
+All accepting walk-ins
+Average wait: Under 15 minutes
+Coverage: $${patient?.copays?.urgentCare || 75} copay
+
+**Care Coordination Recommendation:**
+Current network capacity is excellent
+Best booking window: Next 7-14 days
+No service delays anticipated
+
+Would you like me to identify specific providers with immediate availability?`
+      }
+    ]
+  },
+
   // In-Network Providers
   {
     pattern: /find.*network.*provider|in-network|network provider|provider.*network/i,
@@ -27,15 +229,15 @@ const responseTemplates: ResponseTemplate[] = [
 Based on ${patient?.currentConditions.join(', ') || 'your medical needs'}:
 
 **Primary Care Physicians:**
-📍 Dr. Michael Chen, MD
+Dr. Michael Chen, MD
    Internal Medicine
-   2.1 miles • Next available: Tomorrow
-   ⭐ 4.9/5 (312 reviews)
+   2.1 miles - Next available: Tomorrow
+   4.9/5 (312 reviews)
 
-📍 Dr. Sarah Johnson, DO
+Dr. Sarah Johnson, DO
    Family Medicine
-   3.5 miles • Same-day appointments
-   ⭐ 4.8/5 (287 reviews)
+   3.5 miles - Same-day appointments
+   4.8/5 (287 reviews)
 
 **Specialists You May Need:**
 ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
@@ -44,12 +246,12 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
    4.2 miles • New patients: 1 week
    Specializes in Type 2 management
 
-👁️ **Ophthalmology:**
+ **Ophthalmology:**
    Valley Eye Associates
    3.8 miles • Diabetic eye exams
    Direct scheduling available` :
 patient?.currentConditions.some(c => c.toLowerCase().includes('heart')) ?
-`❤️ **Cardiology:**
+` **Cardiology:**
    Heart & Vascular Institute
    2.8 miles • Echo & stress tests on-site
    Dr. Amanda Foster - CHF specialist
@@ -57,11 +259,11 @@ patient?.currentConditions.some(c => c.toLowerCase().includes('heart')) ?
 **Cardiac Rehab:**
    Regional Wellness Center
    3.2 miles • Insurance pre-approved` :
-`🦴 **Orthopedics:**
+` **Orthopedics:**
    Sports Medicine Associates
    5.1 miles • MRI on-site
 
-🧠 **Neurology:**
+ **Neurology:**
    Neurological Care Center
    4.7 miles • EEG/EMG available`}
 
@@ -100,7 +302,7 @@ Walgreens - 1.2 miles
 ${patient?.currentConditions.map(condition => {
   if (condition.toLowerCase().includes('diabetes')) {
     return `
-🔷 **Diabetes Care Team:**
+ **Diabetes Care Team:**
 • Endocrinologist: 3 in-network (2.5-5 miles)
 • Diabetes educators: 8 available
 • Podiatrist (diabetic care): 4 providers
@@ -108,34 +310,34 @@ ${patient?.currentConditions.map(condition => {
   }
   if (condition.toLowerCase().includes('pregnancy')) {
     return `
-🔷 **Maternity Care Providers:**
+ **Maternity Care Providers:**
 • OB/GYN: 6 practices accepting patients
 • Maternal-fetal medicine: 2 specialists
 • Birthing centers: 3 in-network
 • Lactation consultants: Covered`
   }
   return `
-🔷 **${condition} Specialists:**
+ **${condition} Specialists:**
 • Multiple providers available
 • Average wait: 5-7 days
 • Telehealth options available`
 }).join('\n')}
 
 **Top-Rated Providers (Your Network):**
-⭐⭐⭐⭐⭐ (4.9) Premier Medical Group
+ (4.9) Premier Medical Group
 - Multi-specialty practice
 - Same-day sick visits
 - Patient portal with messaging
 
-⭐⭐⭐⭐⭐ (4.8) ${patient?.carrier || 'Network'} Health Center
+ (4.8) ${patient?.carrier || 'Network'} Health Center
 - All specialties under one roof
 - Integrated pharmacy
 - Lab & imaging on-site
 
 **Schedule Appointments:**
 Mobile App: Direct booking
-💻 Online: Portal scheduling
-📞 Concierge: 1-800-DOCTORS
+ Online: Portal scheduling
+ Concierge: 1-800-DOCTORS
 
 *All listed providers confirmed in-network as of ${new Date().toLocaleDateString()}*`
       }
@@ -174,9 +376,9 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('heart')) ?
 • Echocardiograms - Not required for initial, required for follow-ups` : ''}
 
 **Expedited Review Available For:**
-✅ Urgent medical conditions
-✅ Continuation of current therapy
-✅ Hospital discharge medications
+ Urgent medical conditions
+ Continuation of current therapy
+ Hospital discharge medications
 
 **Average Approval Times:**
 • Standard: 3-5 business days
@@ -200,10 +402,10 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('pregnancy')) ?
 • Breast pumps: Covered, no PA needed
 
 **Already Pre-Approved:**
-✅ All routine prenatal visits
-✅ Delivery and hospital stay (3 days vaginal, 5 days C-section)
-✅ Postpartum care (6 weeks)
-✅ Lactation consultation (6 sessions)` :
+ All routine prenatal visits
+ Delivery and hospital stay (3 days vaginal, 5 days C-section)
+ Postpartum care (6 weeks)
+ Lactation consultation (6 sessions)` :
 `**Common Services - No PA Required:**
 • Primary care visits
 • Preventive care services
@@ -218,9 +420,9 @@ ${patient ?
 `• None currently on file`}
 
 **Quick Actions:**
-📞 PA Hotline: 1-800-XXX-XXXX (24/7)
+ PA Hotline: 1-800-XXX-XXXX (24/7)
 Mobile App: Submit PA with photo of prescription
-💻 Provider Portal: Electronic PA submission
+ Provider Portal: Electronic PA submission
 
 *Note: Your provider can request "peer-to-peer" review if initially denied.*`
       }
@@ -261,35 +463,35 @@ I can then provide detailed coverage analysis, identify gaps, and suggest optimi
 ${patient.currentConditions.map(condition => {
   if (condition.toLowerCase().includes('diabetes')) {
     return `**Diabetes Type 2 Management:**
-✅ Endocrinologist visits - Covered (referral required)
-✅ A1C testing - Covered quarterly
-✅ Diabetic supplies - Covered at 80% after deductible
-⚠️ CGM devices - Prior auth required
-✅ Nutrition counseling - 12 visits/year covered
-✅ Diabetic shoes - 1 pair/year with prescription`
+ Endocrinologist visits - Covered (referral required)
+ A1C testing - Covered quarterly
+ Diabetic supplies - Covered at 80% after deductible
+ CGM devices - Prior auth required
+ Nutrition counseling - 12 visits/year covered
+ Diabetic shoes - 1 pair/year with prescription`
   }
   if (condition.toLowerCase().includes('heart')) {
     return `**Heart Condition Management:**
-✅ Cardiology visits - Covered with referral
-✅ Cardiac rehabilitation - 36 sessions/year
-✅ Home BP monitoring - Device covered annually
-✅ Medications - Most cardiac drugs in Tier 2-3
-⚠️ Advanced imaging - Prior auth for CT/MRI
-✅ Emergency cardiac care - Covered at any facility`
+ Cardiology visits - Covered with referral
+ Cardiac rehabilitation - 36 sessions/year
+ Home BP monitoring - Device covered annually
+ Medications - Most cardiac drugs in Tier 2-3
+ Advanced imaging - Prior auth for CT/MRI
+ Emergency cardiac care - Covered at any facility`
   }
   if (condition.toLowerCase().includes('pregnancy')) {
     return `**Maternity Coverage:**
-✅ Prenatal care - 100% covered
-✅ Delivery & hospital - Covered after deductible
-✅ High-risk pregnancy - Additional monitoring covered
-✅ Genetic testing - Covered with medical necessity
-✅ Breast pump - Free through DME benefit
-✅ Newborn care - Covered from birth`
+ Prenatal care - 100% covered
+ Delivery & hospital - Covered after deductible
+ High-risk pregnancy - Additional monitoring covered
+ Genetic testing - Covered with medical necessity
+ Breast pump - Free through DME benefit
+ Newborn care - Covered from birth`
   }
   return `**${condition}:**
-✅ Specialist care - Covered with referral
-✅ Diagnostic testing - Covered per medical necessity
-✅ Treatment options - Varies by specific protocol`
+ Specialist care - Covered with referral
+ Diagnostic testing - Covered per medical necessity
+ Treatment options - Varies by specific protocol`
 }).join('\n\n')}
 
 ### Identified Opportunities
@@ -311,11 +513,11 @@ ${patient.currentConditions.map(condition => {
 
 ### Recommended Actions
 
-1. ✅ Schedule preventive screenings before deductible resets
-2. ✅ Request prior authorizations for Q1 procedures now
-3. ✅ Enroll in disease management programs (no cost)
-4. ✅ Review formulary for medication optimization
-5. ✅ Activate HSA contributions if eligible
+1.  Schedule preventive screenings before deductible resets
+2.  Request prior authorizations for Q1 procedures now
+3.  Enroll in disease management programs (no cost)
+4.  Review formulary for medication optimization
+5.  Activate HSA contributions if eligible
 
 **Estimated Annual Savings: $${Math.floor(Math.random() * 2000 + 1500)}**
 
@@ -336,16 +538,16 @@ Would you like me to help with any specific authorizations or provide details on
 
 **Referral Requirements:**
 ${planType.includes('HMO') ?
-`✅ **Referral REQUIRED** for all specialists
+` **Referral REQUIRED** for all specialists
 • Must be initiated by Primary Care Physician
 • Valid for 90 days or 3 visits (whichever comes first)
 • Can be extended by PCP if ongoing care needed` :
 planType.includes('PPO') ?
-`✅ **Referral NOT required** for in-network specialists
+` **Referral NOT required** for in-network specialists
 • Direct access to any specialist in network
 • Higher copay for out-of-network without referral
 • Some services may still need prior authorization` :
-`✅ **Referral recommended** but not required
+` **Referral recommended** but not required
 • Better coverage with PCP referral
 • Ensures care coordination
 • May expedite prior authorizations`}
@@ -388,20 +590,20 @@ ${patient ?
 `No active referrals found. Contact PCP to initiate.`}
 
 **Top-Rated Specialists in Network:**
-⭐⭐⭐⭐⭐ (4.8) Dr. Michael Roberts - Cardiology
+ (4.8) Dr. Michael Roberts - Cardiology
 - Accepting new patients
 - Specializes in: ${patient?.currentConditions.find(c => c.toLowerCase().includes('heart')) ? 'CHF management' : 'Preventive cardiology'}
 - Wait time: 5-7 days
 - Telehealth available
 
-⭐⭐⭐⭐⭐ (4.9) Dr. Jennifer Wu - Endocrinology
+ (4.9) Dr. Jennifer Wu - Endocrinology
 - Limited availability
 - Specializes in: Diabetes, Thyroid disorders
 - Wait time: 2-3 weeks
 - Evening appointments available
 
 **Virtual Specialist Consultations:**
-🖥️ Immediate availability for:
+ Immediate availability for:
 • Dermatology (photo consults)
 • Mental health counseling
 • Nutrition counseling
@@ -430,18 +632,18 @@ Cost: $${patient?.copays.telehealth || 25} vs $${patient?.copays.specialist || 6
         return `## Prescription Drug Formulary Analysis
 
 **Your Plan's Tier Structure:**
-• **Tier 1 - Generic:** $${patient?.rxCopays.generic || 10} copay
-• **Tier 2 - Preferred Brand:** $${patient?.rxCopays.brandPreferred || 35} copay
-• **Tier 3 - Non-Preferred:** $${patient?.rxCopays.brandNonPreferred || 70} copay
-• **Tier 4 - Specialty:** ${patient?.rxCopays.specialty || 30}% coinsurance
+• **Tier 1 - Generic:** $${patient?.copays?.genericDrugs || 10} copay
+• **Tier 2 - Preferred Brand:** $${patient?.copays?.brandDrugs || 35} copay
+• **Tier 3 - Non-Preferred:** $${(patient?.copays?.brandDrugs || 35) + 20} copay
+• **Tier 4 - Specialty:** $${patient?.copays?.specialtyDrugs || 100} copay
 
 ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
 `**Diabetes Medications Coverage:**
-✅ **Metformin** (Generic) - Tier 1: $10
-✅ **Jardiance** - Tier 2: $35 (PA may apply)
-⚠️ **Ozempic** - Tier 3: $70 (Prior auth required)
-✅ **Insulin Glargine** - Tier 2: $35
-✅ **Humalog** - Tier 2: $35 (generic available)
+ **Metformin** (Generic) - Tier 1: $10
+ **Jardiance** - Tier 2: $35 (PA may apply)
+ **Ozempic** - Tier 3: $70 (Prior auth required)
+ **Insulin Glargine** - Tier 2: $35
+ **Humalog** - Tier 2: $35 (generic available)
 
 **Cost-Saving Alternatives:**
 • Switch Jardiance → Generic empagliflozin: Save $25/month
@@ -454,7 +656,7 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
 • Antibiotics - Most in Tier 1`}
 
 **Pharmacy Benefits:**
-📍 **Preferred Pharmacies** (Lower copays):
+ **Preferred Pharmacies** (Lower copays):
 • CVS Pharmacy - 2 locations within 5 miles
 • Walgreens - 3 locations nearby
 • ${patient?.carrier || 'Plan'} Mail Order - Best prices
@@ -466,9 +668,9 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
 • No lines or waiting
 
 **Prior Authorization Fast-Track:**
-✅ Continuation of therapy: Usually auto-approved
-✅ Step therapy satisfied: Document previous trials
-✅ Medical necessity: Include diagnosis codes
+ Continuation of therapy: Usually auto-approved
+ Step therapy satisfied: Document previous trials
+ Medical necessity: Include diagnosis codes
 
 **Annual Rx Deductible:**
 ${patient?.rxDeductible ? `$${patient.rxDeductible} (Separate from medical)` : 'None - Copays apply immediately'}
@@ -501,12 +703,12 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('hypertension'))
 
 **Specialty Drug Programs:**
 ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
-`✅ Enrolled: Diabetes management program
+` Enrolled: Diabetes management program
 • Free glucose meter and strips
 • Nutrition counseling included
 • Medication therapy management
 • Estimated value: $1,200/year` :
-`⚠️ Not enrolled in any specialty programs
+` Not enrolled in any specialty programs
 Available programs based on your conditions:
 • Chronic care management
 • Medication therapy review
@@ -519,7 +721,7 @@ Several manufacturers offer copay cards:
 • Income-based programs available
 
 **Smart Refill Strategies:**
-📅 **Refill Optimization:**
+ **Refill Optimization:**
 • Sync all medications to same refill date
 • Use 90-day supplies when possible
 • Set auto-refill for maintenance meds
@@ -527,8 +729,8 @@ Several manufacturers offer copay cards:
 
 **Total Potential Annual Savings: $${Math.floor(Math.random() * 2000 + 1800)}**
 
-📞 Pharmacy Help Line: 1-800-RX-HELP (24/7)
-💻 Check coverage: Online formulary tool
+ Pharmacy Help Line: 1-800-RX-HELP (24/7)
+ Check coverage: Online formulary tool
 Mobile app: Price medications before filling`
       }
     ]
@@ -548,19 +750,19 @@ Mobile app: Price medications before filling`
 
 **Annual Screenings Due:**
 ${age >= 50 ?
-`✅ Colonoscopy screening - Due this year
-✅ Mammogram (women) - Annual
-✅ Prostate screening (men) - Discuss with PCP
-✅ Bone density scan - Every 2 years` :
+` Colonoscopy screening - Due this year
+ Mammogram (women) - Annual
+ Prostate screening (men) - Discuss with PCP
+ Bone density scan - Every 2 years` :
 age >= 40 ?
-`✅ Mammogram (women 40+) - Annual
-✅ Cholesterol screening - Every 5 years
-✅ Diabetes screening - Every 3 years
-✅ Blood pressure check - Annual` :
-`✅ Annual wellness exam
-✅ Cholesterol check - Every 5 years
-✅ Depression screening - Annual
-✅ STI screening - As recommended`}
+` Mammogram (women 40+) - Annual
+ Cholesterol screening - Every 5 years
+ Diabetes screening - Every 3 years
+ Blood pressure check - Annual` :
+` Annual wellness exam
+ Cholesterol check - Every 5 years
+ Depression screening - Annual
+ STI screening - As recommended`}
 
 **Immunizations Covered:**
 • Flu vaccine - Annual (available now)
@@ -579,7 +781,7 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('pregnancy')) ?
 • Nutrition planning tool
 • Sleep improvement program
 
-🏃 **Fitness Benefits:**
+ **Fitness Benefits:**
 • Gym membership discount: $25/month
 • Virtual fitness classes: Unlimited
 • Personal training: 2 free sessions
@@ -592,11 +794,11 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('pregnancy')) ?
 • Weight management program enrollment
 
 **Schedule Your Screenings:**
-📞 Wellness Concierge: 1-800-PREVENT
-💻 Online booking: 24/7 availability
-📍 Nearby centers: 15+ locations
+ Wellness Concierge: 1-800-PREVENT
+ Online booking: 24/7 availability
+ Nearby centers: 15+ locations
 
-⏰ **Best Practice:** Schedule all annual screenings in your birth month for easy tracking!`
+ **Best Practice:** Schedule all annual screenings in your birth month for easy tracking!`
       }
     ]
   },
@@ -613,7 +815,7 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('pregnancy')) ?
 
 **Virtual Care Options Available 24/7:**
 
-**💻 Video Visits - $${telehealthCopay} copay**
+** Video Visits - $${telehealthCopay} copay**
 Available for:
 • Primary care consultations
 • Mental health counseling
@@ -635,11 +837,11 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
   - Mental health support
 
 **Specialist Telehealth:**
-✅ Dermatology - Photo consultations
-✅ Psychiatry - Full service available
-✅ Cardiology - Follow-ups only
-✅ Endocrinology - Diabetes management
-⚠️ Neurology - Initial consult in-person required
+ Dermatology - Photo consultations
+ Psychiatry - Full service available
+ Cardiology - Follow-ups only
+ Endocrinology - Diabetes management
+ Neurology - Initial consult in-person required
 
 **Cost Comparison:**
 • Telehealth visit: $${telehealthCopay}
@@ -649,14 +851,14 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
 
 **How to Access:**
 1. Mobile app: "${patient?.carrier || 'Health'} Virtual Care"
-2. 💻 Patient portal video link
-3. ☎️ Phone consultations available
-4. 💬 Chat with nurse 24/7 (free)
+2.  Patient portal video link
+3.  Phone consultations available
+4.  Chat with nurse 24/7 (free)
 
 **Prescriptions:**
-✅ E-prescriptions sent directly to pharmacy
-✅ Controlled substances: Restrictions apply
-✅ Refills: Most medications eligible
+ E-prescriptions sent directly to pharmacy
+ Controlled substances: Restrictions apply
+ Refills: Most medications eligible
 
 **Tech Requirements:**
 • Smartphone, tablet, or computer
@@ -692,14 +894,14 @@ Progress: $${outOfPocketUsed} / $${outOfPocketMax} (${percentUsed}% used)
 ${generateProgressBar(percentUsed)}
 
 **Breakdown:**
-• **Deductible:** $${deductibleUsed} / $${patient.deductibles?.individual?.inNetwork || 1000} ✅
+• **Deductible:** $${deductibleUsed} / $${patient.deductibles?.individual?.inNetwork || 1000} 
 • **Copays YTD:** $${Math.floor(outOfPocketUsed * 0.3)}
 • **Coinsurance YTD:** $${Math.floor(outOfPocketUsed * 0.7 - deductibleUsed)}
 • **Remaining to Max:** $${remaining}
 
 **Monthly Spending Trend:**
 Average: $${Math.floor(outOfPocketUsed / ((new Date().getMonth() + 1)))} / month
-${percentUsed > 75 ? '⚠️ Approaching out-of-pocket maximum' : '✅ Within expected range'}
+${percentUsed > 75 ? ' Approaching out-of-pocket maximum' : ' Within expected range'}
 
 **Cost Structure After Deductible:**
 • Office visits: $${patient.copays.specialist} copay
@@ -728,7 +930,7 @@ ${remaining < 1000 ?
 
 **Year-End Planning:**
 ${new Date().getMonth() >= 9 ?
-`📅 Q4 Considerations:
+` Q4 Considerations:
 • ${remaining > 2000 ? 'Defer elective procedures to next year' : 'Complete procedures before deductible resets'}
 • FSA deadline: ${new Date().getFullYear()}-12-31
 • Submit all claims by year-end` :
@@ -751,14 +953,14 @@ Need help estimating costs for a specific procedure?`
 
 **When to Use Each Service:**
 
-**🚨 Emergency Room - $${patient?.copays.emergency || 300} copay**
+** Emergency Room - $${patient?.copays.emergency || 300} copay**
 Go for life-threatening conditions:
 • Chest pain, difficulty breathing
 • Severe bleeding or trauma
 • Stroke symptoms
 • Severe allergic reactions
 • Compound fractures
-⚠️ Copay waived if admitted
+ Copay waived if admitted
 
 **Urgent Care - $${patient?.copays.urgentCare || 75} copay**
 Best for non-life-threatening:
@@ -768,7 +970,7 @@ Best for non-life-threatening:
 • UTIs, ear infections
 • Mild allergic reactions
 
-**💻 Telehealth - $${patient?.copays.telehealth || 25} copay**
+** Telehealth - $${patient?.copays.telehealth || 25} copay**
 Start here when possible:
 • Medical advice
 • Prescription refills
@@ -776,12 +978,12 @@ Start here when possible:
 • Mental health support
 
 **Nearest In-Network Facilities:**
-📍 **Emergency Rooms:**
+ **Emergency Rooms:**
 • Regional Medical Center - 2.1 miles (Level 1 Trauma)
 • St. Mary's Hospital - 3.5 miles
 • Community General - 4.8 miles
 
-📍 **Urgent Care Centers:**
+ **Urgent Care Centers:**
 • QuickCare Clinic - 1.2 miles (Open til 10pm)
 • ${patient?.carrier || 'Plan'} Urgent Care - 2.0 miles (Open 24/7)
 • MinuteClinic - 0.8 miles (In CVS, til 8pm)
@@ -794,15 +996,15 @@ Treating a minor burn:
 Savings: Up to $${(patient?.copays.emergency || 300) - (patient?.copays.telehealth || 25)}
 
 **After-Hours Options:**
-📞 24/7 Nurse Line: 1-800-NURSE-RN (Free)
-💬 Chat with doctor: Via mobile app
-🚑 If unsure, call 911
+ 24/7 Nurse Line: 1-800-NURSE-RN (Free)
+ Chat with doctor: Via mobile app
+ If unsure, call 911
 
 **Important Coverage Notes:**
-✅ Emergency care covered at ANY hospital
-✅ No prior auth needed for emergencies
-✅ Out-of-network ER covered at in-network rate
-⚠️ Follow-up care must be in-network`
+ Emergency care covered at ANY hospital
+ No prior auth needed for emergencies
+ Out-of-network ER covered at in-network rate
+ Follow-up care must be in-network`
       }
     ]
   }
@@ -812,7 +1014,7 @@ Savings: Up to $${(patient?.copays.emergency || 300) - (patient?.copays.teleheal
 function generateProgressBar(percentage: number): string {
   const filled = Math.floor(percentage / 10)
   const empty = 10 - filled
-  return '█'.repeat(filled) + '░'.repeat(empty) + ` ${percentage}%`
+  return '[' + '='.repeat(filled) + '-'.repeat(empty) + ']'
 }
 
 /**
