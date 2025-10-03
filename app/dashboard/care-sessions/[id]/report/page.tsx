@@ -140,7 +140,7 @@ interface ReportData {
       }
       providerComparisons: Array<{
         name: string
-        estimatedCost: number
+        estimatedCareValue: number
         timeline: string
       }>
     }
@@ -474,9 +474,9 @@ export default function CareSessionReportPage() {
           qualityGrade: 'Comprehensive care coordination with evidence-based interventions'
         },
         providerComparisons: [
-          { name: 'Primary Care Medical Home', estimatedCost: 127500, timeline: '90-day care cycle' },
-          { name: 'ACO Care Coordination', estimatedCost: 145000, timeline: '6-month program' },
-          { name: 'Integrated Care Management', estimatedCost: 118000, timeline: '90-day intensive phase' }
+          { name: 'Primary Care Medical Home', estimatedCareValue: 127500, timeline: '90-day care cycle' },
+          { name: 'ACO Care Coordination', estimatedCareValue: 145000, timeline: '6-month program' },
+          { name: 'Integrated Care Management', estimatedCareValue: 118000, timeline: '90-day intensive phase' }
         ]
       }
     }
@@ -1395,7 +1395,7 @@ export default function CareSessionReportPage() {
             <h2 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-6">Detailed Area Findings</h2>
             
             <div className="space-y-3 sm:space-y-6">
-              {(reportData?.areaFindings || []).map((area, idx) => (
+              {(reportData?.assessmentAreas || []).map((area, idx) => (
                 <div key={idx} className="bg-gray-50 dark:bg-gray-900 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
                   {/* Mobile-optimized header with prominent repair cost */}
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3 sm:mb-4">
@@ -1417,12 +1417,12 @@ export default function CareSessionReportPage() {
                     <div className="bg-scc-red text-white px-3 py-1.5 rounded-lg w-full sm:w-auto">
                       <span className="text-xs font-medium">Repair Estimate:</span>
                       <span className="text-base sm:text-lg font-bold ml-1 block sm:inline">
-                        ${area.estimatedCost.toLocaleString()}
+                        ${area.estimatedCareValue.toLocaleString()}
                       </span>
                     </div>
                   </div>
                   
-                  <p className="text-xs sm:text-base text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">{area.description}</p>
+                  <p className="text-xs sm:text-base text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">{area.clinicalDescription}</p>
                   
                   {/* Technical Findings */}
                   {area.technicalFindings && (
