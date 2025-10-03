@@ -1758,7 +1758,7 @@ export default function CareSessionReportPage() {
                   Strategic Considerations
                 </h3>
                 <div className="space-y-3">
-                  {reportData.aiInsights.claimsIntelligence.strategicConsiderations.map((strategy, idx) => (
+                  {reportData.aiInsights.payerIntelligence?.strategicConsiderations?.map((strategy, idx) => (
                     <div key={idx} className="flex items-start gap-3">
                       <div className="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">
                         {idx + 1}
