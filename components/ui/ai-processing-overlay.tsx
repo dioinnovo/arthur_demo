@@ -126,7 +126,7 @@ export function AIProcessingOverlay({ isVisible, onComplete }: AIProcessingOverl
       clearInterval(featureInterval)
       clearInterval(progressInterval)
     }
-  }, [isVisible, currentStage, onComplete])
+  }, [isVisible, onComplete])
 
   const CurrentIcon = processingStages[currentStage]?.icon || Brain
 

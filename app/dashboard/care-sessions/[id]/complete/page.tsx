@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { AIProcessingOverlay } from '@/components/ui/ai-processing-overlay'
 import {
@@ -15,7 +15,7 @@ export default function CompleteCareSessionPage() {
   const sessionId = params.id as string
   const [isProcessing, setIsProcessing] = useState(true)
 
-  const handleProcessingComplete = () => {
+  const handleProcessingComplete = useCallback(() => {
     // Generate a unique report ID
     const reportId = `RPT-${Date.now()}`
 
@@ -78,7 +78,7 @@ export default function CompleteCareSessionPage() {
 
     // Navigate to the review page for approval workflow
     router.push(`/dashboard/care-sessions/${sessionId}/review`)
-  }
+  }, [router, sessionId])
 
   useEffect(() => {
     // Start processing immediately when page loads

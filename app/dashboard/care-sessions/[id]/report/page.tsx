@@ -11,7 +11,7 @@ import {
   Globe, Shield, AlertCircle, UserCheck
 } from 'lucide-react'
 import Link from 'next/link'
-import { generateCareSessionPDF, downloadHTMLReport, CareSessionReportData } from '@/lib/pdf/simple-report-generator'
+import { generateInspectionPDF, downloadHTMLReport, InspectionReportData } from '@/lib/pdf/simple-report-generator'
 
 interface ReportData {
   metadata: {
@@ -495,7 +495,7 @@ export default function CareSessionReportPage() {
 
     try {
       // Prepare data for PDF generation
-      const pdfData: CareSessionReportData = {
+      const pdfData: InspectionReportData = {
         metadata: {
           reportId: reportData.metadata.reportId,
           sessionNumber: `CS-${sessionId}`,
@@ -525,7 +525,7 @@ export default function CareSessionReportPage() {
       }
 
       // Generate PDF
-      await generateCareSessionPDF(pdfData)
+      await generateInspectionPDF(pdfData)
       setIsDownloading(false)
     } catch (error) {
       console.error('Error generating PDF:', error)
