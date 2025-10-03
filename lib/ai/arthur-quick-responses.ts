@@ -50,7 +50,7 @@ const responseTemplates: ResponseTemplate[] = [
 
 **Alternative Options:**
 Telehealth consultation available today
-Virtual visit copay: $${patient?.copays?.telehealth || 25}
+Virtual visit copay: $25
 
 Would you like me to initiate the referral process?`
       }
@@ -448,7 +448,7 @@ I can then provide detailed coverage analysis, identify gaps, and suggest optimi
 
 **Plan:** ${patient.carrier} - ${patient.planType}
 **Policy #:** ${patient.policyNumber}
-**Effective:** ${patient.effectiveDate}
+**Effective:** ${patient.effectiveDates}
 
 ### Coverage Summary
 
@@ -497,7 +497,7 @@ ${patient.currentConditions.map(condition => {
 ### Identified Opportunities
 
 1. **Deductible Optimization:**
-   • Current spending: $${patient.deductibles.individual.used}
+   • In-Network: $${patient.deductibles.individual.inNetwork}
    • Remaining: $${patient.deductibles.individual.remaining}
    • Strategy: Schedule planned procedures before year-end
 
@@ -572,7 +572,7 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
 
 **Copay Structure:**
 • In-network specialist: $${patient?.copays.specialist || 60}
-• Out-of-network: ${patient?.coinsurancePercentage || 40}% after deductible
+• Out-of-network: 40% after deductible
 • Second opinions: Covered same as initial consultation
 
 **Tip:** Book through the patient portal for faster scheduling and automatic referral processing.`
@@ -609,7 +609,7 @@ ${patient ?
 • Nutrition counseling
 • Sleep medicine consultation
 
-Cost: $${patient?.copays.telehealth || 25} vs $${patient?.copays.specialist || 60} in-person
+Cost: $25 vs $${patient?.copays.specialist || 60} in-person
 
 **How to Get a Referral:**
 1. Message PCP through patient portal
@@ -673,7 +673,7 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
  Medical necessity: Include diagnosis codes
 
 **Annual Rx Deductible:**
-${patient?.rxDeductible ? `$${patient.rxDeductible} (Separate from medical)` : 'None - Copays apply immediately'}
+None - Copays apply immediately
 
 Would you like me to check coverage for specific medications or find therapeutic alternatives?`
       },
@@ -809,7 +809,7 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('pregnancy')) ?
     responses: [
       (patientName) => {
         const patient = patientName ? getPatientData(patientName) : null
-        const telehealthCopay = patient?.copays.telehealth || 25
+        const telehealthCopay = 25
 
         return `## Telehealth Benefits Overview
 
@@ -846,7 +846,7 @@ ${patient?.currentConditions.some(c => c.toLowerCase().includes('diabetes')) ?
 **Cost Comparison:**
 • Telehealth visit: $${telehealthCopay}
 • Urgent care: $${patient?.copays.urgentCare || 75}
-• Emergency room: $${patient?.copays.emergency || 300}
+• Emergency room: $${patient?.copays.emergencyRoom || 300}
 • In-person PCP: $${patient?.copays.primaryCare || 30}
 
 **How to Access:**
