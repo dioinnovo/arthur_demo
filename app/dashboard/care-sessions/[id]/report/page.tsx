@@ -11,122 +11,122 @@ import {
   Globe, Shield, AlertCircle, UserCheck
 } from 'lucide-react'
 import Link from 'next/link'
-import { generateInspectionPDF, downloadHTMLReport, InspectionReportData } from '@/lib/pdf/simple-report-generator'
+import { generateCareSessionPDF, downloadHTMLReport, CareSessionReportData } from '@/lib/pdf/simple-report-generator'
 
 interface ReportData {
   metadata: {
     reportId: string
     generatedDate: string
-    inspector: string
-    property: {
-      address: string
-      type: 'residential' | 'commercial'
-      yearBuilt: string
-      owner: string
-      policyNumber: string
+    assessmentCoordinator: string
+    patient: {
+      name: string
+      type: 'medicare' | 'medicaid' | 'commercial' | 'dual-eligible'
+      dateOfBirth: string
+      medicalRecordNumber: string
+      insuranceId: string
     }
-    claimInfo: {
-      dateOfLoss: string
-      damageTypes: string[]
-      initialEstimate: number
+    sessionInfo: {
+      assessmentDate: string
+      conditions: string[]
+      initialRiskScore: number
     }
   }
   executiveSummary: {
-    totalDamageValue: number
-    criticalIssues: number
-    repairRecommendations: string[]
-    timelineEstimate: string
-    confidenceScore: number
+    totalCareGapValue: number
+    criticalCareGaps: number
+    clinicalRecommendations: string[]
+    carePlanTimeline: string
+    assessmentConfidence: number
   }
-  areaFindings: Array<{
+  assessmentAreas: Array<{
     area: string
     category: string
-    status: 'damaged' | 'minor' | 'none'
-    photoCount: number
-    description: string
-    estimatedCost: number
+    status: 'critical' | 'needs-attention' | 'stable' | 'completed'
+    dataPointsCollected: number
+    clinicalDescription: string
+    estimatedCareValue: number
     priority: 'high' | 'medium' | 'low'
     recommendations: string[]
-    technicalFindings?: Record<string, string>
-    materialSpecs?: Record<string, string>
-    environmentalConcerns?: Record<string, string>
-    appliancesAffected?: string[]
-    energyEfficiency?: Record<string, string | number>
-    safetyHazards?: string[]
-    waterQualityIssues?: Record<string, string>
+    clinicalFindings?: Record<string, string>
+    medications?: Record<string, string>
+    labResults?: Record<string, string>
+    symptomsReported?: string[]
+    vitalSigns?: Record<string, string | number>
+    riskFactors?: string[]
+    comorbidities?: Record<string, string>
   }>
   aiInsights: {
-    hiddenDamageEstimate: number
-    codeUpgradeOpportunities: number
-    historicalRecovery: number
-    marketComparison: string
+    unreportedConditionsEstimate: number
+    qualityImprovementOpportunities: number
+    historicalOutcomes: number
+    populationComparison: string
     confidenceMetrics: {
-      damagePrediction: number
+      conditionPrediction: number
       costAccuracy: number
       timelineReliability: number
       riskAssessment: number
     }
     historicalData: {
-      similarClaims: number
-      averageSettlement: number
-      timeToResolution: string
-      litigationRate: string
-      carrierBehavior: string
+      similarCases: number
+      averageOutcome: number
+      timeToStabilization: string
+      readmissionRate: string
+      payerBehavior: string
     }
     predictiveAnalysis: {
-      additionalDamageRisk: string
-      costInflationFactor: string
-      materialAvailability: string
-      contractorCapacity: string
+      additionalConditionRisk: string
+      costTrendFactor: string
+      specialistAvailability: string
+      providerCapacity: string
     }
     riskAssessment: string[]
-    environmentalFactors: {
-      hurricaneHistory: string
-      floodZone: string
-      soilConditions: string
-      seismicRisk: string
-      windZone: string
+    socialDeterminants: {
+      housingStability: string
+      foodSecurity: string
+      transportationAccess: string
+      socialSupport: string
+      educationLevel: string
     }
-    claimsIntelligence: {
-      carrierProfile: {
+    payerIntelligence: {
+      insuranceProfile: {
         name: string
-        claimsReputation: string
-        negotiationHistory: string
-        preferredExperts: string
-        timelineBehavior: string
+        authorizationHistory: string
+        coveragePatterns: string
+        preferredProviders: string
+        timelineExpectations: string
       }
       strategicConsiderations: string[]
     }
   }
   financialSummary: {
-    currentClaimValue: number
-    historicalRecovery: number
-    potentialSupplemental: number
-    totalRecoveryOpportunity: number
+    currentCareValue: number
+    historicalOutcomeValue: number
+    potentialQualityBonus: number
+    totalValueOpportunity: number
     breakdown: Array<{
       category: string
       amount: number
       description: string
     }>
     detailedCostAnalysis: {
-      laborCosts: {
-        skilled: { rate: number, hours: number, total: number }
-        general: { rate: number, hours: number, total: number }
-        specialized: { rate: number, hours: number, total: number }
+      professionalServices: {
+        primaryCare: { visits: number, rate: number, total: number }
+        specialists: { visits: number, rate: number, total: number }
+        ancillaryServices: { sessions: number, rate: number, total: number }
       }
-      materialCosts: {
-        roofing: { sqft: number, rate: number, total: number }
-        flooring: { sqft: number, rate: number, total: number }
-        electrical: { circuits: number, rate: number, total: number }
-        plumbing: { fixtures: number, average: number, total: number }
+      medicationCosts: {
+        chronicMedications: { count: number, monthly: number, total: number }
+        acuteMedications: { count: number, monthly: number, total: number }
+        biologics: { count: number, monthly: number, total: number }
+        dme: { items: number, average: number, total: number }
       }
-      permitsCosts: {
-        building: number
-        electrical: number
-        plumbing: number
-        environmental: number
+      diagnosticCosts: {
+        laboratory: number
+        imaging: number
+        specializedTesting: number
+        monitoring: number
       }
-      contingencyReserve: {
+      qualityReserve: {
         percentage: number
         amount: number
         justification: string
@@ -134,20 +134,20 @@ interface ReportData {
     }
     marketComparatives: {
       regionalAverages: {
-        sqftCost: number
-        timelineWeeks: number
+        perMemberPerMonth: number
+        episodeDurationWeeks: number
         qualityGrade: string
       }
-      competitiveBids: Array<{
+      providerComparisons: Array<{
         name: string
-        bid: number
+        estimatedCost: number
         timeline: string
       }>
     }
   }
 }
 
-export default function InspectionReportPage() {
+export default function CareSessionReportPage() {
   const params = useParams()
   const router = useRouter()
   const sessionId = params.id as string
@@ -157,7 +157,7 @@ export default function InspectionReportPage() {
   const [isDownloading, setIsDownloading] = useState(false)
   const [isApproved, setIsApproved] = useState<boolean | null>(null)
   const [storedReportData, setStoredReportData] = useState<any>(null)
-  const [claimId, setClaimId] = useState<string | null>(null)
+  const [careSessionId, setCareSessionId] = useState<string | null>(null)
 
   // Check if report is approved on mount and load data
   useEffect(() => {
@@ -170,15 +170,15 @@ export default function InspectionReportPage() {
       if (parsedData.status === 'approved') {
         setIsApproved(true)
         setStoredReportData(parsedData)
-        if (parsedData.claimId) {
-          setClaimId(parsedData.claimId)
+        if (parsedData.careSessionId) {
+          setCareSessionId(parsedData.careSessionId)
         }
         return // Exit early, we have our data
       }
     }
 
-    // Fallback: Check sessionStorage for old inspection reports
-    const reports = JSON.parse(sessionStorage.getItem('inspection_reports') || '[]')
+    // Fallback: Check sessionStorage for old care session reports
+    const reports = JSON.parse(sessionStorage.getItem('care_session_reports') || '[]')
     const report = reports.find((r: any) => r.sessionId === sessionId)
 
     if (report) {
@@ -191,8 +191,8 @@ export default function InspectionReportPage() {
           const fullReport = JSON.parse(sessionStorage.getItem(fullReportKey) || '{}')
           if (fullReport.status === 'approved' || fullReport.status === 'sent') {
             setStoredReportData(fullReport)
-            if (fullReport.claimId) {
-              setClaimId(fullReport.claimId)
+            if (fullReport.careSessionId) {
+              setCareSessionId(fullReport.careSessionId)
             }
           }
         }
@@ -206,13 +206,13 @@ export default function InspectionReportPage() {
       setIsApproved(true)
     }
 
-    // Fallback: load from inspection data
-    if (!claimId) {
-      const sessionData = localStorage.getItem(`inspection-${sessionId}-data`)
+    // Fallback: load from care session data
+    if (!careSessionId) {
+      const sessionData = localStorage.getItem(`care-session-${sessionId}-data`)
       if (sessionData) {
-        const parsedInspection = JSON.parse(sessionData)
-        if (parsedInspection.claimId) {
-          setClaimId(parsedInspection.claimId)
+        const parsedSession = JSON.parse(sessionData)
+        if (parsedSession.careSessionId) {
+          setCareSessionId(parsedSession.careSessionId)
         }
       }
     }
@@ -221,317 +221,262 @@ export default function InspectionReportPage() {
   // Check if stored data is care plan (healthcare) vs inspection report (property)
   const isCareplanData = storedReportData && storedReportData.patient && !storedReportData.metadata
 
-  // Comprehensive AI-Enhanced Report Data - Generated by SCC Intelligence Platform
+  // For healthcare care sessions (CS-001), use healthcare data as default
+  const isHealthcareSession = sessionId.startsWith('CS-')
+
+  // Comprehensive AI-Enhanced Report Data - Generated by Arthur Health Intelligence Platform
   const reportData: ReportData = (storedReportData && !isCareplanData) ? storedReportData : {
     metadata: {
-      reportId: `RPT-${sessionId}`,
-      generatedDate: '2025-09-11',
-      inspector: 'James Rodriguez',
-      property: {
-        address: '1234 Ocean Drive, Miami Beach, FL 33101',
-        type: 'residential',
-        yearBuilt: '2005',
-        owner: 'Johnson Properties LLC',
-        policyNumber: 'POL-123456789'
+      reportId: `CPR-${sessionId}`,
+      generatedDate: new Date().toISOString(),
+      assessmentCoordinator: 'Arthur Health Care Coordinator',
+      patient: {
+        name: 'Margaret Thompson',
+        type: 'medicare',
+        dateOfBirth: '1962-03-15',
+        medicalRecordNumber: 'MRN-784512',
+        insuranceId: 'MCR-9876543210'
       },
-      claimInfo: {
-        dateOfLoss: '2024-03-15',
-        damageTypes: ['Hurricane', 'Water', 'Wind'],
-        initialEstimate: 165000
+      sessionInfo: {
+        assessmentDate: new Date().toISOString(),
+        conditions: ['Type 2 Diabetes Mellitus', 'Hypertension', 'Hyperlipidemia'],
+        initialRiskScore: 68
       }
     },
     executiveSummary: {
-      totalDamageValue: 285000,
-      criticalIssues: 3,
-      repairRecommendations: [
-        'Immediate mold remediation required',
-        'Emergency roof tarping and structural assessment',
-        'HVAC system complete replacement',
-        'Electrical safety inspection mandatory'
+      totalCareGapValue: 127500,
+      criticalCareGaps: 4,
+      clinicalRecommendations: [
+        'Immediate A1C control - target below 7.0%',
+        'Blood pressure medication adjustment required',
+        'Initiate statin therapy for cholesterol management',
+        'Schedule comprehensive diabetic foot examination'
       ],
-      timelineEstimate: '6-8 weeks for complete restoration',
-      confidenceScore: 94
+      carePlanTimeline: '90-day care plan with monthly follow-ups',
+      assessmentConfidence: 92
     },
-    areaFindings: [
+    assessmentAreas: [
       {
-        area: 'Roof System & Weather Protection',
-        category: 'Exterior',
-        status: 'damaged',
-        photoCount: 18,
-        description: 'Catastrophic wind uplift damage affecting 45% of roof surface. 47 asphalt shingles completely missing, exposing synthetic underlayment. Granule loss on remaining shingles indicates hail impact. Three sections of guttering detached with soffit damage. Flashing compromised at chimney and vent penetrations.',
-        estimatedCost: 67500,
+        area: 'Vitals & Measurements',
+        category: 'Clinical Assessment',
+        status: 'completed',
+        dataPointsCollected: 8,
+        clinicalDescription: 'Comprehensive vital signs assessment reveals elevated blood pressure at 158/94 mmHg (Stage 2 Hypertension) and BMI of 32.4 (Obese Class I). Patient reports medication adherence challenges with current 3x daily dosing schedule. Blood glucose trending shows afternoon spikes averaging 220 mg/dL. Weight increased 8 lbs since last quarterly visit.',
+        estimatedCareValue: 12500,
         priority: 'high',
-        technicalFindings: {
-          windSpeed: '95+ mph sustained',
-          hailSize: '1.75 inch diameter',
-          exposureLevel: 'Class 4 impact damage',
-          structuralImpact: 'Decking inspection required',
-          codeUpgrades: 'Hurricane strapping, impact-resistant materials'
-        },
-        materialSpecs: {
-          shingles: 'GAF Timberline HD, Charcoal (30-year)',
-          underlayment: 'Synthetic, self-adhering ice & water shield',
-          decking: '7/16" OSB structural sheathing inspection required',
-          flashing: 'Galvanized steel, step and apron replacement'
+        clinicalFindings: {
+          bloodPressure: '158/94 mmHg (target: <130/80)',
+          bloodGlucose: 'Fasting 145 mg/dL, Post-prandial 220 mg/dL',
+          a1c: '8.2% (target: <7.0%)',
+          bmi: '32.4 (Obese Class I)',
+          lipidPanel: 'LDL 142 mg/dL (target: <100)'
         },
         recommendations: [
-          'Emergency tarping within 24 hours',
-          'Structural engineering assessment',
-          'Complete roof system replacement with code upgrades',
-          'Hurricane strap installation per Florida Building Code'
+          'Initiate combination antihypertensive therapy - ACE inhibitor + thiazide diuretic',
+          'Transition to long-acting diabetes medication for simplified dosing',
+          'Weekly BP monitoring with home monitoring device',
+          'Endocrinology consult for A1C optimization',
+          'Nutrition referral for medical nutrition therapy'
         ]
       },
       {
-        area: 'Primary Living Areas',
-        category: 'Interior',
-        status: 'damaged',
-        photoCount: 24,
-        description: 'Extensive water intrusion affecting 1,200 sq ft of interior space. Multiple ceiling penetrations with active water damage patterns. Hardwood flooring cupping and separation across 800 sq ft. Drywall moisture content exceeds 28% in affected areas. Visible mold growth detected behind baseboards and electrical outlets.',
-        estimatedCost: 48000,
+        area: 'Medication Review',
+        category: 'Clinical Assessment',
+        status: 'completed',
+        dataPointsCollected: 12,
+        clinicalDescription: 'Polypharmacy identified with 9 active medications and adherence barriers due to complex regimen. Patient reports missed doses 3-4 times weekly, primarily afternoon metformin. Statin therapy suboptimal - taking 20mg vs prescribed 40mg due to cost concerns. No documentation of medication reconciliation in past 6 months.',
+        estimatedCareValue: 18000,
         priority: 'high',
-        technicalFindings: {
-          moistureContent: '28-35% (normal: <16%)',
-          temperatureVariation: '15°F differential zones',
-          airQualityIndex: 'Elevated spore count: 2,400/m³',
-          structuralMoisture: 'Floor joists: 22% MC',
-          insulationSaturation: '85% compromised R-value'
-        },
-        environmentalConcerns: {
-          moldType: 'Stachybotrys chartarum detected',
-          airborne: 'Spore levels 4x normal baseline',
-          healthRisk: 'Class 2 - Moderate respiratory risk',
-          containment: 'Required per IICRC S520 standards'
+        clinicalFindings: {
+          medicationCount: '9 active prescriptions',
+          adherenceRate: '68% (target: >80%)',
+          potentialInteractions: '2 moderate drug-drug interactions identified',
+          costBarrier: '$340/month out-of-pocket costs',
+          duplicateTherapy: 'No duplications identified'
         },
         recommendations: [
-          'Immediate containment barriers',
-          'Professional mold remediation (IICRC certified)',
-          'Complete flooring replacement',
-          'Drywall replacement up to 4ft height',
-          'HEPA air filtration during restoration'
+          'Consolidate to long-acting formulations - reduce from TID to QD dosing',
+          'Switch to generic alternatives - reduce OOP cost by estimated $180/month',
+          'Implement pill organizer and medication synchronization program',
+          'Pharmacist consultation for medication therapy management',
+          'Prior authorization for GLP-1 agonist to address A1C and weight'
         ]
       },
       {
-        area: 'Kitchen & Food Preparation Zone',
-        category: 'Interior',
-        status: 'damaged',
-        photoCount: 16,
-        description: 'Significant water damage to cabinetry and electrical systems. Custom hardwood cabinets show 15% moisture expansion and veneer delamination. Granite countertop shows stress fractures near sink area. All major appliances show water contact damage. GFCI outlets tripped - electrical safety hazard present.',
-        estimatedCost: 42000,
+        area: 'Symptom Assessment',
+        category: 'Clinical Assessment',
+        status: 'completed',
+        dataPointsCollected: 6,
+        clinicalDescription: 'Patient reports worsening fatigue, nocturia (3-4x nightly), and intermittent lower extremity edema. Denies chest pain but endorses dyspnea on exertion after one flight of stairs. PHQ-9 score of 11 indicates moderate depression, likely related to chronic disease burden. Sleep quality poor due to nocturia and restless legs.',
+        estimatedCareValue: 15000,
         priority: 'high',
-        technicalFindings: {
-          cabinetMoisture: '19-24% MC (exceeds 16% threshold)',
-          electricalHazard: '3 GFCI circuits compromised',
-          flooringDamage: 'Ceramic tile: 12% hairline cracks',
-          applianceImpact: 'Water line contamination detected',
-          ventilationIssue: 'Range hood ductwork compromised'
+        clinicalFindings: {
+          phq9Score: '11 (Moderate depression)',
+          nocturiaFrequency: '3-4 episodes per night',
+          functionalCapacity: 'NYHA Class II - dyspnea with moderate exertion',
+          sleepQuality: 'PSQI score 14 (poor sleep)',
+          peripheralEdema: '1+ bilateral lower extremities'
         },
-        appliancesAffected: [
-          'Refrigerator: Water filtration system contaminated',
-          'Dishwasher: Control board water damage',
-          'Range/Oven: Electrical connections compromised',
-          'Microwave: Ventilation system affected'
-        ],
         recommendations: [
-          'Immediate electrical disconnect and inspection',
-          'Complete cabinet replacement with water-resistant materials',
-          'Appliance replacement due to water contamination',
-          'Granite countertop professional assessment',
-          'GFCI circuit rewiring per NEC standards'
+          'Cardiology referral for dyspnea evaluation - r/o heart failure',
+          'Optimize diuretic timing to reduce nocturia',
+          'Mental health referral for depression management',
+          'Sleep study consideration if symptoms persist',
+          'Patient education on symptom recognition and when to seek care'
         ]
       },
       {
-        area: 'HVAC & Climate Control Systems',
-        category: 'Systems',
-        status: 'damaged',
-        photoCount: 12,
-        description: 'Complete system failure due to flood contamination. 4-ton central air unit submerged for 6+ hours. Ductwork shows standing water and organic growth. Return air system compromised with debris infiltration. Condensate drainage system backed up, contributing to interior flooding.',
-        estimatedCost: 38000,
+        area: 'Care Plan Review',
+        category: 'Clinical Assessment',
+        status: 'completed',
+        dataPointsCollected: 10,
+        clinicalDescription: 'Current care plan lacks coordination between multiple specialists. Last PCP visit 4 months ago, endocrinology 8 months ago, cardiology 6 months ago - no documentation of inter-provider communication. Overdue for diabetic foot exam, retinal screening, and annual wellness visit. No advance care planning documented.',
+        estimatedCareValue: 28000,
         priority: 'high',
-        technicalFindings: {
-          systemAge: '8 years (Trane XR14)',
-          contaminationLevel: 'Category 3 water exposure',
-          ductworkCompromise: '85% of system affected',
-          insulationStatus: 'Complete replacement required',
-          airQualityRisk: 'High - biological contaminants present'
-        },
-        energyEfficiency: {
-          currentSEER: '14 (pre-damage rating)',
-          recommendedSEER: '16+ for Florida climate zone',
-          estimatedSavings: '$1,200 annually with upgrade',
-          utilityRebates: 'Up to $1,500 available'
+        clinicalFindings: {
+          careGaps: '4 major preventive care gaps identified',
+          specialistVisits: '3 specialists, no care coordination notes',
+          complianceWithGuidelines: '52% adherence to diabetes quality measures',
+          erVisits: '2 visits in past 6 months (hyperglycemia, HTN urgency)',
+          hospitalization: '1 admission in past year (DKA)'
         },
         recommendations: [
-          'Complete system replacement - not economically repairable',
-          'Ductwork replacement with antimicrobial treatment',
-          'High-efficiency system upgrade (16+ SEER rating)',
-          'Smart thermostat installation',
-          'Air quality monitoring system integration'
+          'Implement comprehensive care coordination with care manager assignment',
+          'Schedule overdue preventive screenings within 30 days',
+          'Establish regular interdisciplinary team huddles',
+          'Create patient-centered medical home structure',
+          'Develop shared care plan with patient goals and preferences'
         ]
       },
       {
-        area: 'Electrical Infrastructure',
-        category: 'Systems',
-        status: 'damaged',
-        photoCount: 8,
-        description: 'Critical electrical safety concerns throughout property. Main panel shows water intrusion with visible corrosion on bus bars. Multiple circuits tripped with arc fault indicators. Ground fault protection compromised in wet areas. Aluminum wiring detected in portions of the home built in 2005.',
-        estimatedCost: 28500,
-        priority: 'high',
-        technicalFindings: {
-          panelAge: '19 years (200A service)',
-          corrosionLevel: 'Moderate on 8 of 24 circuits',
-          groundingIssues: '3 GFCI outlets non-functional',
-          aluminumWiring: '40% of branch circuits',
-          codeCompliance: 'Does not meet current NEC 2020'
-        },
-        safetyHazards: [
-          'Water in electrical panel - immediate disconnect required',
-          'Aluminum wiring oxidation - fire hazard',
-          'Missing GFCI protection in bathroom and kitchen',
-          'Exposed wiring in damaged wall sections'
-        ],
-        recommendations: [
-          'Emergency electrical inspection by licensed electrician',
-          'Main panel replacement with arc fault breakers',
-          'Aluminum wiring remediation with copper pigtailing',
-          'GFCI outlet installation per current code',
-          'Whole-house surge protection system'
-        ]
-      },
-      {
-        area: 'Plumbing & Water Systems',
-        category: 'Systems',
-        status: 'damaged',
-        photoCount: 10,
-        description: 'Multiple plumbing system failures contributing to water damage. Supply lines show pressure damage from storm surge. Water heater compromised with sediment contamination. Sewage backup evidence in lower-level areas. Fresh water contamination detected.',
-        estimatedCost: 22000,
+        area: 'Patient Education',
+        category: 'Clinical Assessment',
+        status: 'completed',
+        dataPointsCollected: 5,
+        clinicalDescription: 'Significant knowledge gaps identified in diabetes self-management. Patient unable to demonstrate proper glucose monitoring technique and unaware of target ranges. No carbohydrate counting knowledge. Believes "natural remedies" can replace medications. Limited health literacy - reads at 6th grade level per assessment.',
+        estimatedCareValue: 14000,
         priority: 'medium',
-        technicalFindings: {
-          waterHeaterAge: '6 years (50-gallon gas)',
-          supplyLinesDamage: 'Pressure test failed - 3 locations',
-          sewerBackup: 'Category 3 contamination present',
-          waterQuality: 'Bacterial count elevated',
-          fixtureDamage: '60% require replacement'
-        },
-        waterQualityIssues: {
-          bacterialCount: '2,400 CFU/mL (normal: <100)',
-          contaminants: 'Organic debris, sewage infiltration',
-          treatmentRequired: 'Disinfection and filtration',
-          testingSchedule: 'Weekly monitoring for 30 days'
+        clinicalFindings: {
+          healthLiteracy: '6th grade reading level (REALM score)',
+          diabetesKnowledge: 'DKT score 9/15 (60% - needs improvement)',
+          selfManagementSkills: 'Unable to adjust insulin based on readings',
+          nutritionalKnowledge: 'No understanding of carb counting or portions',
+          medicationUnderstanding: 'Cannot name medications or purposes'
         },
         recommendations: [
-          'Complete water quality testing and treatment',
-          'Water heater replacement due to contamination',
-          'Supply line repairs with pressure testing',
-          'Sewage system inspection and cleaning',
-          'Whole-house water filtration system installation'
+          'Enroll in diabetes self-management education (DSME) program',
+          'Provide teach-back method education at 6th grade literacy level',
+          'Connect with certified diabetes educator for ongoing support',
+          'Implement shared decision-making tools for medication choices',
+          'Provide culturally appropriate educational materials in preferred format'
         ]
       }
     ],
     aiInsights: {
-      hiddenDamageEstimate: 78000,
-      codeUpgradeOpportunities: 34000,
-      historicalRecovery: 52000,
-      marketComparison: 'Comparative analysis of 247 similar claims in Miami-Dade County shows average settlement 42% higher than initial estimates',
+      unreportedConditionsEstimate: 24500,
+      qualityImprovementOpportunities: 18000,
+      historicalOutcomes: 32000,
+      populationComparison: 'Comparative analysis of 342 similar Medicare Advantage patients with Type 2 Diabetes shows average annual cost savings of 38% through optimized care coordination and preventive interventions',
       confidenceMetrics: {
-        damagePrediction: 94.3,
-        costAccuracy: 91.7,
-        timelineReliability: 88.9,
-        riskAssessment: 96.2
+        conditionPrediction: 91.8,
+        costAccuracy: 89.4,
+        timelineReliability: 92.1,
+        riskAssessment: 93.7
       },
       historicalData: {
-        similarClaims: 247,
-        averageSettlement: 465000,
-        timeToResolution: '4.2 months average',
-        litigationRate: '18% of cases',
-        carrierBehavior: 'Historically underpays structural claims by 28%'
+        similarCases: 342,
+        averageOutcome: 127500,
+        timeToStabilization: '90-day care plan with ongoing monitoring',
+        readmissionRate: '3% appeal rate for denied services',
+        payerBehavior: 'Medicare Advantage plan historically approves 82% of specialist referrals within 48 hours'
       },
       predictiveAnalysis: {
-        additionalDamageRisk: 'HIGH - 87% probability of discovering concealed damage',
-        costInflationFactor: '12% anticipated increase over 6-month timeline',
-        materialAvailability: 'Moderate delays expected for roofing materials',
-        contractorCapacity: 'Limited availability in storm-affected region'
+        additionalConditionRisk: 'HIGH - 84% probability of identifying additional uncoded chronic conditions through comprehensive assessment',
+        costTrendFactor: '8% anticipated cost increase without intervention over 12-month period',
+        specialistAvailability: 'Good access to specialist network and durable medical equipment',
+        providerCapacity: 'Care coordination team capacity available for immediate enrollment'
       },
       riskAssessment: [
-        'CRITICAL: Mold proliferation risk - 96% probability without immediate remediation',
-        'HIGH: Structural degradation - moisture compromising load-bearing elements',
-        'HIGH: Electrical fire hazard - water-damaged panel poses immediate danger',
-        'MODERATE: Foundation settlement - monitor for movement over 30 days',
-        'HIGH: Air quality degradation - spore levels 4x safe threshold',
-        'MODERATE: Security vulnerability - damaged entry points compromise safety'
+        'CRITICAL: Hospital readmission risk - 76% probability within 90 days without care coordination intervention',
+        'HIGH: Medication non-adherence - current 68% adherence rate below 80% threshold',
+        'HIGH: A1C progression risk - uncontrolled diabetes trending toward insulin requirement',
+        'MODERATE: Fall risk - nocturia and peripheral edema increase fall probability',
+        'HIGH: Depression untreated - PHQ-9 score of 11 affecting self-care behaviors',
+        'MODERATE: Cardiovascular event risk - uncontrolled HTN and hyperlipidemia'
       ],
-      environmentalFactors: {
-        hurricaneHistory: '3 major hurricanes in 15 years',
-        floodZone: 'AE - Special Flood Hazard Area',
-        soilConditions: 'Sandy loam, moderate drainage',
-        seismicRisk: 'Minimal - Zone 0',
-        windZone: '146-155 mph design requirement'
+      socialDeterminants: {
+        housingStability: 'Lives alone in owned home, limited family support',
+        foodSecurity: 'Fixed income limits fresh produce access',
+        transportationAccess: 'Relies on daughter for medical appointments',
+        socialSupport: '6th grade reading level limits self-management resources',
+        educationLevel: 'No smartphone for telehealth or monitoring apps'
       },
-      claimsIntelligence: {
-        carrierProfile: {
-          name: 'Regional Property Insurance',
-          claimsReputation: 'Tends to undervalue structural claims by 25-35%',
-          negotiationHistory: 'Typically settles at 78% of initial demand',
-          preferredExperts: 'List of 12 approved contractors provided',
-          timelineBehavior: 'Averages 90 days from claim to settlement'
+      payerIntelligence: {
+        insuranceProfile: {
+          name: 'Medicare Advantage - UnitedHealthcare',
+          authorizationHistory: 'Strong preventive care focus with quality bonus incentives',
+          coveragePatterns: 'Approves 94% of evidence-based specialist referrals',
+          preferredProviders: 'Network includes 47 endocrinologists and 12 certified diabetes educators',
+          timelineExpectations: 'Average prior authorization turnaround: 2.3 business days'
         },
         strategicConsiderations: [
-          'File supplemental immediately - carrier historically resistant',
-          'Document all hidden damage with thermal imaging',
-          'Engage structural engineer early for credibility',
-          'Push for temporary housing allowance - strong precedent',
-          'Consider public adjuster if settlement offered below $350K'
+          'Submit prior authorization for GLP-1 agonist with clinical justification for A1C >8%',
+          'Document all ICD-10 codes for full risk adjustment and quality metrics',
+          'Leverage telehealth benefits for medication management and monitoring',
+          'Coordinate specialty referrals to maintain continuity and prevent duplicative testing',
+          'Utilize chronic care management (CCM) billing codes for care coordination services'
         ]
       }
     },
     financialSummary: {
-      currentClaimValue: 425000,
-      historicalRecovery: 52000,
-      potentialSupplemental: 187000,
-      totalRecoveryOpportunity: 664000,
+      currentCareValue: 87500,
+      historicalOutcomeValue: 32000,
+      potentialQualityBonus: 42500,
+      totalValueOpportunity: 162000,
       breakdown: [
-        { category: 'Structural Systems Repair', amount: 165000, description: 'Complete roof replacement, hurricane strapping, structural reinforcement, foundation waterproofing' },
-        { category: 'Interior Restoration & Finishes', amount: 128000, description: 'Premium flooring systems, drywall replacement, custom millwork, professional painting, window treatments' },
-        { category: 'Mechanical Systems Replacement', amount: 89000, description: 'High-efficiency HVAC system, complete electrical panel upgrade, plumbing modernization, smart home integration' },
-        { category: 'Environmental Remediation', amount: 67000, description: 'Professional mold abatement, air quality restoration, contaminated material disposal, HEPA filtration' },
-        { category: 'Hidden & Concealed Damage', amount: 78000, description: 'AI-predicted structural damage, concealed moisture damage, thermal imaging discoveries' },
-        { category: 'Historical Claim Recovery', amount: 52000, description: 'Underpayment recovery analysis, supplemental claim opportunities, carrier adjustment errors' },
-        { category: 'Code Compliance & Upgrades', amount: 49000, description: 'Hurricane mitigation features, electrical code updates, accessibility improvements, energy efficiency upgrades' },
-        { category: 'Emergency Services & Mitigation', amount: 36000, description: 'Emergency tarping, water extraction, dehumidification, temporary housing, storage costs' }
+        { category: 'Medication Optimization & Adherence', amount: 28000, description: 'Transition to long-acting formulations, generic substitutions, medication synchronization, adherence monitoring, elimination of $180/month OOP costs' },
+        { category: 'Preventive Care & Screening', amount: 18000, description: 'Diabetic foot exams, retinal screening, annual wellness visit, cardiovascular risk assessment, cancer screenings per USPSTF guidelines' },
+        { category: 'Care Coordination Services', amount: 24500, description: 'Care manager assignment, interdisciplinary team huddles, specialist coordination, transitional care management, chronic care management (CCM) billing' },
+        { category: 'Chronic Disease Management', amount: 32000, description: 'Diabetes self-management education (DSME), medical nutrition therapy, endocrinology consultation, A1C optimization interventions, weight management program' },
+        { category: 'Uncoded Condition Documentation', amount: 24500, description: 'Additional ICD-10 billing opportunities - depression (F33.1), obesity (E66.01), neuropathy screening, comprehensive metabolic panel abnormalities' },
+        { category: 'Preventable Cost Avoidance', amount: 32000, description: 'Hospital readmission prevention, ER visit reduction, medication-related adverse event prevention, diabetic complication avoidance' },
+        { category: 'Quality Measure Improvement', amount: 18000, description: 'HEDIS measure compliance (HbA1c control, BP control, statin therapy), Star Ratings bonus opportunities, pay-for-performance incentives' },
+        { category: 'Social Determinants Intervention', amount: 14000, description: 'Transportation assistance, medication cost assistance programs, home safety assessment, nutrition support programs, community resource connection' }
       ],
       detailedCostAnalysis: {
-        laborCosts: {
-          skilled: { rate: 85, hours: 2400, total: 204000 },
-          general: { rate: 45, hours: 800, total: 36000 },
-          specialized: { rate: 125, hours: 320, total: 40000 }
+        professionalServices: {
+          primaryCare: { visits: 12, rate: 250, total: 3000 },
+          specialists: { visits: 8, rate: 350, total: 2800 },
+          ancillaryServices: { sessions: 24, rate: 150, total: 3600 }
         },
-        materialCosts: {
-          roofing: { sqft: 3200, rate: 18.50, total: 59200 },
-          flooring: { sqft: 2400, rate: 12.75, total: 30600 },
-          electrical: { circuits: 24, rate: 450, total: 10800 },
-          plumbing: { fixtures: 12, average: 1250, total: 15000 }
+        medicationCosts: {
+          chronicMedications: { count: 9, monthly: 160, total: 1920 },
+          acuteMedications: { count: 2, monthly: 45, total: 540 },
+          biologics: { count: 0, monthly: 0, total: 0 },
+          dme: { items: 3, average: 125, total: 375 }
         },
-        permitsCosts: {
-          building: 2400,
-          electrical: 800,
-          plumbing: 600,
-          environmental: 1200
+        diagnosticCosts: {
+          laboratory: 850,
+          imaging: 1200,
+          specializedTesting: 650,
+          monitoring: 450
         },
-        contingencyReserve: {
-          percentage: 15,
-          amount: 99600,
-          justification: 'High probability of additional discoveries during restoration'
+        qualityReserve: {
+          percentage: 12,
+          amount: 19440,
+          justification: 'Additional care needs may emerge during 90-day care plan implementation and patient engagement'
         }
       },
       marketComparatives: {
         regionalAverages: {
-          sqftCost: 245,
-          timelineWeeks: 16,
-          qualityGrade: 'Premium restoration standards'
+          perMemberPerMonth: 1420,
+          episodeDurationWeeks: 12,
+          qualityGrade: 'Comprehensive care coordination with evidence-based interventions'
         },
-        competitiveBids: [
-          { name: 'Elite Restoration', bid: 612000, timeline: '14 weeks' },
-          { name: 'Precision Builders', bid: 638000, timeline: '16 weeks' },
-          { name: 'Heritage Construction', bid: 596000, timeline: '18 weeks' }
+        providerComparisons: [
+          { name: 'Primary Care Medical Home', estimatedCost: 127500, timeline: '90-day care cycle' },
+          { name: 'ACO Care Coordination', estimatedCost: 145000, timeline: '6-month program' },
+          { name: 'Integrated Care Management', estimatedCost: 118000, timeline: '90-day intensive phase' }
         ]
       }
     }
@@ -547,65 +492,52 @@ export default function InspectionReportPage() {
 
   const handleDownloadPDF = async () => {
     setIsDownloading(true)
-    
+
     try {
       // Prepare data for PDF generation
-      const pdfData: InspectionReportData = {
+      const pdfData: CareSessionReportData = {
         metadata: {
           reportId: reportData.metadata.reportId,
-          claimNumber: `CLM-${sessionId}`,
+          sessionNumber: `CS-${sessionId}`,
           generatedDate: reportData.metadata.generatedDate,
-          inspector: reportData.metadata.inspector,
-          property: {
-            address: reportData.metadata.property.address,
+          coordinator: reportData.metadata.assessmentCoordinator,
+          patient: {
+            name: reportData.metadata.patient.name,
             city: 'Miami',
             state: 'FL',
             zipCode: '33101',
-            type: reportData.metadata.property.type,
-            yearBuilt: reportData.metadata.property.yearBuilt,
-            owner: reportData.metadata.property.owner,
-            policyNumber: reportData.metadata.property.policyNumber
+            type: reportData.metadata.patient.type,
+            dateOfBirth: reportData.metadata.patient.dateOfBirth,
+            medicalRecordNumber: reportData.metadata.patient.medicalRecordNumber,
+            insuranceId: reportData.metadata.patient.insuranceId
           },
-          claimInfo: reportData.metadata.claimInfo
+          sessionInfo: reportData.metadata.sessionInfo
         },
         executiveSummary: reportData.executiveSummary,
-        areaFindings: reportData.areaFindings.map(area => ({
+        assessmentAreas: reportData.assessmentAreas.map(area => ({
           ...area,
-          findings: area.description,
-          damageDescription: area.description,
-          photos: [] // Would include base64 photos in production
+          findings: area.clinicalDescription,
+          assessmentNotes: area.clinicalDescription,
+          documents: [] // Would include assessment documents in production
         })),
         aiInsights: reportData.aiInsights,
-        financialSummary: {
-          subtotal: reportData.financialSummary.currentClaimValue,
-          hiddenDamage: reportData.aiInsights.hiddenDamageEstimate,
-          codeUpgrades: reportData.aiInsights.codeUpgradeOpportunities,
-          contingency: Math.round(reportData.financialSummary.currentClaimValue * 0.1),
-          total: reportData.financialSummary.totalRecoveryOpportunity,
-          insuranceEstimate: reportData.metadata.claimInfo.initialEstimate,
-          gap: reportData.financialSummary.totalRecoveryOpportunity - reportData.metadata.claimInfo.initialEstimate
-        }
+        financialSummary: reportData.financialSummary
       }
-      
-      // Generate and download PDF report
-      // This will open a print dialog where users can save as PDF
-      await generateInspectionPDF(pdfData)
-      
-      console.log('PDF report generated successfully')
+
+      // Generate PDF
+      await generateCareSessionPDF(pdfData)
+      setIsDownloading(false)
     } catch (error) {
       console.error('Error generating PDF:', error)
-      alert('Error generating PDF. Please try again.')
-    } finally {
       setIsDownloading(false)
     }
   }
 
-
   const getStatusBadge = (status: string, priority: string) => {
     const baseClasses = 'px-3 py-1 rounded-full text-xs font-medium'
-    
-    if (status === 'damaged') {
-      return priority === 'high' 
+
+    if (status === 'critical' || status === 'needs-attention') {
+      return priority === 'high'
         ? `${baseClasses} bg-red-100 text-red-800`
         : `${baseClasses} bg-amber-100 text-amber-800`
     }
@@ -624,17 +556,6 @@ export default function InspectionReportPage() {
     )
   }
 
-  // Show loading state while checking approval status
-  if (isApproved === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-scc-red border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Checking report status...</p>
-        </div>
-      </div>
-    )
-  }
 
   // Render healthcare-specific report for care plan data
   if (isCareplanData && storedReportData) {
@@ -644,7 +565,7 @@ export default function InspectionReportPage() {
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 border-b border-gray-200 print:border-b-2 print:border-black">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-6">
-            <div className="flex items-center justify-between mb-4 print:hidden">
+            <div className="mb-4 print:hidden">
               <Link
                 href="/dashboard/care-sessions"
                 className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-300"
@@ -652,16 +573,6 @@ export default function InspectionReportPage() {
                 <ArrowLeft size={20} />
                 Back to Care Sessions
               </Link>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => window.print()}
-                  disabled={isDownloading}
-                  className="px-4 py-2 bg-arthur-blue text-white rounded-lg hover:bg-arthur-blue-dark flex items-center gap-2 disabled:opacity-50"
-                >
-                  <Download size={18} />
-                  Download PDF
-                </button>
-              </div>
             </div>
 
             <div className="text-center py-4">
@@ -674,6 +585,18 @@ export default function InspectionReportPage() {
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 print:text-gray-600">
                 Report ID: {carePlanData.reportId} • Generated: {new Date(carePlanData.generatedDate).toLocaleDateString()}
               </p>
+            </div>
+
+            {/* Download Button at bottom of header */}
+            <div className="flex justify-center mt-6 print:hidden">
+              <button
+                onClick={() => window.print()}
+                disabled={isDownloading}
+                className="px-6 py-3 bg-arthur-blue text-white rounded-lg hover:bg-arthur-blue-dark flex items-center gap-2 disabled:opacity-50 font-medium shadow-sm"
+              >
+                <Download size={18} />
+                Download PDF
+              </button>
             </div>
           </div>
         </div>
@@ -824,10 +747,10 @@ export default function InspectionReportPage() {
               </h2>
               <div className="space-y-4">
                 {carePlanData.careGaps.map((gap: any, idx: number) => (
-                  <div key={idx} className={`border-l-4 p-4 rounded ${
-                    gap.priority === 'High' ? 'border-red-500 bg-red-50' :
-                    gap.priority === 'Medium' ? 'border-amber-500 bg-amber-50' :
-                    'border-blue-500 bg-blue-50'
+                  <div key={idx} className={`border border-l-4 p-4 rounded border-gray-200 dark:border-gray-700 ${
+                    gap.priority === 'High' ? 'border-l-red-500' :
+                    gap.priority === 'Medium' ? 'border-l-amber-500' :
+                    'border-l-blue-500'
                   } print:break-inside-avoid`}>
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="font-semibold text-gray-900">{gap.title}</h3>
@@ -989,7 +912,7 @@ export default function InspectionReportPage() {
           <AlertCircle size={64} className="text-yellow-500 mx-auto mb-4" />
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Report Pending Approval</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            This inspection report is currently under review and has not been approved yet.
+            This care session report is currently under review and has not been approved yet.
             Please complete the approval process to view the final report.
           </p>
           <Link
@@ -1013,11 +936,11 @@ export default function InspectionReportPage() {
           <div className="flex flex-col gap-3">
             {/* Back Navigation */}
             <Link
-              href={claimId ? `/dashboard/claims/${claimId}` : `/dashboard/care-sessions/${sessionId}/review`}
+              href={careSessionId ? `/dashboard/care-sessions/${careSessionId}` : `/dashboard/care-sessions/${sessionId}/review`}
               className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 transition-colors w-fit"
             >
               <ArrowLeft size={20} />
-              <span>{claimId ? 'Back to Claim' : 'Back to Review'}</span>
+              <span>{careSessionId ? 'Back to Care Session' : 'Back to Review'}</span>
             </Link>
 
             {/* Action Buttons */}
@@ -1070,68 +993,68 @@ export default function InspectionReportPage() {
         {/* Professional Cover Page - Print Only */}
         <div className="hidden print:block print:page-break-after">
           <div className="relative h-[400px] mb-8">
-            {/* Property Image with Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent">
-              <img 
-                src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1200" 
-                alt="Property" 
+            {/* Healthcare Image with Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-arthur-blue/40 via-arthur-blue/20 to-transparent">
+              <img
+                src="https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=1200"
+                alt="Healthcare"
                 className="w-full h-full object-cover"
               />
             </div>
-            {/* Property Address Overlay */}
+            {/* Patient Name Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-              <h1 className="text-4xl font-bold mb-2">{reportData?.metadata?.property?.address || '1234 Ocean Drive, Miami Beach, FL'}</h1>
-              <p className="text-xl opacity-90">Miami, FL 33101</p>
+              <h1 className="text-4xl font-bold mb-2">Patient: {reportData?.metadata?.patient?.name || 'Margaret Thompson'}</h1>
+              <p className="text-xl opacity-90">MRN: {reportData?.metadata?.patient?.medicalRecordNumber || 'MRN-784512'}</p>
             </div>
           </div>
-          
+
           {/* Report Title and Details */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">COMPREHENSIVE HOME INSPECTION REPORT</h2>
-            <div className="w-24 h-1 bg-scc-red mx-auto mb-8"></div>
-            
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">COMPREHENSIVE CARE SESSION REPORT</h2>
+            <div className="w-24 h-1 bg-arthur-blue mx-auto mb-8"></div>
+
             {/* Report Metadata Grid */}
             <div className="grid grid-cols-2 gap-8 max-w-3xl mx-auto mb-12">
               <div className="text-left">
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">PROPERTY DETAILS</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">PATIENT DETAILS</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Report Number:</span>
-                    <span className="font-medium">{reportData?.metadata?.reportId || `RPT-${sessionId}`}</span>
+                    <span className="font-medium">{reportData?.metadata?.reportId || `CPR-${sessionId}`}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Inspection Date:</span>
-                    <span className="font-medium">{reportData?.metadata?.generatedDate || new Date().toLocaleDateString()}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Assessment Date:</span>
+                    <span className="font-medium">{new Date(reportData?.metadata?.generatedDate).toLocaleDateString() || new Date().toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Property Type:</span>
-                    <span className="font-medium capitalize">{reportData.metadata.property.type}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Insurance Type:</span>
+                    <span className="font-medium capitalize">{reportData.metadata.patient.type}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Year Built:</span>
-                    <span className="font-medium">{reportData.metadata.property.yearBuilt}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Date of Birth:</span>
+                    <span className="font-medium">{reportData.metadata.patient.dateOfBirth}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Square Footage:</span>
-                    <span className="font-medium">3,200 sq ft</span>
+                    <span className="text-gray-600 dark:text-gray-400">Insurance ID:</span>
+                    <span className="font-medium">{reportData.metadata.patient.insuranceId}</span>
                   </div>
                 </div>
               </div>
-              
+
               <div className="text-left">
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">INSPECTION INFORMATION</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">ASSESSMENT INFORMATION</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Inspector:</span>
-                    <span className="font-medium">{reportData.metadata.inspector}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Care Coordinator:</span>
+                    <span className="font-medium">{reportData.metadata.assessmentCoordinator}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">License #:</span>
-                    <span className="font-medium">FL-HI-2024-0847</span>
+                    <span className="text-gray-600 dark:text-gray-400">NPI #:</span>
+                    <span className="font-medium">1234567890</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Company:</span>
-                    <span className="font-medium">SCC Intelligence</span>
+                    <span className="text-gray-600 dark:text-gray-400">Platform:</span>
+                    <span className="font-medium">Arthur Health Platform</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Phone:</span>
@@ -1139,60 +1062,60 @@ export default function InspectionReportPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Email:</span>
-                    <span className="font-medium">inspect@scottrintel.com</span>
+                    <span className="font-medium">care@arthurhealth.com</span>
                   </div>
                 </div>
               </div>
             </div>
-            
-            {/* Client Information */}
+
+            {/* Session Information */}
             <div className="border-t border-gray-300 dark:border-gray-600 pt-8 mb-12">
-              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">CLIENT INFORMATION</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">SESSION INFORMATION</h3>
               <div className="max-w-2xl mx-auto">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Property Owner:</span>
-                    <span className="font-medium">{reportData.metadata.property.owner}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Patient Name:</span>
+                    <span className="font-medium">{reportData.metadata.patient.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Policy Number:</span>
-                    <span className="font-medium">{reportData.metadata.property.policyNumber}</span>
+                    <span className="text-gray-600 dark:text-gray-400">MRN:</span>
+                    <span className="font-medium">{reportData.metadata.patient.medicalRecordNumber}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Date of Loss:</span>
-                    <span className="font-medium">{reportData.metadata.claimInfo.dateOfLoss}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Assessment Date:</span>
+                    <span className="font-medium">{new Date(reportData.metadata.sessionInfo.assessmentDate).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Claim Type:</span>
-                    <span className="font-medium">{reportData.metadata.claimInfo.damageTypes.join(', ')}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Primary Conditions:</span>
+                    <span className="font-medium">{reportData.metadata.sessionInfo.conditions.join(', ')}</span>
                   </div>
                 </div>
               </div>
             </div>
-            
-            {/* Systems Inspected */}
+
+            {/* Assessment Areas */}
             <div className="border-t border-gray-300 dark:border-gray-600 pt-8">
-              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">SYSTEMS INSPECTED</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">ASSESSMENT AREAS COVERED</h3>
               <div className="grid grid-cols-3 gap-4 text-sm">
                 <div className="text-center">
-                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Structural Systems</div>
-                  <div className="text-gray-600 dark:text-gray-400">Foundation, Roof, Walls</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Clinical Assessment</div>
+                  <div className="text-gray-600 dark:text-gray-400">Vitals, Medications, Symptoms</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Interior Systems</div>
-                  <div className="text-gray-600 dark:text-gray-400">Floors, Ceilings, Kitchen</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Care Coordination</div>
+                  <div className="text-gray-600 dark:text-gray-400">Care Plan Review, Education</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Mechanical Systems</div>
-                  <div className="text-gray-600 dark:text-gray-400">HVAC, Electrical, Plumbing</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Quality Metrics</div>
+                  <div className="text-gray-600 dark:text-gray-400">HEDIS, Risk Scores, Gaps</div>
                 </div>
               </div>
             </div>
-            
+
             {/* Footer */}
             <div className="absolute bottom-8 left-0 right-0 text-center text-xs text-gray-500 dark:text-gray-400">
-              <p>This report is prepared for the exclusive use of {reportData.metadata.property.owner}</p>
-              <p className="mt-1">© 2024 SCC Intelligence - AI-Enhanced Property Inspection Services</p>
+              <p>This report is prepared for the exclusive use of {reportData.metadata.patient.name}</p>
+              <p className="mt-1">© 2024 Arthur Health Platform - AI-Enhanced Care Coordination Services</p>
             </div>
           </div>
         </div>
@@ -1203,7 +1126,7 @@ export default function InspectionReportPage() {
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-6 print:mb-3">
               <div className="flex-1">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1 sm:mb-2 print:mb-1 print:text-center print:uppercase">
-                  Property Inspection Report
+                  Care Session Assessment Report
                 </h1>
                 <p className="text-sm sm:text-base print:hidden text-gray-600 dark:text-gray-400">
                   Comprehensive damage assessment with AI-enhanced analysis
@@ -1273,35 +1196,35 @@ export default function InspectionReportPage() {
             
             <div className="grid grid-cols-2 lg:grid-cols-4 print:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 print:gap-2 mb-3 sm:mb-6 print:mb-3">
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
-                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Total Damage Value</div>
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Total Care Gap Value</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 dark:text-gray-100 print:text-center">
-                  ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
+                  ${reportData.executiveSummary.totalCareGapValue.toLocaleString()}
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
-                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Critical Issues</div>
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Critical Care Gaps</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-red-600 print:text-gray-900 dark:text-gray-100 print:text-center">
-                  {reportData.executiveSummary.criticalIssues}
+                  {reportData.executiveSummary.criticalCareGaps}
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
-                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Confidence Score</div>
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Assessment Confidence</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-green-600 print:text-gray-900 dark:text-gray-100 print:text-center">
-                  {reportData.executiveSummary.confidenceScore}%
+                  {reportData.executiveSummary.assessmentConfidence}%
                 </div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
-                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Restoration Timeline</div>
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Care Plan Timeline</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 dark:text-gray-100 print:text-center">
-                  {reportData.executiveSummary.timelineEstimate.split(' ')[0]}
+                  {reportData.executiveSummary.carePlanTimeline.split(' ')[0]}
                 </div>
               </div>
             </div>
 
-            {/* Estimated Repair Costs Banner - Formal Style */}
+            {/* Estimated Care Value Banner - Formal Style */}
             <div className="bg-gray-50 border border-gray-300 rounded-xl p-4 sm:p-6 mb-6 print:mb-4 print:border-2 print:border-gray-400 print:bg-white dark:bg-gray-900">
               <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 text-sm sm:text-base print:text-sm print:uppercase print:text-center">
-                ESTIMATED REPAIR COSTS
+                ESTIMATED CARE VALUE
               </h3>
               <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
                 <div className="text-center">
@@ -1309,7 +1232,7 @@ export default function InspectionReportPage() {
                     IMMEDIATE
                   </div>
                   <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-red-600 print:text-gray-900 dark:text-gray-100 print:text-base">
-                    ${(reportData.executiveSummary.totalDamageValue * 0.25).toLocaleString()}
+                    ${(reportData.executiveSummary.totalCareGapValue * 0.25).toLocaleString()}
                   </div>
                   <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     0-30 days
@@ -1319,8 +1242,8 @@ export default function InspectionReportPage() {
                   <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
                     SHORT-TERM
                   </div>
-                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-scc-red print:text-gray-900 dark:text-gray-100 print:text-base">
-                    ${(reportData.executiveSummary.totalDamageValue * 0.45).toLocaleString()}
+                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-blue-600 print:text-gray-900 dark:text-gray-100 print:text-base">
+                    ${(reportData.executiveSummary.totalCareGapValue * 0.45).toLocaleString()}
                   </div>
                   <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     1-3 months
@@ -1331,7 +1254,7 @@ export default function InspectionReportPage() {
                     LONG-TERM
                   </div>
                   <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 print:text-base">
-                    ${(reportData.executiveSummary.totalDamageValue * 0.30).toLocaleString()}
+                    ${(reportData.executiveSummary.totalCareGapValue * 0.30).toLocaleString()}
                   </div>
                   <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     3+ months
@@ -1341,10 +1264,10 @@ export default function InspectionReportPage() {
               <div className="mt-4 pt-3 border-t border-gray-300 dark:border-gray-600 print:border-gray-400">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
                   <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium print:text-[10px] print:uppercase print:font-bold">
-                    TOTAL ESTIMATED COST
+                    TOTAL ESTIMATED CARE VALUE
                   </span>
                   <span className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 print:text-base">
-                    ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
+                    ${reportData.executiveSummary.totalCareGapValue.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -1355,64 +1278,65 @@ export default function InspectionReportPage() {
               <div className="flex items-center gap-2 mb-4">
                 <AlertTriangle className="text-red-600" size={24} />
                 <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                  <span className="text-red-600">{reportData.executiveSummary.criticalIssues}</span> Critical Findings Identified
+                  <span className="text-red-600">{reportData.executiveSummary.criticalCareGaps}</span> Critical Care Gaps Identified
                 </h3>
               </div>
 
               <div className="space-y-3">
-                {/* Roof & Gutters */}
+                {/* Vitals & Measurements */}
                 <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Roof & Gutters:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Vitals & Blood Pressure:</span>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    <span className="text-red-600 font-medium">Extensive damage</span> to asphalt shingles on south-facing slope.
-                    Multiple missing tiles creating <span className="text-red-600 font-medium">water entry points</span>.
-                    Gutters detached in three sections.
+                    <span className="text-red-600 font-medium">Stage 2 Hypertension</span> at 158/94 mmHg (target: &lt;130/80).
+                    Blood glucose shows <span className="text-red-600 font-medium">uncontrolled diabetes</span> with A1C of 8.2%.
+                    BMI of 32.4 indicates obesity requiring intervention.
                   </p>
                 </div>
 
-                {/* Siding & Walls */}
+                {/* Medication Adherence */}
                 <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Siding & Walls:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Medication Adherence:</span>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Vinyl siding shows <span className="text-scc-red font-medium">impact damage</span> on east and south walls.
-                    Multiple panels cracked or missing. <span className="text-scc-red font-medium">Water staining</span> visible behind damaged sections.
+                    Patient shows <span className="text-blue-600 font-medium">68% adherence rate</span> below 80% threshold.
+                    Polypharmacy with 9 active medications creates <span className="text-blue-600 font-medium">complexity burden</span>.
+                    Cost barriers affecting statin therapy compliance.
                   </p>
                 </div>
 
-                {/* Kitchen */}
+                {/* Symptom Assessment */}
                 <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Kitchen:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Clinical Symptoms:</span>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    <span className="text-scc-red font-medium">Water damage</span> to ceiling and upper cabinets.
-                    Several appliances affected by water exposure. Flooring shows signs of <span className="text-scc-red font-medium">water damage</span> near sink area.
+                    <span className="text-blue-600 font-medium">Moderate depression</span> with PHQ-9 score of 11.
+                    Nocturia 3-4 times nightly affecting sleep quality. Dyspnea on exertion requires <span className="text-blue-600 font-medium">cardiology evaluation</span>.
                   </p>
                 </div>
 
-                {/* HVAC System */}
+                {/* Care Coordination */}
                 <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 dark:text-gray-300 font-semibold">HVAC System:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Care Coordination:</span>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    HVAC unit shows <span className="text-red-600 font-medium">impact damage</span>.
-                    Ductwork compromised in attic space. System <span className="text-red-600 font-medium">contaminated with water and debris</span>.
+                    Lack of coordination between 3 specialists <span className="text-red-600 font-medium">creating care gaps</span>.
+                    Overdue preventive screenings. Patient had <span className="text-red-600 font-medium">2 ER visits in 6 months</span> for preventable conditions.
                   </p>
                 </div>
 
-                {/* Windows & Doors */}
+                {/* Patient Education */}
                 <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Windows & Doors:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Patient Education & Self-Management:</span>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Multiple windows <span className="text-scc-red font-medium">cracked or broken</span>.
-                    Entry door frame damaged. Sliding door track bent.
+                    Significant knowledge gaps in <span className="text-blue-600 font-medium">diabetes self-management</span>.
+                    6th grade health literacy level. Unable to demonstrate proper glucose monitoring technique.
                   </p>
                 </div>
               </div>
@@ -1422,24 +1346,24 @@ export default function InspectionReportPage() {
                 <div className="flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
                     <CheckCircle size={14} />
-                    Document all damage thoroughly
+                    Medication therapy management
                   </span>
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-scc-red-dark text-xs font-medium">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-blue-700 text-xs font-medium">
                     <CheckCircle size={14} />
-                    Take photos from multiple angles
+                    Schedule specialist referrals
                   </span>
                   <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium">
                     <CheckCircle size={14} />
-                    Note safety hazards
+                    Enroll in care coordination program
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="print:break-inside-avoid">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 print:mb-2 print:text-sm print:uppercase">Priority Recommendations</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 print:mb-2 print:text-sm print:uppercase">Priority Clinical Recommendations</h3>
               <ul className="space-y-2 print:space-y-1">
-                {reportData.executiveSummary.repairRecommendations.slice(0, 4).map((rec, idx) => (
+                {reportData.executiveSummary.clinicalRecommendations.slice(0, 4).map((rec, idx) => (
                   <li key={idx} className="flex items-start gap-2 print:text-xs">
                     <span className="text-gray-700 dark:text-gray-300 mt-0.5 flex-shrink-0 print:font-medium">•</span>
                     <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0 hidden print:hidden" size={16} />
@@ -1601,22 +1525,22 @@ export default function InspectionReportPage() {
               <div className="bg-blue-50 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
                 <div className="flex items-center gap-3 mb-4">
                   <Brain className="text-blue-600" size={24} />
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Hidden Damage Assessment</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Undetected Conditions Assessment</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-700 dark:text-gray-300 mb-3">
-                      AI analysis of damage patterns and building characteristics suggests additional hidden damage.
+                      AI analysis of clinical patterns and patient characteristics suggests additional unreported chronic conditions.
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
-                      <strong>Market Comparison:</strong> {reportData.aiInsights.marketComparison}
+                      <strong>Population Comparison:</strong> {reportData.aiInsights.populationComparison}
                     </p>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-blue-600 mb-1">
-                      ${reportData.aiInsights.hiddenDamageEstimate.toLocaleString()}
+                      ${reportData.aiInsights.unreportedConditionsEstimate.toLocaleString()}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Estimated Hidden Damage</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Estimated Unreported Conditions Value</div>
                   </div>
                 </div>
               </div>
@@ -1641,17 +1565,17 @@ export default function InspectionReportPage() {
           {/* AI Intelligence & Predictive Analytics */}
           <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 flex items-center gap-3">
-              <Brain className="text-scc-red" size={28} />
+              <Brain className="text-blue-600" size={28} />
               AI Intelligence & Predictive Analytics
             </h2>
-            
+
             {/* Confidence Metrics */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div className="bg-blue-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-blue-600 mb-1">
-                  {reportData.aiInsights.confidenceMetrics.damagePrediction}%
+                  {reportData.aiInsights.confidenceMetrics.conditionPrediction}%
                 </div>
-                <div className="text-sm text-blue-700">Damage Prediction</div>
+                <div className="text-sm text-blue-700">Condition Prediction</div>
               </div>
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-green-600 mb-1">
@@ -1666,10 +1590,10 @@ export default function InspectionReportPage() {
                 <div className="text-sm text-purple-700">Timeline Reliability</div>
               </div>
               <div className="bg-red-50 rounded-xl p-4">
-                <div className="text-2xl font-bold text-scc-red mb-1">
+                <div className="text-2xl font-bold text-red-600 mb-1">
                   {reportData.aiInsights.confidenceMetrics.riskAssessment}%
                 </div>
-                <div className="text-sm text-scc-red-dark">Risk Assessment</div>
+                <div className="text-sm text-red-700">Risk Assessment</div>
               </div>
             </div>
 
@@ -1678,26 +1602,26 @@ export default function InspectionReportPage() {
               <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <History size={20} className="text-gray-600 dark:text-gray-400" />
-                  Historical Claims Data
+                  Historical Care Session Data
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Similar Claims Analyzed:</span>
-                    <span className="font-semibold">{reportData.aiInsights.historicalData.similarClaims}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Similar Cases Analyzed:</span>
+                    <span className="font-semibold">{reportData.aiInsights.historicalData.similarCases}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Average Settlement:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Average Outcome Value:</span>
                     <span className="font-semibold text-green-600">
-                      ${reportData.aiInsights.historicalData.averageSettlement.toLocaleString()}
+                      ${reportData.aiInsights.historicalData.averageOutcome.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Resolution Time:</span>
-                    <span className="font-semibold">{reportData.aiInsights.historicalData.timeToResolution}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Time to Stabilization:</span>
+                    <span className="font-semibold">{reportData.aiInsights.historicalData.timeToStabilization}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Litigation Rate:</span>
-                    <span className="font-semibold text-red-600">{reportData.aiInsights.historicalData.litigationRate}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Service Appeal Rate:</span>
+                    <span className="font-semibold text-red-600">{reportData.aiInsights.historicalData.readmissionRate}</span>
                   </div>
                 </div>
               </div>
@@ -1709,20 +1633,20 @@ export default function InspectionReportPage() {
                 </h3>
                 <div className="space-y-3 text-sm">
                   <div>
-                    <span className="font-medium text-gray-700 dark:text-gray-300">Additional Damage Risk:</span>
-                    <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.additionalDamageRisk}</div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Additional Condition Risk:</span>
+                    <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.additionalConditionRisk}</div>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-700 dark:text-gray-300">Cost Inflation Factor:</span>
-                    <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.costInflationFactor}</div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Cost Trend Factor:</span>
+                    <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.costTrendFactor}</div>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-700 dark:text-gray-300">Material Availability:</span>
-                    <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.materialAvailability}</div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Specialist Availability:</span>
+                    <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.specialistAvailability}</div>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-700 dark:text-gray-300">Contractor Capacity:</span>
-                    <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.contractorCapacity}</div>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Provider Capacity:</span>
+                    <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.providerCapacity}</div>
                   </div>
                 </div>
               </div>
@@ -1787,24 +1711,24 @@ export default function InspectionReportPage() {
               <div className="bg-purple-50 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <Shield size={20} className="text-purple-600" />
-                  Carrier Intelligence Profile
+                  Payer Intelligence Profile
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <span className="text-purple-700 font-medium">Carrier:</span>
-                    <div className="font-semibold text-gray-900 dark:text-gray-100">{reportData.aiInsights.claimsIntelligence.carrierProfile.name}</div>
+                    <span className="text-purple-700 font-medium">Insurance Plan:</span>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">{reportData.aiInsights.payerIntelligence.insuranceProfile.name}</div>
                   </div>
                   <div>
-                    <span className="text-purple-700 font-medium">Claims Reputation:</span>
-                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.claimsIntelligence.carrierProfile.claimsReputation}</div>
+                    <span className="text-purple-700 font-medium">Authorization History:</span>
+                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.payerIntelligence.insuranceProfile.authorizationHistory}</div>
                   </div>
                   <div>
-                    <span className="text-purple-700 font-medium">Negotiation Pattern:</span>
-                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.claimsIntelligence.carrierProfile.negotiationHistory}</div>
+                    <span className="text-purple-700 font-medium">Coverage Patterns:</span>
+                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.payerIntelligence.insuranceProfile.coveragePatterns}</div>
                   </div>
                   <div>
-                    <span className="text-purple-700 font-medium">Timeline Behavior:</span>
-                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.claimsIntelligence.carrierProfile.timelineBehavior}</div>
+                    <span className="text-purple-700 font-medium">Timeline Expectations:</span>
+                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.payerIntelligence.insuranceProfile.timelineExpectations}</div>
                   </div>
                 </div>
               </div>
@@ -1839,42 +1763,42 @@ export default function InspectionReportPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-green-50 rounded-xl p-6 text-center">
                 <div className="text-3xl font-bold text-green-600 mb-2">100%</div>
-                <div className="text-sm font-medium text-green-700">Code Compliance Review</div>
-                <div className="text-xs text-green-600">Florida Building Code 2020</div>
+                <div className="text-sm font-medium text-green-700">HIPAA Compliance Review</div>
+                <div className="text-xs text-green-600">Protected Health Information Security</div>
               </div>
               <div className="bg-blue-50 rounded-xl p-6 text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">IICRC</div>
-                <div className="text-sm font-medium text-blue-700">Certified Standards</div>
-                <div className="text-xs text-blue-600">S500/S520 Compliance</div>
+                <div className="text-3xl font-bold text-blue-600 mb-2">NCQA</div>
+                <div className="text-sm font-medium text-blue-700">Accredited Standards</div>
+                <div className="text-xs text-blue-600">Care Coordination Certification</div>
               </div>
               <div className="bg-purple-50 rounded-xl p-6 text-center">
-                <div className="text-3xl font-bold text-purple-600 mb-2">A+</div>
-                <div className="text-sm font-medium text-purple-700">Quality Grade</div>
-                <div className="text-xs text-purple-600">Professional Restoration Standards</div>
+                <div className="text-3xl font-bold text-purple-600 mb-2">5-Star</div>
+                <div className="text-sm font-medium text-purple-700">Quality Rating</div>
+                <div className="text-xs text-purple-600">CMS Star Ratings Program</div>
               </div>
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Inspection Methodology</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Assessment Methodology</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                 <div>
                   <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Technology Utilized</h4>
                   <ul className="space-y-1 text-gray-600 dark:text-gray-400">
-                    <li>• Thermal imaging cameras (FLIR E8-XT)</li>
-                    <li>• Moisture detection meters (Tramex CME5)</li>
-                    <li>• Air quality monitoring (Fluke 975)</li>
-                    <li>• Structural analysis software (AutoCAD)</li>
-                    <li>• 4K documentation cameras</li>
+                    <li>• Electronic Health Records (Epic Systems)</li>
+                    <li>• Clinical decision support tools</li>
+                    <li>• Patient engagement platforms</li>
+                    <li>• Care coordination software (Arthur Health)</li>
+                    <li>• Telehealth infrastructure</li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Standards Compliance</h4>
                   <ul className="space-y-1 text-gray-600 dark:text-gray-400">
-                    <li>• ASTM E2876 - Building Enclosure Commissioning</li>
-                    <li>• IICRC S500 - Water Damage Restoration</li>
-                    <li>• Florida Building Code 2020 Edition</li>
-                    <li>• NFPA 921 - Fire Investigation Guidelines</li>
-                    <li>• EPA Mold Remediation Guidelines</li>
+                    <li>• HEDIS Quality Measures</li>
+                    <li>• CMS Star Ratings Methodology</li>
+                    <li>• NCQA Care Coordination Standards</li>
+                    <li>• AMA Clinical Guidelines</li>
+                    <li>• HIPAA Privacy & Security Rules</li>
                   </ul>
                 </div>
               </div>
@@ -1970,7 +1894,7 @@ export default function InspectionReportPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">Roofing Materials</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Specialist Consultations</div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         {reportData.financialSummary.detailedCostAnalysis.materialCosts.roofing.sqft} sq ft @ ${reportData.financialSummary.detailedCostAnalysis.materialCosts.roofing.rate}/sq ft
                       </div>
@@ -1992,7 +1916,7 @@ export default function InspectionReportPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">Electrical Components</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Laboratory Services</div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         {reportData.financialSummary.detailedCostAnalysis.materialCosts.electrical.circuits} circuits @ ${reportData.financialSummary.detailedCostAnalysis.materialCosts.electrical.rate}/circuit
                       </div>
@@ -2085,13 +2009,13 @@ export default function InspectionReportPage() {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Comprehensive Cost Breakdown by Category</h3>
               <div className="space-y-4">
                 {reportData.financialSummary.breakdown.map((item, idx) => (
-                  <div key={idx} className="border-l-4 border-scc-red pl-4">
+                  <div key={idx} className="border-l-4 border-blue-600 pl-4">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                       <div className="flex-1">
                         <div className="font-semibold text-gray-900 dark:text-gray-100 text-base">{item.category}</div>
                         <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">{item.description}</div>
                       </div>
-                      <div className="text-xl font-bold text-scc-red flex-shrink-0">
+                      <div className="text-xl font-bold text-blue-600 flex-shrink-0">
                         ${item.amount.toLocaleString()}
                       </div>
                     </div>
@@ -2101,68 +2025,68 @@ export default function InspectionReportPage() {
               
               {/* Total Summary */}
               <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex justify-between items-center bg-scc-red text-white rounded-lg p-4">
-                  <span className="text-lg font-semibold">Total Recovery Opportunity</span>
+                <div className="flex justify-between items-center bg-blue-600 text-white rounded-lg p-4">
+                  <span className="text-lg font-semibold">Total Care Value Opportunity</span>
                   <span className="text-2xl font-bold">
-                    ${reportData.financialSummary.totalRecoveryOpportunity.toLocaleString()}
+                    ${reportData.financialSummary.totalValueOpportunity.toLocaleString()}
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Hidden Damage Intelligence */}
+          {/* Undetected Conditions Intelligence */}
           <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">Hidden Damage Analysis & Discovery</h2>
-              
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">Undetected Conditions Analysis & Discovery</h2>
+
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="text-amber-600 mt-1" size={20} />
                   <div>
-                    <h3 className="font-semibold text-amber-800 mb-2">Critical Discovery: $45,000 in Concealed Damage</h3>
-                    <p className="text-amber-700 text-sm">AI analysis and advanced testing revealed significant hidden damage not visible during standard inspection. This represents 16% additional recovery opportunity.</p>
+                    <h3 className="font-semibold text-amber-800 mb-2">Critical Discovery: $24,500 in Unreported Chronic Conditions</h3>
+                    <p className="text-amber-700 text-sm">AI analysis and comprehensive assessment revealed significant unreported conditions not documented in previous care encounters. This represents additional quality improvement and reimbursement opportunities.</p>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Detailed Hidden Damage Breakdown</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Detailed Undetected Conditions Breakdown</h3>
                   <div className="space-y-4">
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Behind Kitchen Cabinets</h4>
-                        <span className="text-lg font-bold text-red-600">$8,500</span>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Undiagnosed Depression</h4>
+                        <span className="text-lg font-bold text-blue-600">$3,200</span>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Water intrusion damage</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Moisture readings 45% above normal, visible staining patterns</p>
-                    </div>
-                    
-                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Attic Insulation</h4>
-                        <span className="text-lg font-bold text-red-600">$12,000</span>
-                      </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Complete saturation requiring replacement</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Thermal imaging shows 80% compromised insulation</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Moderate depressive symptoms uncaptured in claims</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> PHQ-9 score of 12 during session, no prior depression diagnosis in history</p>
                     </div>
 
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Interior Wall Cavities</h4>
-                        <span className="text-lg font-bold text-red-600">$15,000</span>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Chronic Kidney Disease Stage 3</h4>
+                        <span className="text-lg font-bold text-blue-600">$8,400</span>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Suspected mold growth</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Air quality testing indicates elevated spore counts</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Reduced kidney function requiring monitoring</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> eGFR 42 ml/min, albumin/creatinine ratio elevated at 180 mg/g</p>
                     </div>
 
                     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Subflooring Damage</h4>
-                        <span className="text-lg font-bold text-red-600">$9,500</span>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Uncontrolled Hypertension</h4>
+                        <span className="text-lg font-bold text-blue-600">$5,800</span>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Structural deterioration</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Moisture meter readings consistently above 20%</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Stage 2 hypertension not reflected in risk score</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> BP readings averaging 168/94 over 3 sessions, no diagnosis code submitted</p>
+                    </div>
+
+                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Diabetic Neuropathy</h4>
+                        <span className="text-lg font-bold text-blue-600">$7,100</span>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Peripheral neuropathy with sensory deficits</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Monofilament test shows reduced sensation in 6 of 10 sites bilaterally</p>
                     </div>
                   </div>
                 </div>
@@ -2171,23 +2095,23 @@ export default function InspectionReportPage() {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Detection Methods & Technology</h3>
                   <div className="space-y-4">
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <h4 className="font-medium text-blue-900 mb-2">Thermal Imaging Analysis</h4>
-                      <p className="text-sm text-blue-800">FLIR thermal cameras revealed temperature differentials indicating moisture intrusion in 4 separate wall sections.</p>
+                      <h4 className="font-medium text-blue-900 mb-2">Clinical Assessment Tools</h4>
+                      <p className="text-sm text-blue-800">Standardized screening instruments (PHQ-9, GAD-7, AUDIT-C) identified previously undetected mental health and substance use conditions.</p>
                     </div>
-                    
+
                     <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <h4 className="font-medium text-green-900 mb-2">Moisture Content Testing</h4>
-                      <p className="text-sm text-green-800">Professional grade moisture meters detected readings 35-60% above acceptable levels in concealed areas.</p>
+                      <h4 className="font-medium text-green-900 mb-2">Laboratory Analysis</h4>
+                      <p className="text-sm text-green-800">Comprehensive metabolic panel and HbA1c testing revealed kidney dysfunction and diabetes complications not reflected in claims.</p>
                     </div>
 
                     <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                      <h4 className="font-medium text-purple-900 mb-2">Air Quality Sampling</h4>
-                      <p className="text-sm text-purple-800">Laboratory analysis confirms elevated mold spore counts requiring professional remediation.</p>
+                      <h4 className="font-medium text-purple-900 mb-2">Physical Examination</h4>
+                      <p className="text-sm text-purple-800">Detailed neurological and vascular assessment identified diabetic neuropathy and peripheral artery disease.</p>
                     </div>
 
                     <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                       <h4 className="font-medium text-amber-900 mb-2">AI Pattern Recognition</h4>
-                      <p className="text-sm text-amber-800">Machine learning algorithms identified damage patterns consistent with 127 similar properties, predicting concealed issues with 94% accuracy.</p>
+                      <p className="text-sm text-amber-800">Machine learning algorithms identified clinical patterns consistent with 247 similar patients, predicting additional conditions with 91% accuracy.</p>
                     </div>
                   </div>
                 </div>
@@ -2218,26 +2142,26 @@ export default function InspectionReportPage() {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Comparable Properties Analysis</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Comparable Patient Analysis</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                       <div>
-                        <div className="font-medium">1245 Ocean Ave (Hurricane Ian)</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">Similar damage profile, 2006 construction</div>
+                        <div className="font-medium">Patient MRN-2847 (Diabetes + HTN)</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Similar clinical profile, age 68, Medicare Advantage</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-green-600">$342,000</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">Settled 2023</div>
+                        <div className="font-bold text-green-600">$28,400</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">HCC uplift 2023</div>
                       </div>
                     </div>
                     
                     <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                       <div>
-                        <div className="font-medium">890 Collins Street (Water Damage)</div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">Water intrusion + mold, 2004 construction</div>
+                        <div className="font-medium">Patient MRN-3621 (CKD + CHF)</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Chronic kidney disease + heart failure, age 72, Medicare</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-green-600">$298,000</div>
+                        <div className="font-bold text-green-600">$31,200</div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">Settled 2023</div>
                       </div>
                     </div>
@@ -2255,12 +2179,12 @@ export default function InspectionReportPage() {
                   </div>
                   
                   <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">Key Market Insights</h4>
+                    <h4 className="font-medium text-blue-900 mb-2">Key Population Health Insights</h4>
                     <ul className="space-y-1 text-sm text-blue-800">
-                      <li>• Properties with documented mold issues average 23% higher settlements</li>
-                      <li>• Code upgrade requirements increase settlements by avg. $35K</li>
-                      <li>• Thermal imaging evidence improves settlement success by 34%</li>
-                      <li>• Historical claims on property add avg. 15% to current settlement</li>
+                      <li>• Patients with documented behavioral health conditions average 23% higher HCC scores</li>
+                      <li>• Chronic kidney disease coding increases RAF scores by avg. 0.28 points</li>
+                      <li>• Laboratory evidence improves condition capture success by 34%</li>
+                      <li>• Previous assessment gaps add avg. 18% to current quality performance</li>
                     </ul>
                   </div>
                 </div>
@@ -2273,7 +2197,7 @@ export default function InspectionReportPage() {
                         <h4 className="font-medium text-green-900">Code Violation Requirements</h4>
                         <span className="text-lg font-bold text-green-600">$15,000</span>
                       </div>
-                      <p className="text-sm text-green-800">New building codes require updated electrical and HVAC systems</p>
+                      <p className="text-sm text-green-800">New clinical guidelines require comprehensive diabetes and hypertension management</p>
                     </div>
                     
                     <div className="border border-red-200 rounded-lg p-4 bg-red-50">
@@ -2326,7 +2250,7 @@ export default function InspectionReportPage() {
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-100">2022-09-28</div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">Hurricane Ian</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">Annual Wellness Visit</div>
                         </div>
                         <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
                       </div>
@@ -2350,7 +2274,7 @@ export default function InspectionReportPage() {
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-100">2021-07-15</div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">Water Damage</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">Chronic Care Visit</div>
                         </div>
                         <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
                       </div>
@@ -2374,7 +2298,7 @@ export default function InspectionReportPage() {
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-100">2020-03-10</div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">Wind Damage</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">Preventive Care Visit</div>
                         </div>
                         <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Time Sensitive</span>
                       </div>
@@ -2412,7 +2336,7 @@ export default function InspectionReportPage() {
                         <tbody className="divide-y divide-gray-200 bg-white dark:bg-gray-900">
                           <tr>
                             <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap">2022-09-28</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Hurricane Ian</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Annual Wellness Visit</td>
                             <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100 whitespace-nowrap">$45,000</td>
                             <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$68,000</td>
                             <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$23,000</td>
@@ -2422,7 +2346,7 @@ export default function InspectionReportPage() {
                           </tr>
                           <tr>
                             <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap">2021-07-15</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Water Damage</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Chronic Care Visit</td>
                             <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100 whitespace-nowrap">$8,500</td>
                             <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$15,000</td>
                             <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$6,500</td>
@@ -2432,7 +2356,7 @@ export default function InspectionReportPage() {
                           </tr>
                           <tr>
                             <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap">2020-03-10</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Wind Damage</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Preventive Care Visit</td>
                             <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100 whitespace-nowrap">$12,000</td>
                             <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$22,000</td>
                             <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$10,000</td>
@@ -2448,19 +2372,19 @@ export default function InspectionReportPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-green-900 mb-3">Recovery Strategy</h4>
+                    <h4 className="text-lg font-semibold text-green-900 mb-3">Care Optimization Strategy</h4>
                     <ul className="space-y-2 text-sm text-green-800">
                       <li className="flex items-start gap-2">
                         <CheckCircle size={16} className="text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>File supplemental claims for Hurricane Ian and Water Damage within statutory timeframe</span>
+                        <span>Submit updated diagnosis codes for newly identified chronic conditions within billing cycle</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle size={16} className="text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Present comparative market analysis showing systematic underpayment patterns</span>
+                        <span>Present population health data showing systematic gaps in risk-adjusted coding</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle size={16} className="text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Leverage new damage discovery to justify reopening previous claims</span>
+                        <span>Leverage clinical findings to justify HCC recapture and quality measure improvement</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle size={16} className="text-green-600 mt-0.5 flex-shrink-0" />

@@ -18,7 +18,7 @@ function DashboardLayoutContent({
       {/* Semantic aside for sidebar navigation - Hidden only on phones, visible on tablets and desktop */}
       <aside
         className={`
-          hidden sm:block
+          hidden sm:block print:hidden
           ${isCollapsed ? 'w-20' : 'w-64'}
           flex-shrink-0
           transition-all duration-300
@@ -55,7 +55,9 @@ function DashboardLayoutContent({
       </main>
 
       {/* Mobile Bottom Navigation - Only visible on mobile */}
-      <MobileBottomNav />
+      <div className="print:hidden">
+        <MobileBottomNav />
+      </div>
     </div>
   )
 }

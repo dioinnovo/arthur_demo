@@ -660,7 +660,7 @@ export default function CareSessionReviewPage() {
                   className="flex items-center gap-2 text-gray-700 hover:text-gray-900 dark:text-gray-100 cursor-pointer"
                 >
                   <Edit3 size={18} />
-                  Edit Assessments
+                  Edit
                 </Link>
 
                 {/* AI Enhancement Button */}
