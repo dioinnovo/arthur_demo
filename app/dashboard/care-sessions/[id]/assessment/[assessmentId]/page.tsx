@@ -93,7 +93,7 @@ export default function CareSessionAssessmentPage() {
   const params = useParams()
   const router = useRouter()
   const sessionId = params.id as string
-  const areaId = params.areaId as string
+  const areaId = params.assessmentId as string  // Fixed: should match [assessmentId] folder name
   const propertyType = 'residential' as const // Default for care sessions
 
   // Use the centralized inspection data hook
@@ -171,9 +171,9 @@ export default function CareSessionAssessmentPage() {
       setNavigationMode('form')
       setExpandedAreaId(areaId)
 
-      // For demo inspection CS-002, the demo data loading is handled by a separate useEffect
+      // For demo inspection CS-001, the demo data loading is handled by a separate useEffect
       // Here we only handle non-demo inspections
-      if (sessionId !== 'CS-002') {
+      if (sessionId !== 'CS-001') {
         // Not demo inspection, use localStorage data
         const savedStatus = areasStatus[areaId]
         if (savedStatus) {
@@ -206,10 +206,10 @@ export default function CareSessionAssessmentPage() {
       sessionId,
       areaId,
       hasInspectionData: !!sessionData,
-      isDemo: sessionId === 'CS-002'
+      isDemo: sessionId === 'CS-001'
     })
 
-    if (sessionId === 'CS-002' && sessionData && areaId) {
+    if (sessionId === 'CS-001' && sessionData && areaId) {
       console.log('🔥 Loading demo data for area:', areaId)
       const demoArea = sessionData.areas.find(area => area.id === areaId)
 
@@ -256,7 +256,7 @@ export default function CareSessionAssessmentPage() {
 
           setAreaData({
             findings: demoArea.findings || '',
-            damageDescription: demoArea.damageDescription || '',
+            damageDescription: demoArea.clinicalObservations || '',  // Map clinicalObservations to damageDescription
             recommendedActions: demoArea.recommendedActions || '',
             mediaFiles: mediaFiles,
             aiInsights: [],
@@ -310,7 +310,7 @@ export default function CareSessionAssessmentPage() {
 
   // Get current area position and navigation
   // For demo inspection, use data from sessionData; otherwise use static areas
-  const allAreas = (sessionId === 'CS-002' && sessionData?.areas)
+  const allAreas = (sessionId === 'CS-001' && sessionData?.areas)
     ? sessionData.areas
     : ASSESSMENT_CATEGORIES
 
@@ -323,7 +323,7 @@ export default function CareSessionAssessmentPage() {
   // Enhance areas with their status
   const enhancedAreas = React.useMemo(() => {
     // For demo inspection, use the data directly from sessionData
-    if (sessionId === 'CS-002' && sessionData?.areas) {
+    if (sessionId === 'CS-001' && sessionData?.areas) {
       return sessionData.areas.map(area => ({
         ...area,
         photoCount: area.id === areaId ? areaData.mediaFiles.filter(f => f.type === 'photo').length : (area.photoCount || 0),
@@ -493,7 +493,7 @@ export default function CareSessionAssessmentPage() {
         photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
         notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
         findings: areaData.findings,
-        damageDescription: areaData.damageDescription,
+        clinicalObservations: areaData.damageDescription,  // Map damageDescription back to clinicalObservations
         recommendedActions: areaData.recommendedActions,
         media: areaData.mediaFiles.map(f => ({
           id: f.id,

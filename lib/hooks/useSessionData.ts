@@ -91,8 +91,8 @@ export function useSessionData(sessionId: string) {
           let notesCount = 0
           let previewImage = ''
 
-          // First 3 areas completed with demo data
-          if (index < 3) {
+          // First 5 areas completed with demo data
+          if (index < 5) {
             status = 'completed'
 
             // Different demo content for each completed area
@@ -201,10 +201,88 @@ export function useSessionData(sessionId: string) {
                   duration: 32
                 }
               ]
+            } else if (area.id === 'care-plan-review') {
+              findings = 'Care plan reviewed with patient. Goals: maintain A1C <7.0%, BP <130/80, increase physical activity to 30 min daily.'
+              clinicalObservations = 'Patient engaged in care planning process. Demonstrates good understanding of treatment goals. Agrees with activity progression plan.'
+              recommendedActions = 'Continue current diabetes and hypertension management. Add structured exercise program. Follow up with endocrinology in 6 weeks. Schedule nutritionist consultation.'
+              photoCount = 2
+              notesCount = 1
+              previewImage = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=400&fit=crop'
+              media = [
+                {
+                  id: 'photo-7',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=600&fit=crop',
+                  title: 'Care Plan Documentation',
+                  timestamp: '2024-03-15T11:00:00Z',
+                  category: 'Care Plan'
+                },
+                {
+                  id: 'photo-8',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=800&h=600&fit=crop',
+                  title: 'Patient Goals Worksheet',
+                  timestamp: '2024-03-15T11:02:00Z',
+                  category: 'Patient Education'
+                },
+                {
+                  id: 'audio-4',
+                  type: 'audio',
+                  url: '#',
+                  title: 'Care Plan Review Discussion',
+                  timestamp: '2024-03-15T11:05:00Z',
+                  category: 'Voice Notes',
+                  transcript: 'Care plan review completed with patient Margaret Thompson. Discussed treatment goals including maintaining A1C below 7.0%, blood pressure below 130 over 80, and increasing physical activity to 30 minutes daily. Patient is motivated and engaged. Agrees with progressive exercise plan starting with 15 minute walks three times per week. Endocrinology follow-up scheduled for 6 weeks. Patient to see nutritionist for diabetes meal planning.',
+                  duration: 42
+                }
+              ]
+            } else if (area.id === 'patient-education') {
+              findings = 'Diabetes self-management education completed. Patient demonstrates correct glucose monitoring technique and insulin administration.'
+              clinicalObservations = 'Patient shows excellent understanding of hypoglycemia symptoms and treatment. Correctly identifies carb counting principles. Motivated for lifestyle modifications.'
+              recommendedActions = 'Provide written diabetes resources. Enroll in diabetes support group. Schedule follow-up education session in 4 weeks to reinforce concepts.'
+              photoCount = 3
+              notesCount = 1
+              previewImage = 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=400&h=400&fit=crop'
+              media = [
+                {
+                  id: 'photo-9',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=800&h=600&fit=crop',
+                  title: 'Glucose Meter Demonstration',
+                  timestamp: '2024-03-15T11:15:00Z',
+                  category: 'Patient Education'
+                },
+                {
+                  id: 'photo-10',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&h=600&fit=crop',
+                  title: 'Education Materials Provided',
+                  timestamp: '2024-03-15T11:18:00Z',
+                  category: 'Patient Education'
+                },
+                {
+                  id: 'photo-11',
+                  type: 'photo',
+                  url: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=800&h=600&fit=crop',
+                  title: 'Carb Counting Reference Guide',
+                  timestamp: '2024-03-15T11:20:00Z',
+                  category: 'Patient Education'
+                },
+                {
+                  id: 'audio-5',
+                  type: 'audio',
+                  url: '#',
+                  title: 'Patient Education Session Notes',
+                  timestamp: '2024-03-15T11:22:00Z',
+                  category: 'Voice Notes',
+                  transcript: 'Diabetes self-management education session completed. Patient demonstrated excellent glucose monitoring technique with proper handwashing and meter use. Shows good understanding of target blood sugar ranges. Correctly identified signs and symptoms of hypoglycemia including shakiness, sweating, and confusion. Treatment with 15 grams fast-acting carbs reviewed. Patient practiced carb counting with sample meals. Very engaged and asking appropriate questions. Provided written materials and enrolled in diabetes support group starting next month.',
+                  duration: 48
+                }
+              ]
             }
           }
-          // 4th area in progress
-          else if (index === 3) {
+          // 6th area in progress
+          else if (index === 5) {
             status = 'in_progress'
           }
 
