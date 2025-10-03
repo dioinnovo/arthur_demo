@@ -424,30 +424,53 @@ function generateMarkdownPDF(markdownContent: string): void {
     })
   }
 
+  // Track current section for special formatting
+  let inCoverageGaps = false
+  let inOptimization = false
+
   // Process each line
   lines.forEach(line => {
+    // Check for special sections
+    if (line.includes('Coverage Gaps') || line.includes('COVERAGE GAPS')) {
+      inCoverageGaps = true
+      inOptimization = false
+    } else if (line.includes('Optimization') || line.includes('OPTIMIZATION')) {
+      inOptimization = true
+      inCoverageGaps = false
+    } else if (line.startsWith('## ') || line.startsWith('# ')) {
+      inCoverageGaps = false
+      inOptimization = false
+    }
+
     // Headers
     if (line.startsWith('# ')) {
       checkPageBreak(20)
+      yPosition += 2
       pdf.setFontSize(18)
       pdf.setFont('helvetica', 'bold')
       pdf.setTextColor(0, 102, 204) // Arthur Health Blue
       pdf.text(line.substring(2), margin, yPosition)
-      yPosition += 12
+      yPosition += 10
     } else if (line.startsWith('## ')) {
-      checkPageBreak(15)
-      pdf.setFontSize(14)
+      checkPageBreak(18)
+      yPosition += 3
+      // Add blue background box for section headers
+      pdf.setFillColor(230, 240, 255) // Light blue background
+      pdf.rect(margin, yPosition - 5, contentWidth, 9, 'F')
+
+      pdf.setFontSize(13)
       pdf.setFont('helvetica', 'bold')
       pdf.setTextColor(0, 102, 204)
-      pdf.text(line.substring(3), margin, yPosition)
-      yPosition += 10
+      pdf.text(line.substring(3), margin + 3, yPosition)
+      yPosition += 8
     } else if (line.startsWith('### ')) {
       checkPageBreak(12)
-      pdf.setFontSize(12)
+      yPosition += 2
+      pdf.setFontSize(11)
       pdf.setFont('helvetica', 'bold')
       pdf.setTextColor(75, 85, 99) // Dark gray
-      pdf.text(line.substring(4), margin, yPosition)
-      yPosition += 8
+      pdf.text(line.substring(4), margin + 2, yPosition)
+      yPosition += 6
     }
     // Bold text
     else if (line.startsWith('**') && line.endsWith('**')) {
@@ -459,23 +482,40 @@ function generateMarkdownPDF(markdownContent: string): void {
     // List items
     else if (line.startsWith('- ') || line.startsWith('• ')) {
       checkPageBreak(8)
-      pdf.setTextColor(0, 0, 0)
-      pdf.setFontSize(10)
-      pdf.setFont('helvetica', 'normal')
+
       const text = line.substring(2)
       const splitText = pdf.splitTextToSize(text, contentWidth - 10)
+      const itemHeight = splitText.length * 5 + 2
+
+      // Add background for special sections
+      if (inCoverageGaps) {
+        pdf.setFillColor(255, 243, 224) // Light orange for warnings
+        pdf.rect(margin, yPosition - 3, contentWidth, itemHeight, 'F')
+        pdf.setTextColor(217, 119, 6) // Orange text
+      } else if (inOptimization) {
+        pdf.setFillColor(220, 252, 231) // Light green for opportunities
+        pdf.rect(margin, yPosition - 3, contentWidth, itemHeight, 'F')
+        pdf.setTextColor(5, 150, 105) // Green text
+      } else {
+        pdf.setTextColor(0, 0, 0)
+      }
+
+      pdf.setFontSize(10)
+      pdf.setFont('helvetica', 'normal')
 
       // Add bullet
-      pdf.text('•', margin, yPosition)
+      pdf.text('•', margin + 2, yPosition)
 
       // Add text with indent
       splitText.forEach((textLine: string, index: number) => {
         if (index > 0) {
           checkPageBreak(5)
         }
-        pdf.text(textLine, margin + 5, yPosition)
+        pdf.text(textLine, margin + 7, yPosition)
         yPosition += 5
       })
+
+      yPosition += 1 // Add small gap between items
     }
     // Table separator
     else if (line.startsWith('|---') || line.startsWith('|:--')) {

@@ -351,6 +351,17 @@ export default function MobileChatInterface() {
         ))
       }
 
+      // Check if this is a comprehensive policy review
+      const isPolicyReview = data.downloadable ||
+                            data.response.includes('Comprehensive Healthcare Policy Analysis') ||
+                            data.response.includes('# Comprehensive Healthcare Policy Analysis')
+
+      // Add a "thinking" delay for comprehensive policy reviews
+      if (isPolicyReview) {
+        // Show thinking state for 1.5 seconds
+        await new Promise(resolve => setTimeout(resolve, 1500))
+      }
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
