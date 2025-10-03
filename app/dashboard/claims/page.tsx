@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { FileText, ChevronRight, Plus, Search, Filter, TrendingUp, DollarSign, Clock, AlertCircle, CheckCircle2, Calendar } from 'lucide-react'
+import { FileText, ChevronRight, Plus, Search, Filter, TrendingUp, DollarSign, Clock, AlertCircle, CheckCircle2, Calendar, Mic, MessageSquare, FileCheck } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/ui/page-header'
 
@@ -186,7 +186,7 @@ export default function ClaimsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
             <input
               type="text"
-              placeholder="Search by claimant name, case number, injury type, or carrier..."
+              placeholder="Search by patient name, case number, condition, or insurance carrier..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-arthur-blue focus:border-arthur-blue transition-all"
@@ -202,10 +202,11 @@ export default function ClaimsPage() {
               className="px-4 py-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-arthur-blue focus:border-arthur-blue text-sm transition-all"
             >
               <option value="all">All Status</option>
-              <option value="Investigation">Investigation</option>
-              <option value="Medical Treatment">Medical Treatment</option>
-              <option value="Active Negotiation">Active Negotiation</option>
-              <option value="Settlement Pending">Settlement Pending</option>
+              <option value="Intensive Case Management">Intensive Case Management</option>
+              <option value="Transition Planning">Transition Planning</option>
+              <option value="Active Care Coordination">Active Care Coordination</option>
+              <option value="Optimization Active">Optimization Active</option>
+              <option value="Monitoring">Monitoring</option>
               <option value="Closed">Closed</option>
             </select>
 
@@ -228,12 +229,12 @@ export default function ClaimsPage() {
               onChange={(e) => setActiveFilters({...activeFilters, claimType: e.target.value})}
               className="px-4 py-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-arthur-blue focus:border-arthur-blue text-sm transition-all"
             >
-              <option value="all">All Claim Types</option>
-              <option value="auto">Auto Accident</option>
-              <option value="slip-fall">Slip & Fall</option>
-              <option value="workplace">Workplace Injury</option>
-              <option value="medical">Medical Malpractice</option>
-              <option value="product">Product Liability</option>
+              <option value="all">All Care Types</option>
+              <option value="diabetes">Diabetes Management</option>
+              <option value="chf">CHF Management</option>
+              <option value="post-acute">Post-Acute Care</option>
+              <option value="behavioral">Behavioral Health</option>
+              <option value="complex">Complex Care</option>
             </select>
 
             {/* Clear Filters Button */}
@@ -256,8 +257,8 @@ export default function ClaimsPage() {
       {/* Active Claims Grid */}
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Active Claims</h2>
-          <span className="text-sm text-gray-500 dark:text-gray-400">{filteredClaims.length} claims</span>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Active Care Cases</h2>
+          <span className="text-sm text-gray-500 dark:text-gray-400">{filteredClaims.length} cases</span>
         </div>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           {filteredClaims.map((claim) => (
@@ -313,22 +314,22 @@ export default function ClaimsPage() {
                 <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Current Demand:</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Current Monthly Cost:</span>
                       <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
                         ${claim.currentDemand.toLocaleString()}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">AI Recommended:</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">AI Optimized Cost:</span>
                       <span className="text-sm font-bold text-green-600 dark:text-green-400">
                         ${claim.aiRecommendedSettlement.toLocaleString()}
                       </span>
                     </div>
-                    {claim.potentialIncrease > 0 && (
+                    {claim.potentialIncrease !== 0 && (
                       <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 px-2 py-1.5 rounded">
-                        <span className="text-xs font-medium text-green-700 dark:text-green-300">Potential Increase:</span>
+                        <span className="text-xs font-medium text-green-700 dark:text-green-300">Monthly Savings:</span>
                         <span className="text-sm font-bold text-green-700 dark:text-green-300">
-                          +${claim.potentialIncrease.toLocaleString()}
+                          ${Math.abs(claim.potentialIncrease).toLocaleString()}
                         </span>
                       </div>
                     )}
@@ -352,6 +353,32 @@ export default function ClaimsPage() {
                     <span className="font-semibold text-gray-900 dark:text-gray-100">{claim.aiConfidence}%</span>
                   </div>
                 </div>
+
+                {/* Voice Note */}
+                {claim.voiceNote && (
+                  <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                      <Mic className="text-arthur-blue flex-shrink-0 mt-0.5" size={16} />
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Latest Voice Note</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{claim.voiceNote}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Transcript */}
+                {claim.transcript && (
+                  <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex items-start gap-2 bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg">
+                      <MessageSquare className="text-purple-600 flex-shrink-0 mt-0.5" size={16} />
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Call Transcript</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{claim.transcript}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Next Action */}
                 <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
@@ -382,32 +409,32 @@ export default function ClaimsPage() {
       <div className="bg-gradient-to-br from-arthur-blue to-blue-600 rounded-xl shadow-sm p-6 text-white">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp size={24} />
-          <h2 className="text-xl font-bold">Arthur AI Settlement Insights</h2>
+          <h2 className="text-xl font-bold">Arthur AI Care Insights</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <AlertCircle size={18} />
-              <h3 className="font-semibold">High-Value Opportunities</h3>
+              <h3 className="font-semibold">High-Impact Opportunities</h3>
             </div>
-            <p className="text-sm text-white/90">2 claims show potential for 30%+ settlement increases based on similar case outcomes.</p>
+            <p className="text-sm text-white/90">2 patients showing excellent progress - potential to transition to lower-intensity care pathways, saving $8.5K monthly.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Calendar size={18} />
-              <h3 className="font-semibold">Time-Sensitive Actions</h3>
+              <h3 className="font-semibold">Proactive Interventions</h3>
             </div>
-            <p className="text-sm text-white/90">3 claims approaching statute of limitations. Immediate action required within 30 days.</p>
+            <p className="text-sm text-white/90">3 patients at risk for hospital readmission within 30 days. Early intervention recommended to prevent $45K in avoidable costs.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 size={18} />
-              <h3 className="font-semibold">Documentation Complete</h3>
+              <h3 className="font-semibold">Documentation Excellence</h3>
             </div>
-            <p className="text-sm text-white/90">5 claims ready for demand letters. AI has optimized settlement amounts based on medical records.</p>
+            <p className="text-sm text-white/90">All active cases have complete clinical documentation. Voice notes and transcripts auto-captured for quality assurance and audit compliance.</p>
           </div>
         </div>
       </div>

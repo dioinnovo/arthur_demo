@@ -617,27 +617,27 @@ export function CareAssessmentCarousel({
       </AnimatePresence>
 
       <style jsx global>{`
-        .inspection-carousel {
+        .care-assessment-carousel {
           width: 100%;
         }
 
-        .inspection-carousel .swiper-slide {
+        .care-assessment-carousel .swiper-slide {
           background-position: center;
           background-size: cover;
         }
 
         /* Remove any dark overlays from swiper-wrapper */
-        .inspection-carousel .swiper-wrapper {
+        .care-assessment-carousel .swiper-wrapper {
           background: transparent !important;
         }
 
-        .inspection-carousel .swiper-wrapper::before,
-        .inspection-carousel .swiper-wrapper::after {
+        .care-assessment-carousel .swiper-wrapper::before,
+        .care-assessment-carousel .swiper-wrapper::after {
           display: none !important;
         }
 
 
-        .inspection-carousel .swiper-slide {
+        .care-assessment-carousel .swiper-slide {
           transition: all 0.3s ease;
         }
       `}</style>
