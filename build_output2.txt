@@ -1,0 +1,28 @@
+
+> arthur-health-intelligence-platform@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.4
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · serverActions
+
+   Creating an optimized production build ...
+
+warn - The class `duration-[3000ms]` is ambiguous and matches multiple utilities.
+warn - If this is content and not a class, replace it with `duration-&lsqb;3000ms&rsqb;` to silence this warning.
+ ✓ Compiled successfully in 2.8s
+   Linting and checking validity of types ...
+Failed to compile.
+
+./app/dashboard/care-sessions/[id]/report/page.tsx:1761:42
+Type error: Property 'careIntelligence' does not exist on type '{ unreportedConditionsEstimate: number; qualityImprovementOpportunities: number; historicalOutcomes: number; populationComparison: string; confidenceMetrics: { conditionPrediction: number; costAccuracy: number; timelineReliability: number; riskAssessment: number; }; ... 4 more ...; payerIntelligence: { ...; }; }'. Did you mean 'payerIntelligence'?
+
+[0m [90m 1759 |[39m                 [33m<[39m[33m/[39m[33mh3[39m[33m>[39m
+ [90m 1760 |[39m                 [33m<[39m[33mdiv[39m className[33m=[39m[32m"space-y-3"[39m[33m>[39m
+[31m[1m>[22m[39m[90m 1761 |[39m                   {reportData[33m.[39maiInsights[33m.[39mcareIntelligence[33m?[39m[33m.[39mstrategicConsiderations[33m?[39m[33m.[39mmap((strategy[33m,[39m idx) [33m=>[39m (
+ [90m      |[39m                                          [31m[1m^[22m[39m
+ [90m 1762 |[39m                     [33m<[39m[33mdiv[39m key[33m=[39m{idx} className[33m=[39m[32m"flex items-start gap-3"[39m[33m>[39m
+ [90m 1763 |[39m                       [33m<[39m[33mdiv[39m className[33m=[39m[32m"w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"[39m[33m>[39m
+ [90m 1764 |[39m                         {idx [33m+[39m [35m1[39m}[0m
+Next.js build worker exited with code: 1 and signal: null

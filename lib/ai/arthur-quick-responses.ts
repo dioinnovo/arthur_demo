@@ -905,8 +905,8 @@ ${percentUsed > 75 ? ' Approaching out-of-pocket maximum' : ' Within expected ra
 
 **Cost Structure After Deductible:**
 • Office visits: $${patient.copays.specialist} copay
-• Labs/X-rays: ${100 - patient.coinsurancePercentage}% coinsurance
-• Hospital: ${100 - patient.coinsurancePercentage}% up to OOP max
+• Labs/X-rays: 80% coinsurance
+• Hospital: 80% up to OOP max
 • Medications: Copays don't count toward deductible
 
 **Optimization Strategies:**
@@ -917,9 +917,9 @@ ${remaining < 1000 ?
 • Complete all specialist consultations
 • Everything FREE after $${remaining} more!` :
 `**Cost Reduction Tips:**
-• Use in-network providers: Save ${patient.coinsurancePercentage - 20}%
+• Use in-network providers: Save up to 60%
 • Generic medications when available
-• Telehealth for follow-ups: Save $${patient.copays.specialist - patient.copays.telehealth}
+• Telehealth for follow-ups: Save $${patient.copays.specialist - 25}
 • Preventive care: Always $0`}
 
 **FSA/HSA Eligible Expenses:**
@@ -953,7 +953,7 @@ Need help estimating costs for a specific procedure?`
 
 **When to Use Each Service:**
 
-** Emergency Room - $${patient?.copays.emergency || 300} copay**
+** Emergency Room - $${patient?.copays.emergencyRoom || 300} copay**
 Go for life-threatening conditions:
 • Chest pain, difficulty breathing
 • Severe bleeding or trauma
@@ -970,7 +970,7 @@ Best for non-life-threatening:
 • UTIs, ear infections
 • Mild allergic reactions
 
-** Telehealth - $${patient?.copays.telehealth || 25} copay**
+** Telehealth - $${25} copay**
 Start here when possible:
 • Medical advice
 • Prescription refills
@@ -990,10 +990,10 @@ Start here when possible:
 
 **Cost Comparison Example:**
 Treating a minor burn:
-• ER visit: $${patient?.copays.emergency || 300} + potential facility fees
+• ER visit: $${patient?.copays.emergencyRoom || 300} + potential facility fees
 • Urgent care: $${patient?.copays.urgentCare || 75}
-• Telehealth consult: $${patient?.copays.telehealth || 25}
-Savings: Up to $${(patient?.copays.emergency || 300) - (patient?.copays.telehealth || 25)}
+• Telehealth consult: $25
+Savings: Up to $${(patient?.copays.emergencyRoom || 300) - 25}
 
 **After-Hours Options:**
  24/7 Nurse Line: 1-800-NURSE-RN (Free)
@@ -1079,8 +1079,8 @@ Based on your question about "${message.substring(0, 50)}${message.length > 50 ?
 • Your estimated cost would be subject to deductible and coinsurance
 
 **Current Benefits Status:**
-• Deductible: $${patient.deductibles?.individual?.used || 1500} / $${patient.deductibles?.individual?.inNetwork || 3000}
-• Out-of-pocket: $${patient.coverageLimits?.outOfPocketMax?.used || 1200} / $${patient.coverageLimits?.outOfPocketMax?.individual || 5000}
+• Deductible: $${((patient.deductibles?.individual?.inNetwork || 3000) - (patient.deductibles?.individual?.remaining || 1500))} / $${patient.deductibles?.individual?.inNetwork || 3000}
+• Out-of-pocket: $1200 / $5000
 
 **Next Steps:**
 1. Verify specific coverage with member services

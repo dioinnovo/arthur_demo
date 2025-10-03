@@ -1947,14 +1947,14 @@ export default function CareSessionReportPage() {
               </div>
             </div>
 
-            {/* Permits & Contingency */}
+            {/* Diagnostic Costs & Quality Reserve */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <div className="bg-purple-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Permits & Regulatory Costs</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Diagnostic Costs</h3>
                 <div className="space-y-2">
-                  {Object.entries(reportData.financialSummary.detailedCostAnalysis.permitsCosts).map(([key, value]) => (
+                  {Object.entries(reportData.financialSummary.detailedCostAnalysis.diagnosticCosts).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
-                      <span className="text-gray-700 dark:text-gray-300 capitalize">{key} Permit:</span>
+                      <span className="text-gray-700 dark:text-gray-300 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
                       <span className="font-semibold text-purple-600">${value.toLocaleString()}</span>
                     </div>
                   ))}
@@ -1962,24 +1962,24 @@ export default function CareSessionReportPage() {
               </div>
 
               <div className="bg-amber-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Contingency Reserve</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Quality Reserve</h3>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-700 dark:text-gray-300">Reserve Percentage:</span>
-                    <span className="font-semibold text-amber-600">{reportData.financialSummary.detailedCostAnalysis.contingencyReserve.percentage}%</span>
+                    <span className="font-semibold text-amber-600">{reportData.financialSummary.detailedCostAnalysis.qualityReserve.percentage}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-700 dark:text-gray-300">Reserve Amount:</span>
-                    <span className="font-semibold text-amber-600">${reportData.financialSummary.detailedCostAnalysis.contingencyReserve.amount.toLocaleString()}</span>
+                    <span className="font-semibold text-amber-600">${reportData.financialSummary.detailedCostAnalysis.qualityReserve.amount.toLocaleString()}</span>
                   </div>
                   <div className="mt-3 text-sm text-amber-700">
-                    <strong>Justification:</strong> {reportData.financialSummary.detailedCostAnalysis.contingencyReserve.justification}
+                    <strong>Justification:</strong> {reportData.financialSummary.detailedCostAnalysis.qualityReserve.justification}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Market Analysis & Competitive Bids */}
+            {/* Market Analysis & Provider Comparisons */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
@@ -1988,12 +1988,12 @@ export default function CareSessionReportPage() {
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-700 dark:text-gray-300">Cost per Sq Ft:</span>
-                    <span className="font-semibold text-gray-900 dark:text-gray-100">${reportData.financialSummary.marketComparatives.regionalAverages.sqftCost}</span>
+                    <span className="text-gray-700 dark:text-gray-300">Per Member Per Month:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">${reportData.financialSummary.marketComparatives.regionalAverages.perMemberPerMonth}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-700 dark:text-gray-300">Timeline Average:</span>
-                    <span className="font-semibold text-gray-900 dark:text-gray-100">{reportData.financialSummary.marketComparatives.regionalAverages.timelineWeeks} weeks</span>
+                    <span className="text-gray-700 dark:text-gray-300">Episode Duration:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{reportData.financialSummary.marketComparatives.regionalAverages.episodeDurationWeeks} weeks</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-700 dark:text-gray-300">Quality Standard:</span>
@@ -2003,17 +2003,17 @@ export default function CareSessionReportPage() {
               </div>
 
               <div className="bg-indigo-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Competitive Bid Analysis</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Provider Comparisons</h3>
                 <div className="space-y-3">
-                  {(reportData.financialSummary.marketComparatives.competitiveBids || []).map((bid, idx) => (
+                  {(reportData.financialSummary.marketComparatives.providerComparisons || []).map((provider, idx) => (
                     <div key={idx} className="border border-indigo-200 rounded-lg p-3">
                       <div className="flex justify-between items-start">
                         <div>
-                          <div className="font-medium text-gray-900 dark:text-gray-100">{bid.name}</div>
-                          <div className="text-sm text-gray-600 dark:text-gray-400">Timeline: {bid.timeline}</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{provider.name}</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">Timeline: {provider.timeline}</div>
                         </div>
                         <div className="text-lg font-bold text-indigo-600">
-                          ${bid.bid.toLocaleString()}
+                          ${provider.estimatedCareValue.toLocaleString()}
                         </div>
                       </div>
                     </div>

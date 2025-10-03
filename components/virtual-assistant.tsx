@@ -592,7 +592,7 @@ const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
             <div className="relative">
               <div className={cn(
                 "transition-all ease-out",
-                isVoiceConnecting ? "duration-[3000ms] scale-100" : // 3 seconds to full size when connecting
+                isVoiceConnecting ? "[transition-duration:3000ms] scale-100" : // 3 seconds to full size when connecting
                 isCallActive ? "duration-500 scale-100" : // Quick transition when active
                 "duration-300 scale-75" // Default scale when neither
               )}>
