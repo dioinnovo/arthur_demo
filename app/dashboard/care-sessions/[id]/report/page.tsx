@@ -741,11 +741,11 @@ export default function CareSessionReportPage() {
                     <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400">
                       <span className="flex items-center gap-1">
                         <Camera size={16} />
-                        {area.photoCount} photos
+                        {area.dataPointsCollected} data points
                       </span>
                       <span className="flex items-center gap-1">
                         <FileText size={16} />
-                        {area.audioCount} notes
+                        {area.recommendations.length} recommendations
                       </span>
                     </div>
                   </div>
@@ -1477,33 +1477,36 @@ export default function CareSessionReportPage() {
                     </div>
                   )}
 
-                  {/* Safety Hazards */}
-                  {area.safetyHazards && (
+                  {/* Symptoms Reported */}
+                  {area.symptomsReported && area.symptomsReported.length > 0 && (
                     <div className="bg-red-50 border border-red-200 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-red-800 mb-3 flex items-center gap-2">
                         <AlertTriangle size={16} className="text-red-600" />
-                        Critical Safety Hazards
+                        Symptoms Reported
                       </h4>
                       <ul className="space-y-2 text-sm">
-                        {area.safetyHazards.map((hazard, idx) => (
+                        {area.symptomsReported.map((symptom, idx) => (
                           <li key={idx} className="flex items-start gap-2">
                             <span className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                            <span className="text-red-700">{hazard}</span>
+                            <span className="text-red-700">{symptom}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {/* Appliances Affected */}
-                  {area.appliancesAffected && (
+                  {/* Lab Results */}
+                  {area.labResults && Object.keys(area.labResults).length > 0 && (
                     <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
-                      <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Affected Equipment & Appliances</h4>
-                      <ul className="space-y-1 text-sm">
-                        {area.appliancesAffected.map((appliance, idx) => (
-                          <li key={idx} className="text-gray-700 dark:text-gray-300">• {appliance}</li>
+                      <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Lab Results</h4>
+                      <div className="grid grid-cols-1 gap-2 text-sm">
+                        {Object.entries(area.labResults).map(([key, value], idx) => (
+                          <div key={idx} className="flex justify-between">
+                            <span className="text-gray-600 dark:text-gray-400 capitalize">{key}:</span>
+                            <span className="text-gray-900 dark:text-gray-100 font-medium">{value}</span>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
                   
@@ -1512,7 +1515,7 @@ export default function CareSessionReportPage() {
                       <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Documentation</h4>
                       <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <Camera size={16} />
-                        <span>{area.photoCount} photos captured</span>
+                        <span>{area.dataPointsCollected} data points collected</span>
                       </div>
                     </div>
                     <div>
