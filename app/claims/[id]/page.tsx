@@ -84,15 +84,11 @@ export default function ClaimDetailPage() {
     timeline: false
   })
 
-  useEffect(() => {
-    fetchClaimDetails()
-  }, [claimId])
-
   const fetchClaimDetails = async () => {
     try {
       const response = await fetch(`/api/claims/${claimId}`)
       const data = await response.json()
-      
+
       if (data.success) {
         setClaim(data.data)
         setEditedClaim(data.data)
@@ -103,6 +99,11 @@ export default function ClaimDetailPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchClaimDetails()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [claimId])
 
   const handleSave = async () => {
     try {
