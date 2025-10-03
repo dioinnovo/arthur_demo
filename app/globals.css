@@ -57,6 +57,8 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     overflow-x: hidden;
+    font-size: 1.0625rem; /* 17px - one size bigger than default 16px */
+    line-height: 1.6;
   }
 
   /* Scrollbar that uses existing padding as gutter */
