@@ -1425,14 +1425,14 @@ export default function CareSessionReportPage() {
                   <p className="text-xs sm:text-base text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">{area.clinicalDescription}</p>
                   
                   {/* Technical Findings */}
-                  {area.technicalFindings && (
+                  {area.clinicalFindings && (
                     <div className="bg-blue-50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2 text-sm sm:text-base">
                         <Brain size={16} className="text-blue-600" />
                         Technical Analysis
                       </h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm">
-                        {Object.entries(area.technicalFindings).map(([key, value]) => (
+                        {Object.entries(area.clinicalFindings).map(([key, value]) => (
                           <div key={key} className="flex flex-col sm:flex-row sm:justify-between gap-1">
                             <span className="text-gray-600 dark:text-gray-400 capitalize font-medium sm:font-normal">{key.replace(/([A-Z])/g, ' $1')}:</span>
                             <span className="font-medium text-gray-900 dark:text-gray-100 break-words">{value}</span>
@@ -1442,15 +1442,15 @@ export default function CareSessionReportPage() {
                     </div>
                   )}
 
-                  {/* Material Specifications */}
-                  {area.materialSpecs && (
+                  {/* Medications */}
+                  {area.medications && (
                     <div className="bg-green-50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2 text-sm sm:text-base">
                         <Building2 size={16} className="text-green-600" />
-                        Material Specifications
+                        Current Medications
                       </h4>
                       <div className="grid grid-cols-1 gap-2 text-xs sm:text-sm">
-                        {Object.entries(area.materialSpecs).map(([key, value]) => (
+                        {Object.entries(area.medications).map(([key, value]) => (
                           <div key={key} className="flex flex-col sm:block">
                             <span className="text-gray-600 dark:text-gray-400 capitalize font-medium">{key}:</span>
                             <span className="text-gray-900 dark:text-gray-100 sm:ml-2 break-words">{value}</span>
@@ -1460,18 +1460,17 @@ export default function CareSessionReportPage() {
                     </div>
                   )}
 
-                  {/* Environmental Concerns */}
-                  {area.environmentalConcerns && (
+                  {/* Risk Factors */}
+                  {area.riskFactors && area.riskFactors.length > 0 && (
                     <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-amber-800 mb-3 flex items-center gap-2">
                         <AlertTriangle size={16} className="text-amber-600" />
-                        Environmental Assessment
+                        Risk Factors
                       </h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                        {Object.entries(area.environmentalConcerns).map(([key, value]) => (
-                          <div key={key}>
-                            <span className="text-amber-700 capitalize font-medium">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                            <div className="text-amber-800">{value}</div>
+                        {area.riskFactors.map((risk, idx) => (
+                          <div key={idx} className="text-amber-800">
+                            • {risk}
                           </div>
                         ))}
                       </div>
