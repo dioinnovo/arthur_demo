@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { FileText, ChevronRight, Plus, Search, Filter, TrendingUp, DollarSign, Clock, AlertCircle, CheckCircle2, Calendar, Mic, MessageSquare, FileCheck } from 'lucide-react'
+import { FileText, ChevronRight, Plus, Search, Filter, TrendingUp, DollarSign, Clock, AlertCircle, CheckCircle2, Calendar, Shield, CheckSquare } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/ui/page-header'
 
@@ -10,122 +10,123 @@ export default function ClaimsPage() {
   const [activeFilters, setActiveFilters] = useState({
     status: 'all',
     priority: 'all',
-    claimType: 'all'
+    requestType: 'all'
   })
 
   const activeClaims = [
     {
       id: 'CLM-2024-001',
-      claimantName: 'Margaret Thompson',
-      caseNumber: 'MC-2024-1047',
-      injuryType: 'Complex Diabetes Management - High-Risk Patient',
-      status: 'Active Care Coordination',
+      patientName: 'Margaret Thompson',
+      mrn: 'MRN-784512',
+      requestType: 'Prior Authorization',
+      condition: 'Type 2 Diabetes - Insulin Pump',
+      status: 'Coverage Review',
       priority: 'High',
-      dateOfLoss: '2024-08-15',
-      daysOpen: 45,
-      currentDemand: 12500,
-      aiRecommendedSettlement: 8200,
-      insuranceCarrier: 'UnitedHealthcare Medicare',
-      adjuster: 'Care Coordinator',
-      nextAction: 'Endocrinology Specialist Referral',
-      potentialIncrease: -4300,
+      policyCarrier: 'UnitedHealthcare Medicare Advantage',
+      policyNumber: 'UHC-MA-784512',
+      requestedTreatment: 'Continuous Glucose Monitor + Insulin Pump',
+      coverageStatus: 'Partial Coverage',
+      coverageGap: '$2,400 out-of-pocket',
+      aiRecommendation: 'Alternative CGM covered at 100%',
+      estimatedSavings: 2400,
+      nextAction: 'Submit alternative device authorization',
       aiConfidence: 94,
-      lastActivity: '2 hours ago',
-      voiceNote: 'Patient reports improved glucose control with new medication regimen. Adherence at 92%. Coordinating with endocrinologist for follow-up in 2 weeks.',
-      transcript: '10:45 AM - Care Coordinator Call with patient. Discussed medication compliance, dietary changes, and upcoming specialist appointments. Patient expressed satisfaction with care plan.'
+      daysOpen: 3,
+      lastActivity: '2 hours ago'
     },
     {
       id: 'CLM-2024-002',
-      claimantName: 'Robert Johnson',
-      caseNumber: 'MC-2024-1048',
-      injuryType: 'Post-Acute Care - Hip Replacement Recovery',
-      status: 'Transition Planning',
+      patientName: 'Robert Johnson',
+      mrn: 'MRN-892341',
+      requestType: 'Treatment Authorization',
+      condition: 'Hip Replacement - Post-Acute Care',
+      status: 'Provider Network Review',
       priority: 'Medium',
-      dateOfLoss: '2024-09-02',
-      daysOpen: 28,
-      currentDemand: 15800,
-      aiRecommendedSettlement: 11200,
-      insuranceCarrier: 'Aetna Commercial',
-      adjuster: 'Case Manager',
-      nextAction: 'Home Health Services Setup',
-      potentialIncrease: -4600,
-      aiConfidence: 88,
-      lastActivity: 'Today',
-      voiceNote: 'Patient ready for discharge. Arranged home health PT 3x weekly. DME equipment delivered. Family support system confirmed.',
-      transcript: '2:15 PM - Discharge planning meeting with patient, family, and care team. Reviewed home safety, medication schedule, and PT exercises. Patient verbalized understanding.'
+      policyCarrier: 'Aetna PPO',
+      policyNumber: 'AET-PPO-892341',
+      requestedTreatment: 'Skilled Nursing Facility - 30 days',
+      coverageStatus: 'In-Network Required',
+      coverageGap: '$8,200 if out-of-network',
+      aiRecommendation: 'In-network SNF 2.1 mi away, same quality score',
+      estimatedSavings: 8200,
+      nextAction: 'Coordinate in-network SNF placement',
+      aiConfidence: 98,
+      daysOpen: 1,
+      lastActivity: '45 min ago'
     },
     {
       id: 'CLM-2024-003',
-      claimantName: 'Eleanor Martinez',
-      caseNumber: 'MC-2024-1049',
-      injuryType: 'Chronic CHF Management - NYHA Class III',
-      status: 'Optimization Active',
+      patientName: 'Eleanor Martinez',
+      mrn: 'MRN-567823',
+      requestType: 'Specialist Referral',
+      condition: 'Chronic CHF - NYHA Class III',
+      status: 'Coverage Verified',
       priority: 'High',
-      dateOfLoss: '2024-07-20',
-      daysOpen: 72,
-      currentDemand: 18900,
-      aiRecommendedSettlement: 13400,
-      insuranceCarrier: 'Cigna Medicare Advantage',
-      adjuster: 'Clinical Coordinator',
-      nextAction: 'Cardiology Follow-up & Medication Optimization',
-      potentialIncrease: -5500,
+      policyCarrier: 'Cigna Medicare Advantage',
+      policyNumber: 'CIG-MA-567823',
+      requestedTreatment: 'Interventional Cardiology Consultation',
+      coverageStatus: 'Fully Covered',
+      coverageGap: '$0 copay (specialist tier)',
+      aiRecommendation: 'Top-rated provider in-network, 3-day wait',
+      estimatedSavings: 0,
+      nextAction: 'Schedule appointment with Dr. Chen',
       aiConfidence: 96,
-      lastActivity: 'Today',
-      voiceNote: 'Patient showing significant improvement with new diuretic regimen. Weight stable, no recent hospitalizations. Care team meeting scheduled to discuss potential for reduced monitoring.',
-      transcript: '9:30 AM - Weekly check-in call. Patient reports feeling better, improved exercise tolerance. No shortness of breath at rest. Medication adherence excellent at 98%.'
+      daysOpen: 5,
+      lastActivity: 'Today'
     },
     {
       id: 'CLM-2024-004',
-      claimantName: 'David Kim',
-      caseNumber: 'MC-2024-1050',
-      injuryType: 'Behavioral Health Crisis - High Utilizer',
-      status: 'Intensive Case Management',
+      patientName: 'David Kim',
+      mrn: 'MRN-234156',
+      requestType: 'Medication Authorization',
+      condition: 'Major Depressive Disorder',
+      status: 'Formulary Review',
       priority: 'Critical',
-      dateOfLoss: '2024-09-15',
-      daysOpen: 15,
-      currentDemand: 28500,
-      aiRecommendedSettlement: 14200,
-      insuranceCarrier: 'Blue Cross Blue Shield',
-      adjuster: 'Behavioral Health Specialist',
-      nextAction: 'Psychiatric Assessment & Care Plan Development',
-      potentialIncrease: -14300,
+      policyCarrier: 'Blue Cross Blue Shield',
+      policyNumber: 'BCBS-PPO-234156',
+      requestedTreatment: 'Brand-name antidepressant (Trintellix)',
+      coverageStatus: 'Not on Formulary',
+      coverageGap: '$340/month out-of-pocket',
+      aiRecommendation: 'Generic equivalent covered, same efficacy',
+      estimatedSavings: 4080,
+      nextAction: 'Provider consultation for generic switch',
       aiConfidence: 91,
-      lastActivity: '1 day ago',
-      voiceNote: 'Patient stabilizing after crisis intervention. Connected with community mental health services. Medication management appointment scheduled. Social worker assisting with housing stability.',
-      transcript: '4:00 PM - Crisis assessment with patient and psychiatrist. Patient agrees to treatment plan including medication management, weekly therapy, and peer support group. Safety plan established.'
+      daysOpen: 2,
+      lastActivity: '3 hours ago'
     }
   ]
 
   const filteredClaims = activeClaims.filter(claim => {
     const matchesSearch = searchQuery === '' ||
-      claim.claimantName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      claim.caseNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      claim.injuryType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      claim.insuranceCarrier.toLowerCase().includes(searchQuery.toLowerCase())
+      claim.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.mrn.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.condition.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.policyCarrier.toLowerCase().includes(searchQuery.toLowerCase())
 
     const matchesStatus = activeFilters.status === 'all' || claim.status === activeFilters.status
     const matchesPriority = activeFilters.priority === 'all' || claim.priority === activeFilters.priority
+    const matchesRequestType = activeFilters.requestType === 'all' || claim.requestType === activeFilters.requestType
 
-    return matchesSearch && matchesStatus && matchesPriority
+    return matchesSearch && matchesStatus && matchesPriority && matchesRequestType
   })
 
-  const totalActiveClaims = activeClaims.length
-  const totalDemandValue = activeClaims.reduce((sum, claim) => sum + claim.currentDemand, 0)
-  const totalAIRecommended = activeClaims.reduce((sum, claim) => sum + claim.aiRecommendedSettlement, 0)
-  const totalPotentialIncrease = totalAIRecommended - totalDemandValue
+  const totalActiveRequests = activeClaims.length
+  const totalEstimatedSavings = activeClaims.reduce((sum, claim) => sum + claim.estimatedSavings, 0)
+  const coverageIssues = activeClaims.filter(claim => claim.coverageStatus !== 'Fully Covered').length
+  const avgConfidence = Math.round(activeClaims.reduce((sum, claim) => sum + claim.aiConfidence, 0) / activeClaims.length)
 
   return (
     <div className="space-y-4">
       {/* Header */}
       <PageHeader
-        title="Medical Cost Management"
-        description="AI-powered care coordination and cost optimization for high-value patient care"
+        title="Policy Analysis & Authorization"
+        description="AI-powered coverage verification, prior authorization, and cost optimization"
         action={
           <button
             className="h-12 px-6 bg-arthur-blue text-white rounded-full hover:bg-arthur-blue-dark flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto transition-colors"
           >
             <Plus size={20} />
-            <span className="font-medium">New Care Case</span>
+            <span className="font-medium">New Authorization Request</span>
           </button>
         }
       />
@@ -134,47 +135,44 @@ export default function ClaimsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600 dark:text-gray-400">Active Care Cases</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Active Requests</p>
             <FileText className="text-arthur-blue" size={20} />
           </div>
-          <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{totalActiveClaims}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Under active management</p>
+          <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{totalActiveRequests}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Pending authorization</p>
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600 dark:text-gray-400">Current Monthly Cost</p>
-            <DollarSign className="text-blue-600" size={20} />
+            <p className="text-sm text-gray-600 dark:text-gray-400">Coverage Issues</p>
+            <AlertCircle className="text-orange-600" size={20} />
           </div>
-          <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            ${(totalDemandValue / 1000).toFixed(0)}K
+          <p className="text-3xl font-bold text-orange-600">
+            {coverageIssues}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Before optimization</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Require attention</p>
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600 dark:text-gray-400">AI Optimized Cost</p>
-            <TrendingUp className="text-green-600" size={20} />
+            <p className="text-sm text-gray-600 dark:text-gray-400">Patient Savings</p>
+            <DollarSign className="text-green-600" size={20} />
           </div>
           <p className="text-3xl font-bold text-green-600">
-            ${(totalAIRecommended / 1000).toFixed(0)}K
+            ${(totalEstimatedSavings / 1000).toFixed(1)}K
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">With care coordination</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Through optimization</p>
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600 dark:text-gray-400">Monthly Savings</p>
-            <TrendingUp className="text-emerald-600" size={20} />
+            <p className="text-sm text-gray-600 dark:text-gray-400">AI Confidence</p>
+            <CheckSquare className="text-emerald-600" size={20} />
           </div>
           <p className="text-3xl font-bold text-emerald-600">
-            ${Math.abs(totalPotentialIncrease / 1000).toFixed(0)}K
+            {avgConfidence}%
           </p>
-          <p className="text-xs text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
-            <span>↓ {Math.abs((totalPotentialIncrease / totalDemandValue) * 100).toFixed(1)}%</span>
-            <span className="text-gray-500 dark:text-gray-400">cost reduction</span>
-          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Average across requests</p>
         </div>
       </div>
 
@@ -186,7 +184,7 @@ export default function ClaimsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
             <input
               type="text"
-              placeholder="Search by patient name, case number, condition, or insurance carrier..."
+              placeholder="Search by patient name, MRN, condition, or policy carrier..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-arthur-blue focus:border-arthur-blue transition-all"
@@ -202,12 +200,12 @@ export default function ClaimsPage() {
               className="px-4 py-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-arthur-blue focus:border-arthur-blue text-sm transition-all"
             >
               <option value="all">All Status</option>
-              <option value="Intensive Case Management">Intensive Case Management</option>
-              <option value="Transition Planning">Transition Planning</option>
-              <option value="Active Care Coordination">Active Care Coordination</option>
-              <option value="Optimization Active">Optimization Active</option>
-              <option value="Monitoring">Monitoring</option>
-              <option value="Closed">Closed</option>
+              <option value="Coverage Review">Coverage Review</option>
+              <option value="Provider Network Review">Provider Network Review</option>
+              <option value="Coverage Verified">Coverage Verified</option>
+              <option value="Formulary Review">Formulary Review</option>
+              <option value="Pending Documentation">Pending Documentation</option>
+              <option value="Approved">Approved</option>
             </select>
 
             {/* Priority Filter */}
@@ -218,31 +216,30 @@ export default function ClaimsPage() {
             >
               <option value="all">All Priorities</option>
               <option value="Critical">Critical</option>
-              <option value="High">High Priority</option>
-              <option value="Medium">Medium Priority</option>
-              <option value="Low">Low Priority</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
             </select>
 
-            {/* Claim Type Filter */}
+            {/* Request Type Filter */}
             <select
-              value={activeFilters.claimType}
-              onChange={(e) => setActiveFilters({...activeFilters, claimType: e.target.value})}
+              value={activeFilters.requestType}
+              onChange={(e) => setActiveFilters({...activeFilters, requestType: e.target.value})}
               className="px-4 py-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-arthur-blue focus:border-arthur-blue text-sm transition-all"
             >
-              <option value="all">All Care Types</option>
-              <option value="diabetes">Diabetes Management</option>
-              <option value="chf">CHF Management</option>
-              <option value="post-acute">Post-Acute Care</option>
-              <option value="behavioral">Behavioral Health</option>
-              <option value="complex">Complex Care</option>
+              <option value="all">All Request Types</option>
+              <option value="Prior Authorization">Prior Authorization</option>
+              <option value="Treatment Authorization">Treatment Authorization</option>
+              <option value="Specialist Referral">Specialist Referral</option>
+              <option value="Medication Authorization">Medication Authorization</option>
             </select>
 
             {/* Clear Filters Button */}
-            {(searchQuery || activeFilters.status !== 'all' || activeFilters.priority !== 'all' || activeFilters.claimType !== 'all') && (
+            {(searchQuery || activeFilters.status !== 'all' || activeFilters.priority !== 'all' || activeFilters.requestType !== 'all') && (
               <button
                 onClick={() => {
                   setSearchQuery('')
-                  setActiveFilters({ status: 'all', priority: 'all', claimType: 'all' })
+                  setActiveFilters({ status: 'all', priority: 'all', requestType: 'all' })
                 }}
                 className="px-4 py-2 text-sm text-arthur-blue hover:bg-arthur-blue/10 rounded-lg transition-colors flex items-center gap-2"
               >
@@ -254,150 +251,102 @@ export default function ClaimsPage() {
         </div>
       </div>
 
-      {/* Active Claims Grid */}
+      {/* Active Requests Grid */}
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Active Care Cases</h2>
-          <span className="text-sm text-gray-500 dark:text-gray-400">{filteredClaims.length} cases</span>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Authorization Requests</h2>
+          <span className="text-sm text-gray-500 dark:text-gray-400">{filteredClaims.length} active</span>
         </div>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {filteredClaims.map((claim) => (
             <Link
               key={claim.id}
               href={`/dashboard/claims/${claim.id}`}
-              className="block border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:border-arthur-blue transition cursor-pointer"
+              className="block border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:border-arthur-blue hover:shadow-md transition-all cursor-pointer group"
             >
-              {/* Claim Header */}
-              <div className="bg-gray-50 dark:bg-gray-800 p-4 border-b-2 border-arthur-blue">
+              {/* Card Header */}
+              <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 p-4 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">{claim.caseNumber}</span>
-                  <div className="flex items-center gap-2">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
-                      claim.priority === 'Critical' ? 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300' :
-                      claim.priority === 'High' ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-300' :
-                      claim.priority === 'Medium' ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300' :
-                      'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300'
-                    }`}>
-                      {claim.priority}
-                    </span>
-                  </div>
+                  <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{claim.mrn}</span>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+                    claim.priority === 'Critical' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
+                    claim.priority === 'High' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300' :
+                    claim.priority === 'Medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' :
+                    'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                  }`}>
+                    {claim.priority}
+                  </span>
                 </div>
-                <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100">{claim.claimantName}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">{claim.injuryType}</p>
+                <h3 className="font-bold text-base text-gray-900 dark:text-gray-100 mb-1">{claim.patientName}</h3>
+                <p className="text-xs text-gray-600 dark:text-gray-300 font-medium">{claim.condition}</p>
               </div>
 
-              {/* Claim Details */}
+              {/* Card Body */}
               <div className="p-4 space-y-3">
+                {/* Request Type Badge */}
+                <div className="flex items-center gap-2">
+                  <Shield className="text-arthur-blue" size={14} />
+                  <span className="text-xs font-semibold text-arthur-blue">{claim.requestType}</span>
+                </div>
+
+                {/* Status */}
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Status:</span>
-                  <span className={`font-medium ${
-                    claim.status === 'Active Negotiation' ? 'text-blue-600 dark:text-blue-400' :
-                    claim.status === 'Settlement Pending' ? 'text-green-600 dark:text-green-400' :
-                    claim.status === 'Investigation' ? 'text-amber-600 dark:text-amber-400' :
-                    'text-gray-600 dark:text-gray-400'
+                  <span className="text-gray-500 dark:text-gray-400 text-xs">Status:</span>
+                  <span className={`font-medium text-xs ${
+                    claim.coverageStatus === 'Fully Covered' ? 'text-green-600 dark:text-green-400' :
+                    claim.coverageStatus === 'Partial Coverage' ? 'text-orange-600 dark:text-orange-400' :
+                    'text-red-600 dark:text-red-400'
                   }`}>
-                    {claim.status}
+                    {claim.coverageStatus}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Insurance Carrier:</span>
-                  <span className="font-medium text-gray-900 dark:text-gray-100">{claim.insuranceCarrier}</span>
-                </div>
+                {/* Coverage Gap */}
+                {claim.coverageGap && claim.coverageStatus !== 'Fully Covered' && (
+                  <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-2">
+                    <p className="text-xs text-orange-700 dark:text-orange-300 font-medium">{claim.coverageGap}</p>
+                  </div>
+                )}
 
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500 dark:text-gray-400">Adjuster:</span>
-                  <span className="font-medium text-gray-900 dark:text-gray-100">{claim.adjuster}</span>
-                </div>
-
-                {/* Settlement Values */}
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Current Monthly Cost:</span>
-                      <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
-                        ${claim.currentDemand.toLocaleString()}
-                      </span>
+                {/* AI Recommendation */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <CheckSquare className="text-arthur-blue flex-shrink-0 mt-0.5" size={14} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">AI Recommendation</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{claim.aiRecommendation}</p>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">AI Optimized Cost:</span>
-                      <span className="text-sm font-bold text-green-600 dark:text-green-400">
-                        ${claim.aiRecommendedSettlement.toLocaleString()}
-                      </span>
-                    </div>
-                    {claim.potentialIncrease !== 0 && (
-                      <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 px-2 py-1.5 rounded">
-                        <span className="text-xs font-medium text-green-700 dark:text-green-300">Monthly Savings:</span>
-                        <span className="text-sm font-bold text-green-700 dark:text-green-300">
-                          ${Math.abs(claim.potentialIncrease).toLocaleString()}
+                  </div>
+                  {claim.estimatedSavings > 0 && (
+                    <div className="mt-2 pt-2 border-t border-blue-200 dark:border-blue-800">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-600 dark:text-gray-400">Est. Savings:</span>
+                        <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                          ${claim.estimatedSavings.toLocaleString()}
                         </span>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
-
-                {/* AI Confidence */}
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500 dark:text-gray-400">AI Confidence:</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${
-                          claim.aiConfidence >= 90 ? 'bg-green-500' :
-                          claim.aiConfidence >= 80 ? 'bg-blue-500' :
-                          'bg-yellow-500'
-                        }`}
-                        style={{ width: `${claim.aiConfidence}%` }}
-                      />
-                    </div>
-                    <span className="font-semibold text-gray-900 dark:text-gray-100">{claim.aiConfidence}%</span>
-                  </div>
-                </div>
-
-                {/* Voice Note */}
-                {claim.voiceNote && (
-                  <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
-                      <Mic className="text-arthur-blue flex-shrink-0 mt-0.5" size={16} />
-                      <div className="flex-1">
-                        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Latest Voice Note</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{claim.voiceNote}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Transcript */}
-                {claim.transcript && (
-                  <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex items-start gap-2 bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg">
-                      <MessageSquare className="text-purple-600 flex-shrink-0 mt-0.5" size={16} />
-                      <div className="flex-1">
-                        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Call Transcript</p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{claim.transcript}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* Next Action */}
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Next Action:</p>
-                      <p className="text-sm font-medium text-arthur-blue">{claim.nextAction}</p>
-                    </div>
-                    <ChevronRight className="text-gray-400 dark:text-gray-500 flex-shrink-0" size={20} />
+                <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Next Action:</p>
+                    <p className="text-xs font-medium text-gray-900 dark:text-gray-100 truncate">{claim.nextAction}</p>
                   </div>
+                  <ChevronRight className="text-gray-400 dark:text-gray-500 flex-shrink-0 ml-2 group-hover:text-arthur-blue transition" size={18} />
                 </div>
 
-                {/* Footer Info */}
-                <div className="flex items-center justify-between pt-2 text-xs text-gray-500 dark:text-gray-400">
+                {/* Footer */}
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                   <span className="flex items-center gap-1">
                     <Clock size={12} />
-                    {claim.daysOpen} days open
+                    {claim.daysOpen}d open
                   </span>
-                  <span>Last activity: {claim.lastActivity}</span>
+                  <span className="flex items-center gap-1">
+                    AI: {claim.aiConfidence}%
+                  </span>
                 </div>
               </div>
             </Link>
@@ -409,32 +358,32 @@ export default function ClaimsPage() {
       <div className="bg-gradient-to-br from-arthur-blue to-blue-600 rounded-xl shadow-sm p-6 text-white">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp size={24} />
-          <h2 className="text-xl font-bold">Arthur AI Care Insights</h2>
+          <h2 className="text-xl font-bold">Arthur AI Policy Insights</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
-              <AlertCircle size={18} />
-              <h3 className="font-semibold">High-Impact Opportunities</h3>
+              <DollarSign size={18} />
+              <h3 className="font-semibold">Cost Optimization</h3>
             </div>
-            <p className="text-sm text-white/90">2 patients showing excellent progress - potential to transition to lower-intensity care pathways, saving $8.5K monthly.</p>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar size={18} />
-              <h3 className="font-semibold">Proactive Interventions</h3>
-            </div>
-            <p className="text-sm text-white/90">3 patients at risk for hospital readmission within 30 days. Early intervention recommended to prevent $45K in avoidable costs.</p>
+            <p className="text-sm text-white/90">3 coverage gaps identified with alternative in-network options. Potential patient savings of $14.6K annually through smart plan navigation.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 size={18} />
-              <h3 className="font-semibold">Documentation Excellence</h3>
+              <h3 className="font-semibold">Fast-Track Approvals</h3>
             </div>
-            <p className="text-sm text-white/90">All active cases have complete clinical documentation. Voice notes and transcripts auto-captured for quality assurance and audit compliance.</p>
+            <p className="text-sm text-white/90">2 requests eligible for expedited approval based on policy analysis. Arthur AI auto-generated supporting documentation to accelerate authorization.</p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Shield size={18} />
+              <h3 className="font-semibold">Provider Network Intelligence</h3>
+            </div>
+            <p className="text-sm text-white/90">All referrals matched with in-network, top-rated providers within 5 miles. Zero out-of-network penalties predicted across active requests.</p>
           </div>
         </div>
       </div>
