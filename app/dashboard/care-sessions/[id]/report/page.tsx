@@ -1171,17 +1171,17 @@ export default function CareSessionReportPage() {
                 <div className="space-y-2 print:space-y-1 text-sm print:text-[11px]">
                   <div className="flex items-start gap-2">
                     <MapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
-                    <span className="break-words">{reportData.metadata.property.address}</span>
+                    <span className="break-words">{reportData.metadata.patient.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Home size={16} className="text-gray-400 flex-shrink-0" />
                     <span>
-                      {reportData.metadata.property.type} • Built {reportData.metadata.property.yearBuilt}
+                      {reportData.metadata.patient.type}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <User size={16} className="text-gray-400 flex-shrink-0" />
-                    <span className="break-words">{reportData.metadata.property.owner}</span>
+                    <span className="break-words">MRN: {reportData.metadata.patient.medicalRecordNumber}</span>
                   </div>
                 </div>
               </div>
@@ -1190,16 +1190,16 @@ export default function CareSessionReportPage() {
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 print:mb-2 print:text-xs print:uppercase">Claim Information</h3>
                 <div className="space-y-2 print:space-y-1 text-sm print:text-[11px]">
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Policy:</span> {reportData.metadata.property.policyNumber}
+                    <span className="text-gray-600 dark:text-gray-400">Insurance ID:</span> {reportData.metadata.patient.insuranceId}
                   </div>
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Date of Loss:</span> {reportData.metadata.claimInfo.dateOfLoss}
+                    <span className="text-gray-600 dark:text-gray-400">Assessment Date:</span> {new Date(reportData.metadata.sessionInfo.sessionDate).toLocaleDateString()}
                   </div>
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Damage Types:</span> {reportData.metadata.claimInfo.damageTypes.join(', ')}
+                    <span className="text-gray-600 dark:text-gray-400">Conditions:</span> {reportData.metadata.sessionInfo.conditions.join(', ')}
                   </div>
                   <div>
-                    <span className="text-gray-600 dark:text-gray-400">Inspector:</span> {reportData.metadata.inspector}
+                    <span className="text-gray-600 dark:text-gray-400">Coordinator:</span> {reportData.metadata.assessmentCoordinator}
                   </div>
                 </div>
               </div>
