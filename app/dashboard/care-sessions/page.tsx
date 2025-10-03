@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import {
   Plus, Search, Filter, Clock, CheckCircle, AlertCircle,
   Activity, Heart, Brain, Shield, Stethoscope, Wind,
-  TrendingUp, Users, Calendar, ChevronRight, Target
+  TrendingUp, Users, Calendar, ChevronRight, Target, Mic,
+  FileText, Pill, CalendarCheck, Thermometer, Droplet
 } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/ui/page-header'
@@ -27,6 +28,17 @@ interface CareSession {
     qualityScore: number
     costSavings: number
   }
+  voiceNote?: string
+  clinicalNotes?: string
+  vitalSigns?: {
+    bloodPressure?: string
+    heartRate?: number
+    temperature?: number
+    weight?: number
+    oxygenSaturation?: number
+  }
+  medicationCount?: number
+  appointmentsScheduled?: number
 }
 
 export default function CareSessionsPage() {
@@ -51,7 +63,18 @@ export default function CareSessionsPage() {
         adherence: 88,
         qualityScore: 92,
         costSavings: 24500
-      }
+      },
+      voiceNote: 'Patient reports consistent BG monitoring 4x daily. A1C down from 9.2% to 7.8%. Experiencing some dawn phenomenon - coordinating with endocrinologist for basal insulin adjustment. Diet adherence excellent, walking 30 min daily. No hypoglycemic episodes this month.',
+      clinicalNotes: 'Follow-up visit completed. Patient demonstrates good understanding of carb counting and insulin dosing. Foot exam WNL, no neuropathy signs. Retinal screening scheduled next week. Continue current medication regimen, increase metformin to 1000mg BID.',
+      vitalSigns: {
+        bloodPressure: '128/82',
+        heartRate: 76,
+        temperature: 98.4,
+        weight: 182,
+        oxygenSaturation: 98
+      },
+      medicationCount: 6,
+      appointmentsScheduled: 3
     },
     {
       id: 'CS-002',
@@ -68,7 +91,18 @@ export default function CareSessionsPage() {
         adherence: 75,
         qualityScore: 85,
         costSavings: 15200
-      }
+      },
+      voiceNote: 'Post-op day 14 from total hip replacement. Patient ambulating well with walker, pain controlled with oral meds. Incision healing appropriately, no signs of infection. PT 3x weekly going well. Family support strong, spouse assisting with ADLs.',
+      clinicalNotes: 'Home visit conducted. Surgical site clean, dry, intact. ROM improving, able to perform prescribed exercises independently. Discussed fall prevention strategies. DME setup complete including raised toilet seat, shower chair. Next wound check in 1 week.',
+      vitalSigns: {
+        bloodPressure: '132/78',
+        heartRate: 68,
+        temperature: 98.6,
+        weight: 195,
+        oxygenSaturation: 97
+      },
+      medicationCount: 4,
+      appointmentsScheduled: 5
     },
     {
       id: 'CS-003',
@@ -85,7 +119,18 @@ export default function CareSessionsPage() {
         adherence: 95,
         qualityScore: 98,
         costSavings: 32000
-      }
+      },
+      voiceNote: 'Venous stasis ulcer showing excellent healing progress. Wound size decreased from 3.2cm to 0.8cm diameter. Patient compliant with compression therapy and leg elevation. No signs of infection. Teaching reinforced re: proper wound care technique. Ready to transition to monthly monitoring.',
+      clinicalNotes: 'Wound assessment completed. Granulation tissue present, minimal drainage. Periwound skin intact. Patient verbalizes understanding of warning signs. Photos documented in EHR. Continue current wound care regimen with weekly dressing changes. Nutrition consult completed, protein intake optimized.',
+      vitalSigns: {
+        bloodPressure: '118/72',
+        heartRate: 72,
+        temperature: 98.2,
+        weight: 178,
+        oxygenSaturation: 99
+      },
+      medicationCount: 5,
+      appointmentsScheduled: 2
     },
     {
       id: 'CS-004',
@@ -102,7 +147,18 @@ export default function CareSessionsPage() {
         adherence: 0,
         qualityScore: 0,
         costSavings: 0
-      }
+      },
+      voiceNote: 'New patient enrollment for comprehensive diabetes management. Recent A1C 10.2%, on oral agents only. History of poor adherence due to cost barriers and health literacy. Social work consult for medication assistance programs. Will need extensive education on self-monitoring and diet.',
+      clinicalNotes: 'Initial intake assessment scheduled. Chart review shows uncontrolled T2DM with multiple gaps in care. No retinal exam in 3 years, foot exam overdue. Will coordinate comprehensive workup including labs, referrals. Patient expressed motivation for improved control after recent hospitalization.',
+      vitalSigns: {
+        bloodPressure: '142/88',
+        heartRate: 82,
+        temperature: 98.6,
+        weight: 225,
+        oxygenSaturation: 96
+      },
+      medicationCount: 3,
+      appointmentsScheduled: 4
     }
   ]
 
@@ -270,7 +326,7 @@ export default function CareSessionsPage() {
               </div>
 
               {/* Outcomes Metrics */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="text-center">
                   <p className="text-xs text-gray-500 dark:text-gray-400">Adherence</p>
                   <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{session.outcomes.adherence}%</p>
@@ -283,6 +339,84 @@ export default function CareSessionsPage() {
                   <p className="text-xs text-gray-500 dark:text-gray-400">Savings</p>
                   <p className="text-lg font-bold text-blue-600">${(session.outcomes.costSavings / 1000).toFixed(0)}k</p>
                 </div>
+              </div>
+
+              {/* Voice Note */}
+              {session.voiceNote && (
+                <div className="mb-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <Mic className="text-arthur-blue flex-shrink-0 mt-0.5" size={14} />
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Voice Note</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3">{session.voiceNote}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Clinical Notes */}
+              {session.clinicalNotes && (
+                <div className="mb-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <FileText className="text-purple-600 flex-shrink-0 mt-0.5" size={14} />
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Clinical Notes</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2">{session.clinicalNotes}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Vital Signs & Quick Stats */}
+              {session.vitalSigns && (
+                <div className="mb-3 bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1">
+                    <Thermometer size={14} className="text-green-600" />
+                    Latest Vitals
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    {session.vitalSigns.bloodPressure && (
+                      <div>
+                        <p className="text-gray-500 dark:text-gray-400">BP</p>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100">{session.vitalSigns.bloodPressure}</p>
+                      </div>
+                    )}
+                    {session.vitalSigns.heartRate && (
+                      <div>
+                        <p className="text-gray-500 dark:text-gray-400">HR</p>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100">{session.vitalSigns.heartRate} bpm</p>
+                      </div>
+                    )}
+                    {session.vitalSigns.oxygenSaturation && (
+                      <div>
+                        <p className="text-gray-500 dark:text-gray-400">SpO2</p>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100">{session.vitalSigns.oxygenSaturation}%</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Medications & Appointments */}
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                {session.medicationCount !== undefined && (
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div className="flex items-center gap-1 mb-1">
+                      <Pill size={12} className="text-orange-500" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Medications</p>
+                    </div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{session.medicationCount} active</p>
+                  </div>
+                )}
+                {session.appointmentsScheduled !== undefined && (
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-2">
+                    <div className="flex items-center gap-1 mb-1">
+                      <CalendarCheck size={12} className="text-blue-500" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Appointments</p>
+                    </div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{session.appointmentsScheduled} scheduled</p>
+                  </div>
+                )}
               </div>
 
               {/* Action Button */}
