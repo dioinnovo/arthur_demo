@@ -1834,25 +1834,25 @@ export default function CareSessionReportPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
                 <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">
-                  ${reportData.financialSummary.currentClaimValue.toLocaleString()}
+                  ${reportData.financialSummary.currentCareValue.toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">Current Claim Value</div>
               </div>
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-green-600 mb-1">
-                  +${reportData.financialSummary.historicalRecovery.toLocaleString()}
+                  +${reportData.financialSummary.historicalOutcomeValue.toLocaleString()}
                 </div>
                 <div className="text-sm text-green-700">Historical Recovery</div>
               </div>
               <div className="bg-blue-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-blue-600 mb-1">
-                  +${reportData.financialSummary.potentialSupplemental.toLocaleString()}
+                  +${reportData.financialSummary.potentialQualityBonus.toLocaleString()}
                 </div>
                 <div className="text-sm text-blue-700">Supplemental Potential</div>
               </div>
               <div className="bg-scc-red text-white rounded-xl p-4">
                 <div className="text-2xl font-bold mb-1">
-                  ${reportData.financialSummary.totalRecoveryOpportunity.toLocaleString()}
+                  ${reportData.financialSummary.totalValueOpportunity.toLocaleString()}
                 </div>
                 <div className="text-sm opacity-90">Total Recovery</div>
               </div>
@@ -1864,83 +1864,83 @@ export default function CareSessionReportPage() {
               <div className="bg-blue-50 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <User className="text-blue-600" size={20} />
-                  Labor Cost Analysis
+                  Professional Services Analysis
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">Skilled Labor</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Primary Care Visits</div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {reportData.financialSummary.detailedCostAnalysis.laborCosts.skilled.hours} hrs @ ${reportData.financialSummary.detailedCostAnalysis.laborCosts.skilled.rate}/hr
+                        {reportData.financialSummary.detailedCostAnalysis.professionalServices.primaryCare.visits} visits @ ${reportData.financialSummary.detailedCostAnalysis.professionalServices.primaryCare.rate}/visit
                       </div>
                     </div>
                     <div className="text-lg font-bold text-blue-600">
-                      ${reportData.financialSummary.detailedCostAnalysis.laborCosts.skilled.total.toLocaleString()}
+                      ${reportData.financialSummary.detailedCostAnalysis.professionalServices.primaryCare.total.toLocaleString()}
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">General Labor</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Specialist Visits</div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {reportData.financialSummary.detailedCostAnalysis.laborCosts.general.hours} hrs @ ${reportData.financialSummary.detailedCostAnalysis.laborCosts.general.rate}/hr
+                        {reportData.financialSummary.detailedCostAnalysis.professionalServices.specialists.visits} visits @ ${reportData.financialSummary.detailedCostAnalysis.professionalServices.specialists.rate}/visit
                       </div>
                     </div>
                     <div className="text-lg font-bold text-blue-600">
-                      ${reportData.financialSummary.detailedCostAnalysis.laborCosts.general.total.toLocaleString()}
+                      ${reportData.financialSummary.detailedCostAnalysis.professionalServices.specialists.total.toLocaleString()}
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">Specialized</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Ancillary Services</div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {reportData.financialSummary.detailedCostAnalysis.laborCosts.specialized.hours} hrs @ ${reportData.financialSummary.detailedCostAnalysis.laborCosts.specialized.rate}/hr
+                        {reportData.financialSummary.detailedCostAnalysis.professionalServices.ancillaryServices.sessions} sessions @ ${reportData.financialSummary.detailedCostAnalysis.professionalServices.ancillaryServices.rate}/session
                       </div>
                     </div>
                     <div className="text-lg font-bold text-blue-600">
-                      ${reportData.financialSummary.detailedCostAnalysis.laborCosts.specialized.total.toLocaleString()}
+                      ${reportData.financialSummary.detailedCostAnalysis.professionalServices.ancillaryServices.total.toLocaleString()}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Material Cost Analysis */}
+              {/* Medication Cost Analysis */}
               <div className="bg-green-50 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <Building2 className="text-green-600" size={20} />
-                  Material Cost Analysis
+                  Medication Cost Analysis
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">Specialist Consultations</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Chronic Medications</div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {reportData.financialSummary.detailedCostAnalysis.materialCosts.roofing.sqft} sq ft @ ${reportData.financialSummary.detailedCostAnalysis.materialCosts.roofing.rate}/sq ft
+                        {reportData.financialSummary.detailedCostAnalysis.medicationCosts.chronicMedications.count} medications @ ${reportData.financialSummary.detailedCostAnalysis.medicationCosts.chronicMedications.monthly}/month
                       </div>
                     </div>
                     <div className="text-lg font-bold text-green-600">
-                      ${reportData.financialSummary.detailedCostAnalysis.materialCosts.roofing.total.toLocaleString()}
+                      ${reportData.financialSummary.detailedCostAnalysis.medicationCosts.chronicMedications.total.toLocaleString()}
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">Flooring Systems</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Acute Medications</div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {reportData.financialSummary.detailedCostAnalysis.materialCosts.flooring.sqft} sq ft @ ${reportData.financialSummary.detailedCostAnalysis.materialCosts.flooring.rate}/sq ft
+                        {reportData.financialSummary.detailedCostAnalysis.medicationCosts.acuteMedications.count} medications @ ${reportData.financialSummary.detailedCostAnalysis.medicationCosts.acuteMedications.monthly}/month
                       </div>
                     </div>
                     <div className="text-lg font-bold text-green-600">
-                      ${reportData.financialSummary.detailedCostAnalysis.materialCosts.flooring.total.toLocaleString()}
+                      ${reportData.financialSummary.detailedCostAnalysis.medicationCosts.acuteMedications.total.toLocaleString()}
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">Laboratory Services</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">DME & Supplies</div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {reportData.financialSummary.detailedCostAnalysis.materialCosts.electrical.circuits} circuits @ ${reportData.financialSummary.detailedCostAnalysis.materialCosts.electrical.rate}/circuit
+                        {reportData.financialSummary.detailedCostAnalysis.medicationCosts.dme.items} items @ ${reportData.financialSummary.detailedCostAnalysis.medicationCosts.dme.average}/item
                       </div>
                     </div>
                     <div className="text-lg font-bold text-green-600">
-                      ${reportData.financialSummary.detailedCostAnalysis.materialCosts.electrical.total.toLocaleString()}
+                      ${reportData.financialSummary.detailedCostAnalysis.medicationCosts.dme.total.toLocaleString()}
                     </div>
                   </div>
                 </div>
