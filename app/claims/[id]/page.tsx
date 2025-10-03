@@ -488,48 +488,121 @@ export default function ClaimDetailPage() {
               )}
             </div>
 
-            {/* Documents */}
+            {/* Required Documents Checklist */}
             <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
               <button
                 onClick={() => toggleSection('documents')}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:bg-gray-900 transition"
               >
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                  Documents ({claim.documents.length})
+                  Required Documents Checklist
                 </h2>
                 {expandedSections.documents ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
               </button>
-              
+
               {expandedSections.documents && (
                 <div className="px-6 pb-6">
-                  {claim.documents.length > 0 ? (
-                    <div className="space-y-3">
-                      {claim.documents.map((doc) => (
-                        <div key={doc.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <FileImage className="text-gray-500 dark:text-gray-400" size={20} />
-                            <div>
-                              <p className="font-medium text-gray-900 dark:text-gray-100">{doc.filename}</p>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">
-                                Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}
-                              </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    Complete documentation helps ensure maximum coverage and identifies any potential gaps in care coordination.
+                  </p>
+
+                  <div className="space-y-3">
+                    {[
+                      { name: 'Insurance Card (Front & Back)', required: true, status: 'submitted' },
+                      { name: 'Photo ID', required: true, status: 'submitted' },
+                      { name: 'Medical Records', required: true, status: 'submitted' },
+                      { name: 'Referral Letter', required: false, status: 'pending' },
+                      { name: 'Prior Authorization Forms', required: true, status: 'submitted' },
+                      { name: 'Lab Results / Test Results', required: false, status: 'submitted' },
+                      { name: 'Prescription Records', required: false, status: 'not-applicable' },
+                      { name: 'Treatment Plan', required: true, status: 'submitted' },
+                      { name: 'Discharge Summary', required: false, status: 'pending' },
+                      { name: 'Itemized Bill / Statement', required: true, status: 'submitted' }
+                    ].map((doc, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <div className="flex items-center gap-3 flex-1">
+                          <input
+                            type="checkbox"
+                            checked={doc.status === 'submitted'}
+                            readOnly
+                            className="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-green-500"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-gray-900 dark:text-gray-100">{doc.name}</p>
+                              {doc.required && (
+                                <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">Required</span>
+                              )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-scc-red transition">
-                              <Eye size={18} />
-                            </button>
-                            <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-scc-red transition">
-                              <Download size={18} />
-                            </button>
-                          </div>
                         </div>
-                      ))}
+                        <div className="flex items-center gap-2">
+                          {doc.status === 'submitted' && (
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full flex items-center gap-1">
+                              <CheckCircle size={14} />
+                              Submitted
+                            </span>
+                          )}
+                          {doc.status === 'pending' && (
+                            <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full flex items-center gap-1">
+                              <Clock size={14} />
+                              Pending
+                            </span>
+                          )}
+                          {doc.status === 'not-applicable' && (
+                            <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">N/A</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <Lightbulb className="text-blue-600 dark:text-blue-400 mt-0.5" size={18} />
+                      <div>
+                        <p className="text-sm font-medium text-blue-900 dark:text-blue-200">Coverage Optimization</p>
+                        <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                          2 pending documents identified. Submitting these can help maximize your benefits and ensure comprehensive coverage.
+                        </p>
+                      </div>
                     </div>
-                  ) : (
-                    <p className="text-gray-500 dark:text-gray-400">No documents uploaded</p>
-                  )}
+                  </div>
                 </div>
+              )}
+            </div>
+
+            {/* Uploaded Documents */}
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
+                Uploaded Documents ({claim.documents.length})
+              </h2>
+              {claim.documents.length > 0 ? (
+                <div className="space-y-3">
+                  {claim.documents.map((doc) => (
+                    <div key={doc.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <FileImage className="text-gray-500 dark:text-gray-400" size={20} />
+                        <div>
+                          <p className="font-medium text-gray-900 dark:text-gray-100">{doc.filename}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 transition">
+                          <Eye size={18} />
+                        </button>
+                        <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 transition">
+                          <Download size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400">No documents uploaded yet</p>
               )}
             </div>
           </div>
