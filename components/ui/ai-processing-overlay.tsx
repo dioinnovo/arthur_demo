@@ -93,6 +93,8 @@ export function AIProcessingOverlay({ isVisible, onComplete }: AIProcessingOverl
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(progressInterval)
+          // Call onComplete when progress reaches 100%
+          setTimeout(() => onComplete(), 500)
           return 100
         }
         return prev + 0.5
@@ -111,12 +113,8 @@ export function AIProcessingOverlay({ isVisible, onComplete }: AIProcessingOverl
           setCurrentStage((prev) => prev + 1)
           progressStages()
         }, processingStages[currentStage].duration)
-      } else {
-        // Complete after last stage
-        stageTimeout = setTimeout(() => {
-          onComplete()
-        }, processingStages[currentStage].duration)
       }
+      // onComplete is now called when progress reaches 100%
     }
 
     progressStages()

@@ -11,7 +11,7 @@ import {
   Globe, Shield, AlertCircle, UserCheck
 } from 'lucide-react'
 import Link from 'next/link'
-import { generateInspectionPDF, downloadHTMLReport, InspectionReportData } from '@/lib/pdf/simple-report-generator'
+import { generateCareSessionPDF, downloadHTMLReport, CareSessionReportData } from '@/lib/pdf/simple-report-generator'
 
 interface ReportData {
   metadata: {
@@ -495,7 +495,7 @@ export default function CareSessionReportPage() {
 
     try {
       // Prepare data for PDF generation
-      const pdfData: InspectionReportData = {
+      const pdfData: CareSessionReportData = {
         metadata: {
           reportId: reportData.metadata.reportId,
           sessionNumber: `CS-${sessionId}`,
@@ -516,16 +516,26 @@ export default function CareSessionReportPage() {
         executiveSummary: reportData.executiveSummary,
         assessmentAreas: reportData.assessmentAreas.map(area => ({
           ...area,
+          clinicalDescription: area.clinicalDescription,
+          estimatedValue: area.estimatedCost,
           findings: area.clinicalDescription,
           assessmentNotes: area.clinicalDescription,
           documents: [] // Would include assessment documents in production
         })),
         aiInsights: reportData.aiInsights,
-        financialSummary: reportData.financialSummary
+        financialSummary: {
+          subtotal: reportData.financialSummary.currentCareValue,
+          unreportedConditions: reportData.aiInsights.unreportedConditionsEstimate,
+          qualityImprovements: reportData.aiInsights.qualityImprovementOpportunities,
+          contingency: Math.round(reportData.financialSummary.currentCareValue * 0.1),
+          total: reportData.financialSummary.totalValueOpportunity,
+          payerEstimate: reportData.metadata.sessionInfo.initialRiskScore,
+          valueGap: reportData.financialSummary.totalValueOpportunity - reportData.metadata.sessionInfo.initialRiskScore
+        }
       }
 
       // Generate PDF
-      await generateInspectionPDF(pdfData)
+      await generateCareSessionPDF(pdfData)
       setIsDownloading(false)
     } catch (error) {
       console.error('Error generating PDF:', error)
@@ -590,12 +600,12 @@ export default function CareSessionReportPage() {
             {/* Download Button at bottom of header */}
             <div className="flex justify-center mt-6 print:hidden">
               <button
-                onClick={() => window.print()}
+                onClick={handleDownloadPDF}
                 disabled={isDownloading}
                 className="px-6 py-3 bg-arthur-blue text-white rounded-lg hover:bg-arthur-blue-dark flex items-center gap-2 disabled:opacity-50 font-medium shadow-sm"
               >
                 <Download size={18} />
-                Download PDF
+                {isDownloading ? 'Generating PDF...' : 'Download PDF'}
               </button>
             </div>
           </div>

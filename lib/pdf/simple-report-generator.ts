@@ -933,3 +933,850 @@ export function downloadHTMLReport(data: InspectionReportData) {
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
 }
+
+// ==================== HEALTHCARE CARE SESSION PDF GENERATOR ====================
+
+export interface CareSessionReportData {
+  metadata: {
+    reportId: string
+    sessionNumber: string
+    generatedDate: string
+    coordinator: string
+    patient: {
+      name: string
+      city: string
+      state: string
+      zipCode: string
+      type: string
+      dateOfBirth: string
+      medicalRecordNumber: string
+      insuranceId: string
+    }
+    sessionInfo: {
+      sessionDate: string
+      conditions: string[]
+      initialRiskScore: number
+    }
+  }
+  executiveSummary: {
+    totalValueOpportunity: number
+    criticalFindings: number
+    clinicalRecommendations: string[]
+    timelineEstimate: string
+    confidenceScore: number
+  }
+  assessmentAreas: Array<{
+    area: string
+    category: string
+    status: string
+    photoCount: number
+    photos?: string[]
+    clinicalDescription: string
+    estimatedValue: number
+    priority: string
+    recommendations: string[]
+    findings?: string
+    assessmentNotes?: string
+    clinicalFindings?: Record<string, string>
+    documents?: string[]
+  }>
+  aiInsights: {
+    unreportedConditionsEstimate: number
+    qualityImprovementOpportunities: number
+    historicalRecovery: number
+    marketComparison: string
+    riskAssessment: string[]
+    clinicalAnalysis?: string
+    careGaps?: string
+    complianceNotes?: string
+    confidenceMetrics?: {
+      conditionPrediction?: number
+      valueAccuracy?: number
+      timelineReliability?: number
+      riskAssessment?: number
+    }
+    historicalData?: {
+      similarCases?: number
+      averageValue?: number
+      timeToCompletion?: string
+      complianceRate?: string
+    }
+    qualityFactors?: Record<string, string>
+    careIntelligence?: {
+      payerProfile?: {
+        name?: string
+        reputation?: string
+        history?: string
+        behavior?: string
+      }
+      strategicConsiderations?: string[]
+    }
+  }
+  financialSummary: {
+    subtotal: number
+    unreportedConditions: number
+    qualityImprovements: number
+    contingency: number
+    total: number
+    payerEstimate: number
+    valueGap: number
+  }
+}
+
+// Generate HTML content for the healthcare care session report
+function generateCareSessionHTMLReport(data: CareSessionReportData): string {
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Care Session Report - ${data.metadata?.sessionNumber || 'N/A'}</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 0.5in;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #2C3E50;
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 3px solid #0066CC;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+      page-break-after: avoid;
+    }
+
+    .logo {
+      color: #0066CC;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #2C3E50;
+      font-size: 28px;
+      margin: 20px 0;
+    }
+
+    h2 {
+      color: #0066CC;
+      font-size: 20px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #0066CC;
+      padding-bottom: 5px;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      color: #2C3E50;
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      page-break-after: avoid;
+    }
+
+    .metadata {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .metadata-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .metadata-label {
+      font-weight: bold;
+      color: #666;
+    }
+
+    .executive-summary {
+      background: #e7f3ff;
+      border: 2px solid #0066CC;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      page-break-inside: avoid;
+    }
+
+    .financial-summary {
+      background: #d4edda;
+      border: 2px solid #28a745;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      page-break-inside: avoid;
+    }
+
+    .area-finding {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      page-break-inside: avoid;
+    }
+
+    .area-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .status-critical { background: #f8d7da; color: #721c24; }
+    .status-needs-attention { background: #fff3cd; color: #856404; }
+    .status-good { background: #d4edda; color: #155724; }
+
+    .priority-high { color: #dc3545; font-weight: bold; }
+    .priority-medium { color: #ffc107; font-weight: bold; }
+    .priority-low { color: #28a745; font-weight: bold; }
+
+    .value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0066CC;
+      text-align: right;
+      margin-top: 10px;
+    }
+
+    .ai-insights {
+      background: #e7f3ff;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      page-break-inside: avoid;
+    }
+
+    .recommendations {
+      background: #f8f9fa;
+      padding: 10px;
+      border-left: 4px solid #0066CC;
+      margin: 10px 0;
+    }
+
+    .recommendations ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+
+    .page-break {
+      page-break-after: always;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #dee2e6;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .total-row {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0066CC;
+      border-top: 3px double #0066CC;
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+      }
+      .page-break {
+        page-break-after: always;
+      }
+
+      nav, .sidebar, .navbar, .navigation, .menu, button, .btn, .button, .action-bar, .toolbar, .controls, .tabs, .tab-nav, .pagination, .print-hidden, .no-print, [data-print="hidden"] {
+        display: none !important;
+      }
+
+      .content, .main-content, .report-content {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      * {
+        position: static !important;
+      }
+
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cover Page -->
+  <div class="header">
+    <div class="logo">ARTHUR HEALTH INTELLIGENCE PLATFORM</div>
+    <h1>COMPREHENSIVE CARE ASSESSMENT REPORT</h1>
+    <div style="font-size: 18px; margin: 10px 0;">
+      Patient: ${data.metadata?.patient?.name || 'N/A'}<br>
+      ${data.metadata?.patient?.city || 'N/A'}, ${data.metadata?.patient?.state || 'N/A'} ${data.metadata?.patient?.zipCode || 'N/A'}
+    </div>
+    <div style="color: #666; margin-top: 20px;">
+      <div>Report Date: ${new Date(data.metadata?.generatedDate || new Date().toISOString()).toLocaleDateString()}</div>
+      <div>Session Number: ${data.metadata?.sessionNumber || 'N/A'}</div>
+      <div>Care Coordinator: ${data.metadata?.coordinator || 'N/A'}</div>
+    </div>
+  </div>
+
+  <!-- Patient Information -->
+  <div class="metadata">
+    <h3>Patient Information</h3>
+    <div class="metadata-row">
+      <span class="metadata-label">Patient Type:</span>
+      <span>${data.metadata?.patient?.type || 'N/A'}</span>
+    </div>
+    <div class="metadata-row">
+      <span class="metadata-label">Date of Birth:</span>
+      <span>${data.metadata?.patient?.dateOfBirth || 'N/A'}</span>
+    </div>
+    <div class="metadata-row">
+      <span class="metadata-label">Medical Record Number:</span>
+      <span>${data.metadata?.patient?.medicalRecordNumber || 'N/A'}</span>
+    </div>
+    <div class="metadata-row">
+      <span class="metadata-label">Insurance ID:</span>
+      <span>${data.metadata?.patient?.insuranceId || 'N/A'}</span>
+    </div>
+    <div class="metadata-row">
+      <span class="metadata-label">Session Date:</span>
+      <span>${data.metadata?.sessionInfo?.sessionDate || 'N/A'}</span>
+    </div>
+    <div class="metadata-row">
+      <span class="metadata-label">Active Conditions:</span>
+      <span>${(data.metadata?.sessionInfo?.conditions || []).join(', ')}</span>
+    </div>
+  </div>
+
+  <!-- Executive Summary -->
+  <div class="executive-summary">
+    <h2>Executive Summary</h2>
+    <div class="metadata-row">
+      <span class="metadata-label">Total Value Opportunity:</span>
+      <span style="font-size: 20px; color: #0066CC; font-weight: bold;">
+        $${(data.executiveSummary?.totalValueOpportunity || 0).toLocaleString()}
+      </span>
+    </div>
+    <div class="metadata-row">
+      <span class="metadata-label">Critical Findings:</span>
+      <span style="font-weight: bold; color: #dc3545;">${data.executiveSummary?.criticalFindings || 0}</span>
+    </div>
+    <div class="metadata-row">
+      <span class="metadata-label">Timeline Estimate:</span>
+      <span>${data.executiveSummary?.timelineEstimate || 'N/A'}</span>
+    </div>
+    <div class="metadata-row">
+      <span class="metadata-label">Confidence Score:</span>
+      <span>${data.executiveSummary?.confidenceScore || 0}%</span>
+    </div>
+
+    <!-- Estimated Care Value Banner -->
+    <div style="background: #e7f3ff; border: 2px solid #0066CC; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      <h3 style="margin-top: 0; margin-bottom: 20px; color: #2C3E50;">ESTIMATED CARE VALUE BREAKDOWN</h3>
+      <div style="display: flex; justify-content: space-between; text-align: center;">
+        <div style="flex: 1;">
+          <div style="font-weight: bold; color: #666; font-size: 12px; margin-bottom: 8px;">IMMEDIATE</div>
+          <div style="font-size: 24px; font-weight: bold; color: #dc3545;">
+            $${Math.round((data.executiveSummary?.totalValueOpportunity || 0) * 0.25).toLocaleString()}
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 4px;">0-30 days</div>
+        </div>
+        <div style="flex: 1; border-left: 1px solid #0066CC; border-right: 1px solid #0066CC;">
+          <div style="font-weight: bold; color: #666; font-size: 12px; margin-bottom: 8px;">SHORT-TERM</div>
+          <div style="font-size: 24px; font-weight: bold; color: #fd7e14;">
+            $${Math.round((data.executiveSummary?.totalValueOpportunity || 0) * 0.45).toLocaleString()}
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 4px;">1-3 months</div>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-weight: bold; color: #666; font-size: 12px; margin-bottom: 8px;">LONG-TERM</div>
+          <div style="font-size: 24px; font-weight: bold; color: #495057;">
+            $${Math.round((data.executiveSummary?.totalValueOpportunity || 0) * 0.30).toLocaleString()}
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 4px;">3+ months</div>
+        </div>
+      </div>
+      <div style="border-top: 1px solid #0066CC; margin-top: 20px; padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: bold; color: #666;">TOTAL ESTIMATED VALUE</span>
+        <span style="font-size: 20px; font-weight: bold; color: #2C3E50;">
+          $${(data.executiveSummary?.totalValueOpportunity || 0).toLocaleString()}
+        </span>
+      </div>
+    </div>
+
+    <h3>Key Clinical Recommendations</h3>
+    <ul>
+      ${(data.executiveSummary?.clinicalRecommendations || []).map(rec => `<li>${rec}</li>`).join('')}
+    </ul>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Assessment Areas -->
+  <h2>Detailed Assessment Findings</h2>
+  ${(data.assessmentAreas || []).map(area => `
+    <div class="area-finding">
+      <div class="area-header">
+        <h3>${area.area}</h3>
+        <div>
+          <span class="status-badge status-${area.status}">${area.status}</span>
+          <span class="priority-${area.priority}" style="margin-left: 10px;">
+            Priority: ${area.priority.toUpperCase()}
+          </span>
+        </div>
+      </div>
+
+      <div style="margin: 10px 0;">
+        <strong>Category:</strong> ${area.category}<br>
+        <strong>Documentation:</strong> ${area.photoCount} items
+      </div>
+
+      <div style="margin: 15px 0;">
+        <strong>Clinical Description:</strong><br>
+        ${area.clinicalDescription}
+      </div>
+
+      ${area.clinicalFindings && Object.keys(area.clinicalFindings).length > 0 ? `
+        <div style="margin: 15px 0; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+          <strong>Clinical Analysis:</strong><br>
+          ${Object.entries(area.clinicalFindings).map(([key, value]) =>
+            `<div style="margin: 5px 0;"><strong>${key.replace(/([A-Z])/g, ' $1').trim()}:</strong> ${value}</div>`
+          ).join('')}
+        </div>
+      ` : ''}
+
+      ${area.findings ? `
+        <div style="margin: 15px 0;">
+          <strong>Key Findings:</strong><br>
+          ${area.findings}
+        </div>
+      ` : ''}
+
+      ${area.assessmentNotes ? `
+        <div style="margin: 15px 0;">
+          <strong>Assessment Notes:</strong><br>
+          ${area.assessmentNotes}
+        </div>
+      ` : ''}
+
+      <div class="recommendations">
+        <strong>Recommendations:</strong>
+        <ul>
+          ${(area.recommendations || []).map(rec => `<li>${rec}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="value">
+        Estimated Value: $${(area.estimatedValue || 0).toLocaleString()}
+      </div>
+    </div>
+  `).join('')}
+
+  <div class="page-break"></div>
+
+  <!-- AI Insights -->
+  <div class="ai-insights">
+    <h2>AI Analysis & Insights</h2>
+
+    <div class="metadata-row">
+      <span class="metadata-label">Unreported Conditions Estimate:</span>
+      <span style="font-weight: bold; color: #dc3545;">
+        $${(data.aiInsights?.unreportedConditionsEstimate || 0).toLocaleString()}
+      </span>
+    </div>
+
+    <div class="metadata-row">
+      <span class="metadata-label">Quality Improvement Opportunities:</span>
+      <span style="font-weight: bold;">
+        $${(data.aiInsights?.qualityImprovementOpportunities || 0).toLocaleString()}
+      </span>
+    </div>
+
+    <div class="metadata-row">
+      <span class="metadata-label">Historical Recovery:</span>
+      <span style="font-weight: bold;">
+        $${(data.aiInsights?.historicalRecovery || 0).toLocaleString()}
+      </span>
+    </div>
+
+    <div style="margin: 20px 0;">
+      <strong>Market Comparison:</strong><br>
+      ${data.aiInsights?.marketComparison || 'Analysis pending...'}
+    </div>
+
+    <div style="margin: 20px 0;">
+      <strong>Risk Assessment:</strong>
+      <ul>
+        ${(data.aiInsights?.riskAssessment || []).map(risk => `<li>${risk}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div style="margin: 20px 0;">
+      <strong>Clinical Analysis:</strong><br>
+      ${data.aiInsights?.clinicalAnalysis || 'Clinical analysis pending...'}
+    </div>
+
+    <div style="margin: 20px 0;">
+      <strong>Care Gaps:</strong><br>
+      ${data.aiInsights?.careGaps || 'Care gap analysis pending...'}
+    </div>
+
+    <div style="margin: 20px 0;">
+      <strong>Compliance Notes:</strong><br>
+      ${data.aiInsights?.complianceNotes || 'Compliance review pending...'}
+    </div>
+  </div>
+
+  <!-- Financial Summary -->
+  <div class="financial-summary">
+    <h2>Financial Summary</h2>
+
+    <div class="metadata-row">
+      <span class="metadata-label">Current Care Value:</span>
+      <span>$${data.financialSummary.subtotal.toLocaleString()}</span>
+    </div>
+
+    <div class="metadata-row">
+      <span class="metadata-label">Unreported Conditions:</span>
+      <span>$${data.financialSummary.unreportedConditions.toLocaleString()}</span>
+    </div>
+
+    <div class="metadata-row">
+      <span class="metadata-label">Quality Improvements:</span>
+      <span>$${data.financialSummary.qualityImprovements.toLocaleString()}</span>
+    </div>
+
+    <div class="metadata-row">
+      <span class="metadata-label">Contingency (10%):</span>
+      <span>$${data.financialSummary.contingency.toLocaleString()}</span>
+    </div>
+
+    <div class="total-row metadata-row">
+      <span>TOTAL VALUE OPPORTUNITY:</span>
+      <span>$${data.financialSummary.total.toLocaleString()}</span>
+    </div>
+
+    <div style="margin-top: 20px; padding: 15px; background: #fff; border-radius: 8px;">
+      <div class="metadata-row">
+        <span class="metadata-label">Payer Initial Estimate:</span>
+        <span>$${data.financialSummary.payerEstimate.toLocaleString()}</span>
+      </div>
+
+      <div class="metadata-row" style="font-size: 18px; font-weight: bold; color: #0066CC;">
+        <span>VALUE GAP:</span>
+        <span>$${data.financialSummary.valueGap.toLocaleString()}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Confidence Metrics -->
+  <div class="confidence-metrics">
+    <h2>AI Analysis Confidence Metrics</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
+      <div style="background: #f0f8ff; padding: 15px; border-radius: 8px;">
+        <div style="font-size: 24px; font-weight: bold; color: #007bff;">${data.aiInsights?.confidenceMetrics?.conditionPrediction || 0}%</div>
+        <div style="font-size: 14px; color: #007bff;">Condition Prediction</div>
+      </div>
+
+      <div style="background: #f0fff0; padding: 15px; border-radius: 8px;">
+        <div style="font-size: 24px; font-weight: bold; color: #28a745;">${data.aiInsights?.confidenceMetrics?.valueAccuracy || 0}%</div>
+        <div style="font-size: 14px; color: #28a745;">Value Accuracy</div>
+      </div>
+
+      <div style="background: #f8f0ff; padding: 15px; border-radius: 8px;">
+        <div style="font-size: 24px; font-weight: bold; color: #6f42c1;">${data.aiInsights?.confidenceMetrics?.timelineReliability || 0}%</div>
+        <div style="font-size: 14px; color: #6f42c1;">Timeline Reliability</div>
+      </div>
+
+      <div style="background: #fff8f0; padding: 15px; border-radius: 8px;">
+        <div style="font-size: 24px; font-weight: bold; color: #fd7e14;">${data.aiInsights?.confidenceMetrics?.riskAssessment || 0}%</div>
+        <div style="font-size: 14px; color: #fd7e14;">Risk Assessment</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historical Data Analysis -->
+  <div class="historical-data">
+    <h2>Historical Care Analysis</h2>
+
+    <div style="margin: 20px 0;">
+      <div class="metadata-row">
+        <span class="metadata-label">Similar Cases Analyzed:</span>
+        <span style="font-weight: bold;">${data.aiInsights?.historicalData?.similarCases || 'N/A'}</span>
+      </div>
+      <div class="metadata-row">
+        <span class="metadata-label">Average Value:</span>
+        <span style="font-weight: bold; color: #28a745;">$${(data.aiInsights?.historicalData?.averageValue || 0).toLocaleString()}</span>
+      </div>
+      <div class="metadata-row">
+        <span class="metadata-label">Time to Completion:</span>
+        <span style="font-weight: bold;">${data.aiInsights?.historicalData?.timeToCompletion || 'N/A'}</span>
+      </div>
+      <div class="metadata-row">
+        <span class="metadata-label">Compliance Rate:</span>
+        <span style="font-weight: bold; color: #28a745;">${data.aiInsights?.historicalData?.complianceRate || 'N/A'}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quality Factors -->
+  <div class="quality-factors">
+    <h2>Quality Factors Assessment</h2>
+
+    <div style="margin: 20px 0;">
+      ${Object.entries(data.aiInsights?.qualityFactors || {}).map(([key, value]) => `
+        <div class="metadata-row">
+          <span class="metadata-label">${key.replace(/([A-Z])/g, ' $1').trim()}:</span>
+          <span style="font-weight: bold; color: #28a745;">${value}</span>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+
+  <!-- Care Intelligence -->
+  <div class="care-intelligence">
+    <h2>Care Intelligence & Strategic Analysis</h2>
+
+    <div style="margin: 20px 0; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+      <h3>Payer Profile Analysis</h3>
+      <div class="metadata-row">
+        <span class="metadata-label">Payer:</span>
+        <span style="font-weight: bold;">${data.aiInsights?.careIntelligence?.payerProfile?.name || 'N/A'}</span>
+      </div>
+      <div class="metadata-row">
+        <span class="metadata-label">Reputation:</span>
+        <span>${data.aiInsights?.careIntelligence?.payerProfile?.reputation || 'N/A'}</span>
+      </div>
+      <div class="metadata-row">
+        <span class="metadata-label">History:</span>
+        <span>${data.aiInsights?.careIntelligence?.payerProfile?.history || 'N/A'}</span>
+      </div>
+      <div class="metadata-row">
+        <span class="metadata-label">Behavior:</span>
+        <span>${data.aiInsights?.careIntelligence?.payerProfile?.behavior || 'N/A'}</span>
+      </div>
+    </div>
+
+    <div style="margin: 20px 0;">
+      <h3>Strategic Considerations</h3>
+      <ol>
+        ${(data.aiInsights?.careIntelligence?.strategicConsiderations || []).map(strategy => `<li style="margin: 5px 0;">${strategy}</li>`).join('')}
+      </ol>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Assessment Methodology & Standards -->
+  <div class="methodology">
+    <h2>Assessment Methodology & Professional Standards</h2>
+
+    <div style="margin: 20px 0;">
+      <h3>Assessment Standards Compliance</h3>
+      <div style="margin: 15px 0; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+        <div class="metadata-row">
+          <span class="metadata-label">Standards Followed:</span>
+          <span>HEDIS (Healthcare Effectiveness Data and Information Set)</span>
+        </div>
+        <div class="metadata-row">
+          <span class="metadata-label">Compliance References:</span>
+          <span>CMS-HCC Risk Adjustment Model, HIPAA Standards</span>
+        </div>
+        <div class="metadata-row">
+          <span class="metadata-label">Coordinator Certification:</span>
+          <span>Licensed Healthcare Professional, Certified Care Coordinator</span>
+        </div>
+        <div class="metadata-row">
+          <span class="metadata-label">Specialization:</span>
+          <span>Medicare Advantage, Risk Adjustment, Quality Improvement</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin: 20px 0;">
+      <h3>Areas Evaluated</h3>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 15px 0;">
+        <div>
+          <h4>Clinical Assessment</h4>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            <li>Chronic conditions review</li>
+            <li>Medication management</li>
+            <li>Care coordination needs</li>
+            <li>Quality metrics evaluation</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation Review</h4>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            <li>Medical records analysis</li>
+            <li>Diagnostic test results</li>
+            <li>Treatment plans</li>
+            <li>Provider notes</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Risk Assessment</h4>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            <li>HCC coding validation</li>
+            <li>Risk score calculation</li>
+            <li>Gap closure opportunities</li>
+            <li>Quality improvement potential</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Compliance & Quality</h4>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            <li>HEDIS measures compliance</li>
+            <li>Star ratings impact</li>
+            <li>Regulatory requirements</li>
+            <li>Best practice adherence</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin: 20px 0;">
+      <h3>Care Assessment Methodology</h3>
+      <div style="margin: 15px 0;">
+        <p><strong>Clinical Review:</strong> Comprehensive examination of all available medical records and clinical documentation.</p>
+        <p><strong>AI Analysis:</strong> Advanced analytics to identify care gaps, coding opportunities, and quality improvements.</p>
+        <p><strong>Photographic Documentation:</strong> Digital documentation of all significant findings with detailed annotations.</p>
+        <p><strong>Compliance Review:</strong> Assessment against CMS guidelines and quality standards.</p>
+        <p><strong>Value Analysis:</strong> Detailed financial impact estimates based on identified opportunities.</p>
+      </div>
+    </div>
+
+    <div style="margin: 20px 0; background: #e7f3ff; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff;">
+      <h3>Professional Disclaimer</h3>
+      <p style="font-size: 12px; line-height: 1.4;">
+        This care assessment report represents a comprehensive review of available medical documentation and clinical information.
+        All identified opportunities should be validated by treating physicians. This report is intended for quality improvement and
+        care coordination purposes. Clinical decisions should always be made by qualified healthcare providers based on current
+        patient presentation and medical necessity.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>
+      This report was generated by Arthur Health Intelligence Platform<br>
+      AI-Powered Healthcare Quality & Risk Adjustment Intelligence<br>
+      Report ID: ${data.metadata.reportId}<br>
+      Generated: ${new Date(data.metadata?.generatedDate || new Date().toISOString()).toLocaleString()}
+    </p>
+    <p style="margin-top: 20px; font-style: italic;">
+      This report represents a comprehensive assessment of care opportunities and quality improvements.
+      The total value opportunity includes current documented conditions and AI-identified gaps
+      through advanced analytics and historical pattern recognition.
+    </p>
+  </div>
+</body>
+</html>
+  `
+
+  return html
+}
+
+// Generate and download care session PDF
+export async function generateCareSessionPDF(data: CareSessionReportData): Promise<void> {
+  try {
+    const htmlContent = generateCareSessionHTMLReport(data)
+
+    // Create a hidden iframe to render the content
+    const iframe = document.createElement('iframe')
+    iframe.style.position = 'absolute'
+    iframe.style.width = '8.5in'
+    iframe.style.height = '11in'
+    iframe.style.left = '-9999px'
+    iframe.style.top = '-9999px'
+
+    document.body.appendChild(iframe)
+
+    // Write content to iframe
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
+    if (iframeDoc) {
+      iframeDoc.open()
+      iframeDoc.write(htmlContent)
+      iframeDoc.close()
+
+      // Wait for content to load and then print to PDF
+      setTimeout(() => {
+        const printWindow = iframe.contentWindow
+        if (printWindow) {
+          // Set the title to suggest PDF saving
+          const titleElement = iframeDoc.querySelector('title')
+          if (titleElement) {
+            titleElement.textContent = `Care_Session_Report_${data.metadata?.sessionNumber || 'N/A'}.pdf`
+          }
+
+          printWindow.focus()
+          printWindow.print()
+        }
+
+        // Clean up after a delay
+        setTimeout(() => {
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe)
+          }
+        }, 1000)
+      }, 1000)
+    }
+
+  } catch (error) {
+    console.error('Error generating PDF:', error)
+
+    // Fallback: Open in new window for manual PDF save
+    const htmlContent = generateCareSessionHTMLReport(data)
+    const printWindow = window.open('', '_blank')
+
+    if (printWindow) {
+      printWindow.document.write(htmlContent)
+      printWindow.document.close()
+
+      // Set document title to suggest PDF filename
+      printWindow.document.title = `Care_Session_Report_${data.metadata?.sessionNumber || 'N/A'}.pdf`
+
+      // Focus and trigger print dialog
+      printWindow.focus()
+      setTimeout(() => {
+        printWindow.print()
+      }, 500)
+    }
+  }
+}
