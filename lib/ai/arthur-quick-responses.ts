@@ -1102,61 +1102,101 @@ Please let me know how I can assist further with your healthcare coverage questi
 export function getArthurQuickSuggestions(response: string, patientName?: string): string[] {
   const responseLower = response.toLowerCase()
 
+  // Care Coordination - Fastest Specialist
+  if (responseLower.includes('fastest') || responseLower.includes('shortest wait') || responseLower.includes('next available')) {
+    return [
+      'Initiate referral process',
+      'Check provider credentials',
+      'Review insurance coverage',
+      'Schedule telehealth alternative'
+    ]
+  }
+
+  // Care Pathway Optimization
+  if (responseLower.includes('care pathway') || responseLower.includes('care team') || responseLower.includes('coordination')) {
+    return [
+      'Book coordinated appointments',
+      'Review medical records sharing',
+      'Estimate total care costs',
+      'Check care gaps'
+    ]
+  }
+
+  // Referral Status
+  if (responseLower.includes('referral status') || responseLower.includes('referral') || responseLower.includes('pending')) {
+    return [
+      'Expedite pending referrals',
+      'Find alternative specialists',
+      'Request authorization extension',
+      'Check appointment availability'
+    ]
+  }
+
+  // Network Availability
+  if (responseLower.includes('network') || responseLower.includes('availability') || responseLower.includes('capacity')) {
+    return [
+      'Book immediate appointment',
+      'Find alternative facilities',
+      'Check telehealth options',
+      'Review provider ratings'
+    ]
+  }
+
   // Prior auth related
   if (responseLower.includes('prior auth') || responseLower.includes('authorization')) {
     return [
-      'Check status of pending authorizations',
-      'How to expedite approval',
-      'Appeal denied authorization',
-      'Which services need prior auth'
+      'Submit authorization request',
+      'Check approval timeline',
+      'Find pre-approved alternatives',
+      'Appeal if denied'
+    ]
+  }
+
+  // Policy Coverage
+  if (responseLower.includes('policy') || responseLower.includes('coverage') || responseLower.includes('benefits')) {
+    return [
+      'Verify specific service coverage',
+      'Check prior auth requirements',
+      'Review out-of-pocket costs',
+      'Find covered alternatives'
     ]
   }
 
   // Cost related
   if (responseLower.includes('deductible') || responseLower.includes('cost') || responseLower.includes('out-of-pocket')) {
     return [
-      'Calculate procedure costs',
+      'Calculate total care costs',
       'Review payment options',
-      'Check FSA/HSA eligibility',
-      'Find cost-saving alternatives'
+      'Check financial assistance',
+      'Find lower-cost alternatives'
     ]
   }
 
   // Medication related
   if (responseLower.includes('medication') || responseLower.includes('prescription') || responseLower.includes('formulary')) {
     return [
-      'Check drug interactions',
+      'Check formulary coverage',
       'Find generic alternatives',
-      'Mail order pharmacy setup',
-      'Specialty drug programs'
+      'Submit prior authorization',
+      'Review patient assistance programs'
     ]
   }
 
-  // Specialist related
-  if (responseLower.includes('specialist') || responseLower.includes('referral')) {
-    return [
-      'Find in-network specialists',
-      'Check referral status',
-      'Book appointment online',
-      'Second opinion coverage'
-    ]
-  }
-
-  // Default suggestions
+  // Default suggestions - care coordination focused
   const patient = patientName ? getPatientData(patientName) : null
   if (patient) {
     return [
-      'Review ' + patient.currentConditions[0] + ' benefits',
-      'Check preventive care schedule',
-      'Calculate annual costs',
-      'Find network providers'
+      'Find fastest specialist',
+      'Optimize care pathway',
+      'Check referral status',
+      'Review policy coverage'
     ]
   }
 
   return [
-    'Check coverage details',
-    'Find network providers',
-    'Review benefits summary',
-    'Calculate costs'
+    'Find available specialists',
+    'Coordinate care team',
+    'Check network capacity',
+    'Review coverage options'
   ]
 }
