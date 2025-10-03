@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     }
 
     // Parse the response to extract metrics
-    let metrics = []
+    let metrics: Array<{ label: string; value: string; color: string }> = []
     const lowerQuery = query.toLowerCase()
 
     // Extract metrics based on query type
