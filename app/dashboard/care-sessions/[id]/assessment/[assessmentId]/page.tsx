@@ -507,7 +507,7 @@ export default function CareSessionAssessmentPage() {
     }
 
     if (nextArea) {
-      router.push(`/dashboard/care-sessions/${sessionId}/area/${nextArea.id}`)
+      router.push(`/dashboard/care-sessions/${sessionId}/assessment/${nextArea.id}`)
     } else {
       router.push(`/dashboard/care-sessions/${sessionId}/review`)
     }
@@ -528,7 +528,7 @@ export default function CareSessionAssessmentPage() {
     }
     
     if (nextArea) {
-      router.push(`/dashboard/care-sessions/${sessionId}/area/${nextArea.id}`)
+      router.push(`/dashboard/care-sessions/${sessionId}/assessment/${nextArea.id}`)
     } else {
       router.push(`/dashboard/care-sessions/${sessionId}/review`)
     }

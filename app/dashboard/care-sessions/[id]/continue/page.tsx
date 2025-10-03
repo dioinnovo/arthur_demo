@@ -545,7 +545,7 @@ export default function ContinueInspectionPage() {
                         className={`border rounded-xl p-4 cursor-pointer transition-all hover:shadow-md ${
                           area.status === 'completed' ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
                         }`}
-                        onClick={() => router.push(`/dashboard/care-sessions/${sessionId}/area/${area.id}`)}
+                        onClick={() => router.push(`/dashboard/care-sessions/${sessionId}/assessment/${area.id}`)}
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div>
@@ -794,7 +794,7 @@ export default function ContinueInspectionPage() {
                               </span>
                             </div>
                             <button
-                              onClick={() => router.push(`/dashboard/care-sessions/${sessionId}/area/${area.id}`)}
+                              onClick={() => router.push(`/dashboard/care-sessions/${sessionId}/assessment/${area.id}`)}
                               className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 group cursor-pointer"
                             >
                               View Details

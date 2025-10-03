@@ -239,7 +239,7 @@ export default function InspectionStartPage() {
     const firstArea = claimData?.property.type === 'residential' 
       ? 'exterior-roof' 
       : 'exterior-building'
-    router.push(`/dashboard/care-sessions/${sessionId}/area/${firstArea}`)
+    router.push(`/dashboard/care-sessions/${sessionId}/assessment/${firstArea}`)
   }
 
   const isFormValid = claimData && inspectionSetup.scheduledDate && inspectionSetup.scheduledTime
