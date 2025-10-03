@@ -1,13 +1,15 @@
 'use client'
 
+import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Shield, AlertCircle, CheckCircle2, DollarSign, Clock, FileText, User, MapPin, Phone, Mail, ChevronRight, TrendingUp, Calendar } from 'lucide-react'
+import { ArrowLeft, Shield, AlertCircle, CheckCircle2, DollarSign, Clock, FileText, User, MapPin, Phone, Mail, ChevronRight, TrendingUp, Calendar, Upload, Eye, Download } from 'lucide-react'
 import { PageHeader } from '@/components/ui/page-header'
 
 export default function AuthorizationDetailPage() {
   const params = useParams()
   const router = useRouter()
   const claimId = params.id as string
+  const [activeTab, setActiveTab] = useState<'overview' | 'documentation'>('overview')
 
   // Mock authorization data - aligned with Arthur Health business model
   const authDetails = {
@@ -113,6 +115,35 @@ export default function AuthorizationDetailPage() {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="border-b border-gray-200 dark:border-gray-700">
+          <div className="flex gap-1 p-2">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${
+                activeTab === 'overview'
+                  ? 'bg-arthur-blue text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('documentation')}
+              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${
+                activeTab === 'documentation'
+                  ? 'bg-arthur-blue text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+            >
+              Documentation
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {activeTab === 'overview' && (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
@@ -301,6 +332,243 @@ export default function AuthorizationDetailPage() {
           </div>
         </div>
       </div>
+      )}
+
+      {activeTab === 'documentation' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Documentation Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Required Documents Checklist */}
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                <FileText className="text-arthur-blue" size={24} />
+                Patient Knowledge Base Documents
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                Complete documentation helps Arthur AI build a comprehensive patient profile and identify optimal care pathways. Documents marked as collected are used to enhance AI recommendations.
+              </p>
+
+              <div className="space-y-3">
+                {[
+                  {
+                    name: 'Insurance Policy Document',
+                    required: true,
+                    status: 'collected',
+                    context: `UnitedHealthcare Medicare Advantage - ${authDetails.policy.policyNumber}`,
+                    relevance: 'Critical for coverage analysis and prior authorization decisions'
+                  },
+                  {
+                    name: 'Medical History Records',
+                    required: true,
+                    status: 'collected',
+                    context: 'Complete diagnosis history including ICD-10 codes',
+                    relevance: 'Essential for medical necessity validation'
+                  },
+                  {
+                    name: 'Current Treatment Plan',
+                    required: true,
+                    status: 'collected',
+                    context: authDetails.requestedTreatment,
+                    relevance: 'Validates requested treatment appropriateness'
+                  },
+                  {
+                    name: 'Lab Results & Clinical Data',
+                    required: true,
+                    status: 'collected',
+                    context: 'HbA1c 8.9%, glucose monitoring logs',
+                    relevance: 'Supports medical necessity criteria'
+                  },
+                  {
+                    name: 'Physician Notes & Referrals',
+                    required: true,
+                    status: 'collected',
+                    context: authDetails.patient.referringProvider,
+                    relevance: 'Documents clinical decision-making process'
+                  },
+                  {
+                    name: 'Prior Authorization Forms',
+                    required: true,
+                    status: 'pending',
+                    context: 'Pending submission for alternative CGM device',
+                    relevance: 'Required for claims processing'
+                  },
+                  {
+                    name: 'Medication List',
+                    required: false,
+                    status: 'collected',
+                    context: 'Current diabetes medications and dosages',
+                    relevance: 'Helps identify drug interactions and coverage'
+                  },
+                  {
+                    name: 'Provider Network Verification',
+                    required: false,
+                    status: 'collected',
+                    context: 'In-network provider confirmation',
+                    relevance: 'Ensures maximum coverage benefits'
+                  },
+                  {
+                    name: 'Patient Consent Forms',
+                    required: true,
+                    status: 'collected',
+                    context: 'HIPAA authorization and data sharing consent',
+                    relevance: 'Legal requirement for care coordination'
+                  },
+                  {
+                    name: 'Financial Assistance Applications',
+                    required: false,
+                    status: 'not-collected',
+                    context: 'Potential coverage gap assistance programs',
+                    relevance: 'Could reduce patient out-of-pocket costs'
+                  }
+                ].map((doc, index) => (
+                  <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-start gap-3 flex-1">
+                        <input
+                          type="checkbox"
+                          checked={doc.status === 'collected'}
+                          readOnly
+                          className="w-5 h-5 text-green-600 rounded mt-1 focus:ring-2 focus:ring-green-500"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-gray-900 dark:text-gray-100">{doc.name}</h3>
+                            {doc.required && (
+                              <span className="text-xs bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 px-2 py-0.5 rounded-full">Required</span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{doc.context}</p>
+                          <div className="flex items-start gap-2">
+                            <span className="text-xs text-gray-500 dark:text-gray-500 font-medium">Relevance:</span>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 italic">{doc.relevance}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-2 ml-3">
+                        {doc.status === 'collected' && (
+                          <>
+                            <span className="text-xs bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 px-3 py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
+                              <CheckCircle2 size={14} />
+                              Collected
+                            </span>
+                            <div className="flex gap-1">
+                              <button className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-arthur-blue hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition">
+                                <Eye size={16} />
+                              </button>
+                              <button className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-arthur-blue hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition">
+                                <Download size={16} />
+                              </button>
+                            </div>
+                          </>
+                        )}
+                        {doc.status === 'pending' && (
+                          <>
+                            <span className="text-xs bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 px-3 py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
+                              <Clock size={14} />
+                              Pending
+                            </span>
+                            <button className="p-1.5 text-arthur-blue hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                              <Upload size={16} />
+                            </button>
+                          </>
+                        )}
+                        {doc.status === 'not-collected' && (
+                          <>
+                            <span className="text-xs bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400 px-3 py-1 rounded-full whitespace-nowrap">
+                              Not Collected
+                            </span>
+                            <button className="text-xs bg-arthur-blue text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition whitespace-nowrap">
+                              Request
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <Shield className="text-arthur-blue mt-0.5" size={20} />
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">Knowledge Base Status</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                      8 of 10 documents collected. Arthur AI has sufficient context to provide optimal care recommendations.
+                    </p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 italic">
+                      Collecting the remaining 2 documents will enhance coverage gap analysis and identify additional cost savings opportunities.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar - Patient Context */}
+          <div className="space-y-6">
+            <div className="bg-gradient-to-br from-arthur-blue to-blue-600 rounded-xl p-6 text-white">
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <User size={20} />
+                Patient Context
+              </h2>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <p className="text-white/70 mb-1">Patient</p>
+                  <p className="font-semibold">{authDetails.patient.name}</p>
+                </div>
+                <div>
+                  <p className="text-white/70 mb-1">MRN</p>
+                  <p className="font-semibold">{authDetails.patient.mrn}</p>
+                </div>
+                <div>
+                  <p className="text-white/70 mb-1">Primary Diagnosis</p>
+                  <p className="font-semibold">{authDetails.clinical.diagnosis}</p>
+                </div>
+                <div>
+                  <p className="text-white/70 mb-1">Insurance</p>
+                  <p className="font-semibold">{authDetails.policy.carrier}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                <TrendingUp className="text-arthur-blue" size={20} />
+                AI Insights
+              </h2>
+              <div className="space-y-3 text-sm">
+                <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                  <p className="text-green-900 dark:text-green-100 font-medium mb-1">Complete Documentation</p>
+                  <p className="text-green-700 dark:text-green-300 text-xs">All required documents for this authorization request are collected</p>
+                </div>
+                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <p className="text-blue-900 dark:text-blue-100 font-medium mb-1">Optimization Opportunity</p>
+                  <p className="text-blue-700 dark:text-blue-300 text-xs">Financial assistance application could reduce patient costs by up to $2,400</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Quick Actions</h2>
+              <div className="space-y-2">
+                <button className="w-full bg-arthur-blue hover:bg-blue-600 text-white rounded-lg p-3 text-sm font-medium transition-all flex items-center justify-center gap-2">
+                  <Upload size={16} />
+                  Upload Document
+                </button>
+                <button className="w-full border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg p-3 text-sm font-medium transition-all flex items-center justify-center gap-2">
+                  <Download size={16} />
+                  Download All
+                </button>
+                <button className="w-full border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg p-3 text-sm font-medium transition-all flex items-center justify-center gap-2">
+                  <Mail size={16} />
+                  Request Missing Docs
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
