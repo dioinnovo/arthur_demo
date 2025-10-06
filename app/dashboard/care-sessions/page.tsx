@@ -197,7 +197,7 @@ export default function CareSessionsPage() {
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
-        title="Care Sessions"
+        title="Care Coordination"
         description="Active patient care sessions and visit workflows"
         action={
           <button
@@ -336,7 +336,7 @@ export default function CareSessionsPage() {
                   <p className="text-lg font-bold text-green-600">{session.outcomes.qualityScore}%</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Savings</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Treatment Cost</p>
                   <p className="text-lg font-bold text-blue-600">${(session.outcomes.costSavings / 1000).toFixed(0)}k</p>
                 </div>
               </div>

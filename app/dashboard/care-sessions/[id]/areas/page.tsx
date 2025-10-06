@@ -116,7 +116,7 @@ export default function CareSessionAreasPage() {
             onClick={() => router.push('/dashboard/care-sessions')}
             className="px-4 py-2 bg-arthur-blue text-white rounded-lg hover:bg-arthur-blue-dark"
           >
-            Back to Care Sessions
+            Back to Care Coordination
           </button>
         </div>
       </div>

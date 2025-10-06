@@ -172,7 +172,7 @@ export default function DemoPage() {
                 alt="Arthur Health"
                 width={150}
                 height={40}
-                className="h-10 w-auto object-contain"
+                className="w-auto object-contain"
               />
               <span className="text-xl font-bold text-arthur-gray-dark">Your AI Care Coordination Assistant</span>
             </Link>

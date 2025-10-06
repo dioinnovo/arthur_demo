@@ -61,7 +61,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
       description: 'Settlement Optimization'
     },
     {
-      title: 'Care Sessions',
+      title: 'Care Coordination',
       icon: CalendarDays,
       href: '/dashboard/care-sessions',
       description: 'Patient Visit Workflow'

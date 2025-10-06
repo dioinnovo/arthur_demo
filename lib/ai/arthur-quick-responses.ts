@@ -12,6 +12,243 @@ interface ResponseTemplate {
 
 // Varied response templates for different question types
 const responseTemplates: ResponseTemplate[] = [
+  // RAG-Based Questions (No Patient Context Required)
+
+  // General Specialist Wait Times (Network-wide RAG query)
+  {
+    pattern: /who are.*specialist.*shortest|specialist.*shortest wait|show.*specialist.*wait time/i,
+    responses: [
+      () => {
+        return `## Specialists with Shortest Wait Times
+
+**Real-time network availability across all specialties:**
+
+**Cardiology**
+• Dr. Sarah Chen, MD - Metro Heart & Vascular
+  Next Available: **Tomorrow, 2:00 PM**
+  Wait Time: 1 day
+  In-network • 4.9/5 rating (412 reviews)
+  Specializes in: Heart failure, preventive cardiology
+
+• Dr. Amanda Foster, MD - Regional Cardiac Center
+  Next Available: **Thursday, 10:30 AM**
+  Wait Time: 3 days
+  In-network • 4.8/5 rating (387 reviews)
+  Specializes in: CHF management, cardiac rehab
+
+**Endocrinology**
+• Dr. Robert Kim, MD - Advanced Diabetes Center
+  Next Available: **Friday, 9:00 AM**
+  Wait Time: 4 days
+  In-network • 4.9/5 rating (298 reviews)
+  Specializes in: Type 2 diabetes, insulin management
+
+• Dr. Jennifer Wu, DO - Endocrine Associates
+  Next Available: **Next Monday, 1:00 PM**
+  Wait Time: 6 days
+  In-network • 4.7/5 rating (245 reviews)
+  Specializes in: Diabetes, thyroid disorders
+
+**Orthopedics/MSK**
+• Dr. Michael Roberts, MD - Sports Medicine Center
+  Next Available: **Today, 4:30 PM**
+  Wait Time: Same day
+  In-network • 4.8/5 rating (521 reviews)
+  Specializes in: Joint pain, sports injuries
+
+• Dr. Lisa Martinez, MD - Orthopedic Specialists
+  Next Available: **Tomorrow, 11:00 AM**
+  Wait Time: 1 day
+  In-network • 4.9/5 rating (456 reviews)
+  Specializes in: Arthritis, joint replacement
+
+**Physical Therapy**
+• Valley Physical Therapy Center
+  Next Available: **Today, 3:00 PM**
+  Wait Time: Same day
+  In-network • 4.7/5 rating (612 reviews)
+  Multiple therapists available
+
+**Neurology**
+• Dr. David Park, MD - Neuroscience Institute
+  Next Available: **Next Tuesday, 8:30 AM**
+  Wait Time: 7 days
+  In-network • 4.8/5 rating (334 reviews)
+  Specializes in: Headaches, neuropathy
+
+**High-Risk OB/GYN**
+• Dr. Emily Rodriguez, MD - Maternal-Fetal Medicine
+  Next Available: **Wednesday, 2:00 PM**
+  Wait Time: 2 days
+  In-network • 4.9/5 rating (278 reviews)
+  Specializes in: High-risk pregnancy
+
+**Network Performance Summary:**
+• Average wait time across all specialties: 3.2 days
+• Same-day appointments available in 3 specialties
+• 85% of specialties have availability within 1 week
+• All providers accepting new patients
+
+Would you like me to book an appointment or check specific insurance coverage?`
+      }
+    ]
+  },
+
+  // Provider Network Availability (General RAG query)
+  {
+    pattern: /show.*provider network|network availability|provider.*available today/i,
+    responses: [
+      () => {
+        return `## Provider Network Availability - Real-Time Status
+
+**Network Capacity Analysis:**
+
+**Primary Care Physicians:**
+• 24 providers with availability this week
+• 8 providers with same-day appointments
+• Average wait time: **1.8 days**
+• Network utilization: 68% (Good availability)
+
+**Specialist Services:**
+• Cardiology: 6 providers accepting patients (2-4 day wait)
+• Endocrinology: 4 providers (4-7 day wait)
+• Orthopedics: 9 providers (same day - 3 days)
+• Neurology: 3 providers (5-10 day wait)
+• Physical Therapy: 12 locations (same day available)
+• Mental Health: 15 providers (1-5 day wait)
+
+**Urgent & Emergency Services:**
+• 7 Urgent Care centers within 10 miles
+  Average current wait: **12 minutes**
+  All accepting walk-ins
+
+• 3 Emergency Rooms nearby
+  Current average wait: **18 minutes**
+  All facilities at 72% capacity
+
+**Hospital Facilities:**
+• Regional Medical Center
+  Bed availability: 82% capacity
+  Elective surgery: 1-2 week scheduling
+  Status: Accepting all admissions
+
+• Valley General Hospital
+  Bed availability: 71% capacity
+  Elective surgery: 2-3 week scheduling
+  Status: Accepting all admissions
+
+**Telehealth Services:**
+• Virtual visits available 24/7
+• Average connection time: Under 5 minutes
+• 45 providers offering telehealth
+• Copay: $25 (vs $30-60 in-person)
+
+**After-Hours Care:**
+• 4 Extended-hours clinics (open until 10 PM)
+• 2 Weekend-only clinics (Saturday-Sunday)
+• Nurse triage line: 24/7 available
+
+**Specialist Booking Recommendations:**
+Best booking window: **Next 7-14 days**
+Peak availability: **Tuesdays and Thursdays**
+Lowest wait times: **Morning slots (8-10 AM)**
+
+**Network Alerts:**
+• All critical specialties within normal capacity
+• No service delays anticipated
+• Flu season: Primary care wait times +20%
+
+Would you like me to identify immediate appointment options or check coverage for a specific service?`
+      }
+    ]
+  },
+
+  // Prior Authorization Turnaround Times (RAG query)
+  {
+    pattern: /prior authorization.*time|PA.*turnaround|authorization.*how long/i,
+    responses: [
+      () => {
+        return `## Prior Authorization Turnaround Times
+
+**Current Processing Times by Service Type:**
+
+**Fast-Track Services (24-48 hours):**
+• Urgent medications (life-threatening conditions)
+• Post-discharge home health
+• Urgent imaging (CT/MRI with clinical urgency)
+• Emergency DME (oxygen, mobility devices)
+• Mental health crisis services
+**Average approval time: 36 hours**
+
+**Standard Services (3-5 business days):**
+• Non-urgent specialist referrals
+• Physical therapy (initial 20 visits)
+• Non-urgent imaging (MRI, CT, PET)
+• Routine procedures
+• Non-urgent medications
+**Average approval time: 4.2 days**
+
+**Complex Services (5-10 business days):**
+• High-cost biologics and specialty drugs
+• Surgical procedures
+• Extended therapy (beyond standard limits)
+• Home infusion services
+• Advanced imaging series
+**Average approval time: 7.5 days**
+
+**By Major Carriers:**
+• Aetna: 3.8 days average
+• Blue Cross: 4.2 days average
+• UnitedHealthcare: 4.5 days average
+• Cigna: 3.9 days average
+• Medicare Advantage: 5.2 days average
+
+**Specialty Medications:**
+• Tier 3 drugs: 2-4 days
+• Tier 4 specialty drugs: 5-7 days
+• Biologics: 7-10 days
+• Compound medications: 10-14 days
+
+**Common Procedures:**
+• Physical Therapy: 2-3 days
+• MRI/CT scans: 3-5 days
+• Surgical procedures: 7-10 days
+• Sleep studies: 4-6 days
+• Cardiac catheterization: 5-7 days
+
+**Expedited Processing Available For:**
+• Clinical urgency documented
+• Post-hospitalization continuity of care
+• Active cancer treatment
+• Acute pain management
+• Risk of permanent impairment
+
+**Tips to Reduce PA Time:**
+1. Include complete clinical documentation upfront
+2. Use CPT codes in initial request
+3. Attach recent medical records
+4. Request peer-to-peer review if urgent
+5. Follow up at 48-hour mark
+
+**Auto-Approval Services (No PA Required):**
+• Primary care visits
+• Preventive care services
+• Emergency room visits
+• Generic medications (Tiers 1-2)
+• Basic lab work and X-rays
+• Annual wellness exams
+
+**Current System Performance:**
+• 92% approval rate on first submission
+• 8% require additional information
+• Average resubmission adds 3-4 days
+• Peer-to-peer reviews resolve 75% of denials
+
+Would you like help submitting a prior authorization or checking requirements for a specific service?`
+      }
+    ]
+  },
+
   // Care Coordination - Fastest Specialist (Core Arthur Health feature)
   {
     pattern: /find.*fastest|shortest wait|fastest.*specialist|quickest.*appointment/i,
@@ -114,6 +351,122 @@ Total estimated copays: $${(patient?.copays?.specialist || 60) * 2 + (patient?.c
 None - Patient on optimal care pathway
 
 Next step: Would you like me to book these coordinated appointments?`
+      }
+    ]
+  },
+
+  // Total Care Cost Estimation
+  {
+    pattern: /estimate.*total.*cost|total care cost|cost estimate|care.*cost|treatment cost/i,
+    responses: [
+      (patientName) => {
+        const patient = patientName ? getPatientData(patientName) : null
+
+        if (!patient) {
+          return `I need patient information to estimate total care costs. Please provide the patient name or Member ID.`
+        }
+
+        // Calculate estimated costs based on patient conditions
+        const primaryCareVisits = 4 // Quarterly
+        const specialistVisitsPerYear = patient.currentConditions.length * 3 // 3 visits per condition per year
+        const labsAndImaging = patient.currentConditions.length * 2 // Labs every 6 months per condition
+
+        const primaryCareCost = primaryCareVisits * (patient.copays?.primaryCare || 30)
+        const specialistCost = specialistVisitsPerYear * (patient.copays?.specialist || 60)
+        const labCost = labsAndImaging * 150 // Average lab cost after insurance
+        const medicationCost = patient.currentConditions.length * 75 * 12 // Avg $75/month per condition
+
+        // Condition-specific costs
+        let conditionSpecificCost = 0
+        let conditionBreakdown = []
+
+        if (patient.currentConditions.some(c => c.toLowerCase().includes('diabetes'))) {
+          conditionSpecificCost += 2400 // CGM, supplies
+          conditionBreakdown.push(`**Diabetes Management:**
+   Continuous glucose monitoring: $150/month
+   Testing supplies: $50/month
+   Nutrition counseling (12 sessions): $360/year
+   Annual diabetic eye exam: $150
+   Annual foot exam: $100
+   **Subtotal: $2,760/year**`)
+        }
+
+        if (patient.currentConditions.some(c => c.toLowerCase().includes('heart') || c.toLowerCase().includes('chf'))) {
+          conditionSpecificCost += 3200
+          conditionBreakdown.push(`**Heart Condition Management:**
+   Echocardiogram (2x/year): $800
+   Cardiac stress test (annual): $600
+   Cardiac rehab (36 sessions): $1,080
+   Remote monitoring device: $20/month = $240/year
+   **Subtotal: $3,320/year**`)
+        }
+
+        if (patient.currentConditions.some(c => c.toLowerCase().includes('pregnancy'))) {
+          conditionSpecificCost += 4500
+          conditionBreakdown.push(`**Maternity Care:**
+   Prenatal visits (12-14): $420
+   Ultrasounds & genetic testing: $800
+   Delivery & hospital (3 days): $2,500 (after insurance)
+   Postpartum care: $180
+   Breast pump & supplies: $300
+   **Subtotal: $4,200/year**`)
+        }
+
+        if (patient.currentConditions.some(c => c.toLowerCase().includes('kidney'))) {
+          conditionSpecificCost += 8500
+          conditionBreakdown.push(`**Kidney Disease Management:**
+   Nephrology visits (monthly): $720
+   Dialysis treatments (if needed): $6,000/year (after insurance)
+   Specialized medications: $1,200/year
+   Monthly lab monitoring: $600
+   **Subtotal: $8,520/year**`)
+        }
+
+        const totalEstimatedCost = primaryCareCost + specialistCost + labCost + medicationCost + conditionSpecificCost
+
+        return `## Total Care Cost Estimation - ${patient.patientName}
+
+**Annual Care Cost Breakdown:**
+
+**Basic Care Services:**
+• Primary care visits (${primaryCareVisits}x): $${primaryCareCost}
+• Specialist visits (${specialistVisitsPerYear}x): $${specialistCost}
+• Labs & diagnostic tests: $${labCost}
+• Prescription medications: $${medicationCost}
+
+${conditionBreakdown.length > 0 ? `**Condition-Specific Costs:**
+${conditionBreakdown.join('\n\n')}` : ''}
+
+**Insurance Information:**
+• Plan: ${patient.carrier} - ${patient.planType}
+• Deductible status: $${(patient.deductibles?.individual?.inNetwork || 3000) - (patient.deductibles?.individual?.remaining || 1500)} of $${patient.deductibles?.individual?.inNetwork || 3000} met
+• Out-of-pocket max: $${patient.coverageLimits?.outOfPocketMax?.individual || 5000}
+
+**Total Estimated Annual Cost: $${totalEstimatedCost.toLocaleString()}**
+
+**Cost Optimization Opportunities:**
+${totalEstimatedCost > 8000 ?
+`• High annual costs detected - Consider care coordination program
+• Sync specialist visits to minimize copays
+• Use mail-order pharmacy for 90-day supplies (save 20%)
+• Telehealth for follow-ups where appropriate ($25 vs $${patient.copays?.specialist || 60})
+• Estimated potential savings: $${Math.floor(totalEstimatedCost * 0.15).toLocaleString()}/year` :
+`• Use in-network providers exclusively
+• Generic medications when available
+• Preventive care visits (100% covered)
+• Consider HSA contributions for tax savings`}
+
+**Monthly Budget Planning:**
+Average monthly cost: $${Math.floor(totalEstimatedCost / 12).toLocaleString()}
+Recommended FSA contribution: $${Math.min(totalEstimatedCost, 3050).toLocaleString()}
+
+**Important Notes:**
+• Costs shown are estimates based on typical utilization
+• Actual costs may vary based on treatment needs
+• Does not include emergency care or hospitalizations
+• Prior authorizations may affect final costs
+
+Would you like me to break down costs by quarter or identify specific cost-saving opportunities?`
       }
     ]
   },
@@ -1101,6 +1454,39 @@ Please let me know how I can assist further with your healthcare coverage questi
  */
 export function getArthurQuickSuggestions(response: string, patientName?: string): string[] {
   const responseLower = response.toLowerCase()
+
+  // RAG Question: Specialists with shortest wait times
+  if (responseLower.includes('specialists with shortest wait') ||
+      (responseLower.includes('cardiology') && responseLower.includes('endocrinology') && responseLower.includes('orthopedics'))) {
+    return [
+      'Book cardiology appointment',
+      'Compare specialist ratings',
+      'Check insurance coverage for specialist',
+      'View specialist credentials'
+    ]
+  }
+
+  // RAG Question: Provider network availability
+  if (responseLower.includes('provider network availability') ||
+      (responseLower.includes('network capacity') && responseLower.includes('primary care physicians'))) {
+    return [
+      'Find urgent care nearby',
+      'Check telehealth options',
+      'View after-hours availability',
+      'Schedule same-day appointment'
+    ]
+  }
+
+  // RAG Question: Prior authorization turnaround times
+  if (responseLower.includes('prior authorization turnaround') ||
+      (responseLower.includes('fast-track services') && responseLower.includes('processing times'))) {
+    return [
+      'Submit prior authorization request',
+      'Check authorization status',
+      'Find pre-approved alternatives',
+      'Expedite urgent authorization'
+    ]
+  }
 
   // Care Coordination - Fastest Specialist
   if (responseLower.includes('fastest') || responseLower.includes('shortest wait') || responseLower.includes('next available')) {

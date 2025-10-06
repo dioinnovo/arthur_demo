@@ -121,10 +121,13 @@ export default function MobileChatInterface() {
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null)
   const [showPatientSelector, setShowPatientSelector] = useState(false)
   const [selectedQuestionCategory, setSelectedQuestionCategory] = useState<'gapIdentification' | 'relationshipDiscovery' | 'roiBusinessImpact'>('gapIdentification')
+  const [userScrolledUp, setUserScrolledUp] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const attachMenuRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const photoInputRef = useRef<HTMLInputElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const latestAssistantMessageRef = useRef<HTMLDivElement>(null)
 
   // Auto-resize textarea
   const adjustTextareaHeight = () => {
@@ -178,8 +181,39 @@ export default function MobileChatInterface() {
     ]
   }
 
-  // Removed auto-scroll on message updates to avoid breaking user's reading flow
-  // Users can manually scroll if needed
+  // Detect when user manually scrolls up to pause auto-scroll
+  useEffect(() => {
+    const container = messagesContainerRef.current
+    if (!container) return
+
+    const handleScroll = () => {
+      // Check if user is near the bottom (within 100px)
+      const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100
+      setUserScrolledUp(!isNearBottom)
+    }
+
+    container.addEventListener('scroll', handleScroll)
+    return () => container.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Auto-scroll to show assistant's response
+  useEffect(() => {
+    // Only scroll if user hasn't manually scrolled up
+    if (userScrolledUp) return
+
+    // Find the latest assistant message
+    const lastMessage = messages[messages.length - 1]
+    if (lastMessage?.role === 'assistant' && latestAssistantMessageRef.current) {
+      // Small delay to ensure message is rendered and DOM is updated
+      setTimeout(() => {
+        latestAssistantMessageRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start', // Scroll to TOP of assistant's message
+          inline: 'nearest'
+        })
+      }, 100)
+    }
+  }, [messages, userScrolledUp])
 
   // Auto-resize textarea when input changes
   useEffect(() => {
@@ -501,7 +535,7 @@ export default function MobileChatInterface() {
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4">
           {messages.length === 0 ? (
             /* Welcome Screen with Centered Virtual Assistant */
             <div className="flex flex-col items-center justify-start pt-2 sm:pt-4 text-center space-y-4 sm:space-y-6">
@@ -685,32 +719,68 @@ export default function MobileChatInterface() {
                         ))
                       }
 
-                      // Default questions when no patient selected - care coordination focus
-                      return [
-                        "Find specialist with shortest wait time",
-                        "Optimize referral pathway for patient",
-                        "Check provider network availability",
-                        "Coordinate multi-specialty care team",
-                        "Review policy coverage for services",
-                        "Prior authorization requirements",
-                        "Comprehensive policy review",
-                        "Fastest route to specialist care"
-                      ].slice(0, 8).map((suggestion, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => {
-                            if (!selectedPatient) {
-                              setShowPatientSelector(true)
-                              setPendingQuestion(suggestion)
-                            } else {
-                              handleSend(`For patient ${selectedPatient}: ${suggestion}`)
-                            }
-                          }}
-                          className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:border-blue-500 hover:text-blue-500 transition-all"
-                        >
-                          {suggestion}
-                        </button>
-                      ))
+                      // Default questions when no patient selected - mix of RAG and patient-specific
+                      const ragQuestions = [
+                        "Who are the specialists with shortest wait times?",
+                        "Show me provider network availability today",
+                        "What are current prior authorization turnaround times?"
+                      ]
+
+                      const patientQuestions = [
+                        "Find fastest specialist for this patient",
+                        "Optimize care pathway for current conditions",
+                        "Check medication formulary coverage",
+                        "Estimate total care costs for this patient"
+                      ]
+
+                      return (
+                        <>
+                          {/* Comprehensive Policy Review - Always First */}
+                          <button
+                            key="comprehensive"
+                            onClick={() => {
+                              if (!selectedPatient) {
+                                setShowPatientSelector(true)
+                                setPendingQuestion("Comprehensive policy review")
+                              } else {
+                                handleSend(`For patient ${selectedPatient}: Comprehensive policy review`)
+                              }
+                            }}
+                            className="px-3 py-1.5 bg-blue-600 text-white border border-blue-600 rounded-full text-sm font-medium hover:bg-blue-700 transition-all"
+                          >
+                            Comprehensive policy review
+                          </button>
+
+                          {/* RAG Questions - No patient context needed */}
+                          {ragQuestions.map((question, idx) => (
+                            <button
+                              key={`rag-${idx}`}
+                              onClick={() => handleSend(question)}
+                              className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:border-green-500 hover:text-green-600 transition-all"
+                            >
+                              {question}
+                            </button>
+                          ))}
+
+                          {/* Patient-Specific Questions - Require patient context */}
+                          {patientQuestions.map((question, idx) => (
+                            <button
+                              key={`patient-${idx}`}
+                              onClick={() => {
+                                if (!selectedPatient) {
+                                  setShowPatientSelector(true)
+                                  setPendingQuestion(question)
+                                } else {
+                                  handleSend(`For patient ${selectedPatient}: ${question}`)
+                                }
+                              }}
+                              className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:border-blue-500 hover:text-blue-500 transition-all"
+                            >
+                              {question}
+                            </button>
+                          ))}
+                        </>
+                      )
                     })()}
                   </div>
                 </div>
@@ -720,9 +790,12 @@ export default function MobileChatInterface() {
             /* Messages View */
             <div className="space-y-4 max-w-2xl mx-auto pb-8">
               <AnimatePresence>
-                {messages.map((message) => (
+                {messages.map((message, index) => (
                   <motion.div
                     key={message.id}
+                    ref={message.role === 'assistant' && index === messages.length - 1
+                      ? latestAssistantMessageRef
+                      : null}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}

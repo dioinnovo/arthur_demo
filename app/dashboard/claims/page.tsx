@@ -320,8 +320,8 @@ export default function ClaimsPage() {
                   {claim.estimatedSavings > 0 && (
                     <div className="mt-2 pt-2 border-t border-blue-200 dark:border-blue-800">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-600 dark:text-gray-400">Est. Savings:</span>
-                        <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                        <span className="text-xs text-gray-600 dark:text-gray-400">Treatment Cost:</span>
+                        <span className="text-sm font-bold text-arthur-blue dark:text-blue-400">
                           ${claim.estimatedSavings.toLocaleString()}
                         </span>
                       </div>
