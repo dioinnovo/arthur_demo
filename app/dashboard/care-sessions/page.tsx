@@ -418,14 +418,6 @@ export default function CareSessionsPage() {
                   </div>
                 )}
               </div>
-
-              {/* Action Button */}
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <button className="w-full flex items-center justify-center gap-2 text-arthur-blue hover:text-arthur-blue-dark font-medium text-sm">
-                  View Session Details
-                  <ChevronRight size={16} />
-                </button>
-              </div>
             </div>
           )
         })}
