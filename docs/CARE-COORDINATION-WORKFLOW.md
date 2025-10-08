@@ -2,7 +2,7 @@
 
 **Project:** Arthur Health Care Coordination Technical Showcase
 **Version:** 1.0
-**Last Updated:** January 2025
+**Last Updated:** October 2025
 **Status:** 🟡 Planning → In Progress
 
 ---

@@ -19,7 +19,6 @@ import {
   Camera,
   History,
   FileCheck,
-  Presentation,
   Sun,
   Moon,
   Shield
@@ -55,16 +54,22 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
       description: 'Clinical Assistant'
     },
     {
-      title: 'Claims',
+      title: 'Patients',
       icon: FileText,
       href: '/dashboard/claims',
-      description: 'Settlement Optimization'
+      description: 'Patient Hub & Claims'
     },
     {
       title: 'Care Coordination',
       icon: CalendarDays,
       href: '/dashboard/care-sessions',
-      description: 'Patient Visit Workflow'
+      description: 'Patient Care Management'
+    },
+    {
+      title: 'Referrals',
+      icon: Users,
+      href: '/dashboard/referrals',
+      description: 'Specialist Coordination'
     }
   ]
 

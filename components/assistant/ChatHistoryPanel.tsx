@@ -173,7 +173,7 @@ export default function ChatHistoryPanel({
         <div className="flex-shrink-0 p-4 border-b border-gray-200">
           <button
             onClick={createNewChat}
-            className="w-full flex items-center gap-3 px-4 py-3 bg-scc-red text-white rounded-full hover:bg-red-600 dark:hover:bg-red-700 transition-colors shadow-lg"
+            className="w-full flex items-center gap-3 px-4 py-3 bg-scc-red text-white rounded-full hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors shadow-lg"
           >
             <Plus size={20} />
             <span className="font-medium">New Chat</span>
