@@ -24,7 +24,7 @@ function AssessmentAreaCard({
   aiEnhanced: boolean
   sessionData: any
   setCareSessionData: any
-  getStatusIcon: (status: string) => JSX.Element
+  getStatusIcon: (status: string) => React.ReactElement
 }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isEditing, setIsEditing] = useState(false)

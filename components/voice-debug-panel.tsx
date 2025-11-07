@@ -23,10 +23,10 @@ export function VoiceDebugPanel({
 }: VoiceDebugPanelProps) {
   const [micLevel, setMicLevel] = useState(0)
   const [speakerLevel, setSpeakerLevel] = useState(0)
-  const animationFrameRef = useRef<number>()
-  const audioContextRef = useRef<AudioContext>()
-  const analyserRef = useRef<AnalyserNode>()
-  const micStreamRef = useRef<MediaStream>()
+  const animationFrameRef = useRef<number | undefined>(undefined)
+  const audioContextRef = useRef<AudioContext | undefined>(undefined)
+  const analyserRef = useRef<AnalyserNode | undefined>(undefined)
+  const micStreamRef = useRef<MediaStream | undefined>(undefined)
 
   // Initialize audio level monitoring
   useEffect(() => {
