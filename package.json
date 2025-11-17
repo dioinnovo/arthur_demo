@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "AI-powered healthcare policy analysis and care coordination platform for Arthur Health",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbo",
